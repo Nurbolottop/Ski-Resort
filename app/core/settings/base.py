@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from pathlib import Path
 import os
+import time
 
 load_dotenv()
 
@@ -158,6 +159,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # =============================================================================
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Версия статики: меняется при каждом запуске, чтобы браузеры не держали старые CSS/JS
+# (nginx отдаёт /static/ с долгим кэшем)
+ASSET_VERSION = str(int(time.time()))
 
 # После входа через /admin/login/ без ?next — в админку, а не на /accounts/profile/
 LOGIN_REDIRECT_URL = '/admin/'

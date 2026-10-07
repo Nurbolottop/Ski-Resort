@@ -1,4 +1,5 @@
 """Настройки админки (django-unfold)."""
+from django.conf import settings
 from django.templatetags.static import static
 from django.urls import reverse_lazy
 
@@ -24,7 +25,7 @@ UNFOLD = {
     'SHOW_BACK_BUTTON': True,
     'ENVIRONMENT': 'apps.base.admin_dashboard.environment_callback',
     'DASHBOARD_CALLBACK': 'apps.base.admin_dashboard.dashboard_callback',
-    'STYLES': [lambda request: static('css/admin-dashboard.css')],
+    'STYLES': [lambda request: f"{static('css/admin-dashboard.css')}?v={settings.ASSET_VERSION}"],
     'LOGIN': {
         'image': lambda request: static('img/admin-login.svg'),
     },
