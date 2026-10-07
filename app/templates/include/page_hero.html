@@ -1,8 +1,12 @@
-{# Шапка внутренней страницы. Параметры: title, eyebrow, text, image, parent_title, parent_url, variant #}
+{% load static %}
+{# Шапка внутренней страницы. Параметры: title, eyebrow, text, image, photo (имя фото из static/img/photos),
+   parent_title, parent_url, variant #}
 <section class="page-hero">
     <div class="page-hero__bg">
         {% if image %}
             <img src="{{ image.url }}" alt="">
+        {% elif photo %}
+            <img src="{% static 'img/photos/'|add:photo|add:'.jpg' %}" alt="">
         {% else %}
             {% include 'include/scenery.html' with variant=variant|default:1 uid='ph' %}
         {% endif %}

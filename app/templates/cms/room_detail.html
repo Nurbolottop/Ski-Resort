@@ -6,7 +6,7 @@
 
 {% block content %}
 {% url 'cms:room_list' as rooms_url %}
-{% include 'include/page_hero.html' with title=room.name eyebrow='Проживание' image=room.cover parent_title='Проживание' parent_url=rooms_url variant=3 %}
+{% include 'include/page_hero.html' with photo='sunset' title=room.name eyebrow='Проживание' image=room.cover parent_title='Проживание' parent_url=rooms_url variant=3 %}
 
 <section class="section theme-light">
     <div class="container detail">

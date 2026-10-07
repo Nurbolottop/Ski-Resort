@@ -36,13 +36,23 @@
 
     <div class="today__item">
         <span class="today__label">Трассы</span>
-        <span class="today__value"><svg class="icon"><use href="#i-ski"></use></svg>{{ conditions.slopes.open }} / {{ conditions.slopes.total }}</span>
-        <span class="today__note">открыто</span>
+        {% if site.is_season_open %}
+            <span class="today__value"><svg class="icon"><use href="#i-ski"></use></svg>{{ conditions.slopes.open }} / {{ conditions.slopes.total }}</span>
+            <span class="today__note">открыто</span>
+        {% else %}
+            <span class="today__value"><svg class="icon"><use href="#i-ski"></use></svg>{{ conditions.slopes.total }}</span>
+            <span class="today__note">закрыты до нового сезона</span>
+        {% endif %}
     </div>
 
     <div class="today__item">
         <span class="today__label">Подъёмники</span>
-        <span class="today__value"><svg class="icon"><use href="#i-lift"></use></svg>{{ conditions.lifts.open }} / {{ conditions.lifts.total }}</span>
-        <span class="today__note">работают</span>
+        {% if site.is_season_open %}
+            <span class="today__value"><svg class="icon"><use href="#i-lift"></use></svg>{{ conditions.lifts.open }} / {{ conditions.lifts.total }}</span>
+            <span class="today__note">работают</span>
+        {% else %}
+            <span class="today__value"><svg class="icon"><use href="#i-lift"></use></svg>{{ conditions.lifts.total }}</span>
+            <span class="today__note">не работают</span>
+        {% endif %}
     </div>
 </div>

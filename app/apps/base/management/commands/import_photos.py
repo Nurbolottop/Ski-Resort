@@ -5,6 +5,7 @@
     <папка>/about.jpg                  → фото блока «О базе»
     <папка>/rooms/<slug>.jpg           → обложки жилья
     <папка>/services/<slug>.jpg        → обложки категорий услуг
+    <папка>/posts/<slug>.jpg           → обложки новостей
     <папка>/gallery/<album-slug>/*.jpg → галерея по альбомам
 
     python manage.py import_photos /opt/ski/import
@@ -19,7 +20,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 
 from apps.base.models import HeroSlide, SiteSettings
-from apps.cms.models import GalleryAlbum, GalleryImage, Room, ServiceCategory
+from apps.cms.models import GalleryAlbum, GalleryImage, Post, Room, ServiceCategory
 
 IMAGE_EXT = {'.jpg', '.jpeg', '.png', '.webp'}
 
@@ -67,6 +68,12 @@ class Command(BaseCommand):
             if category:
                 attach(category, 'cover', path)
                 self.stdout.write(f'Услуги: {category.name}')
+
+        for path in images(root / 'posts'):
+            post = Post.objects.filter(slug=path.stem).first()
+            if post:
+                attach(post, 'cover', path)
+                self.stdout.write(f'Новость: {post.title}')
 
         gallery_root = root / 'gallery'
         if gallery_root.is_dir():

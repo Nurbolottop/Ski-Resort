@@ -5,7 +5,7 @@
 {% block description %}{{ page.seo_description|default:site.tagline }}{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title=page.title|default:'О базе' eyebrow=site.full_name|default:site.name text=site.tagline image=page.image variant=3 %}
+{% include 'include/page_hero.html' with photo='panorama' title=page.title|default:'О базе' eyebrow=site.full_name|default:site.name text=site.tagline image=page.image variant=3 %}
 
 <section class="section theme-light">
     <div class="container">

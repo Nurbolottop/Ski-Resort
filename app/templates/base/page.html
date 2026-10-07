@@ -4,7 +4,7 @@
 {% block description %}{{ page.seo_description|default:page.title }}{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title=page.title image=page.image %}
+{% include 'include/page_hero.html' with photo='sunset' title=page.title image=page.image %}
 
 <section class="section theme-light">
     <div class="container container--narrow">
