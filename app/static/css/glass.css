@@ -994,3 +994,12 @@ select.field__input option {
         -webkit-box-reflect: unset;
     }
 }
+
+/* Фон-заглушка теперь фото, а не SVG */
+img.scenery {
+    object-fit: cover;
+}
+
+.cta img.scenery {
+    opacity: .45;
+}

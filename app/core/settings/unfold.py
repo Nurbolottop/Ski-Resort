@@ -27,7 +27,7 @@ UNFOLD = {
     'DASHBOARD_CALLBACK': 'apps.base.admin_dashboard.dashboard_callback',
     'STYLES': [lambda request: f"{static('css/admin-dashboard.css')}?v={settings.ASSET_VERSION}"],
     'LOGIN': {
-        'image': lambda request: static('img/admin-login.svg'),
+        'image': lambda request: static('img/photos/panorama.jpg'),
     },
     'COLORS': {
         # Фирменный синий «Тоо-Ашуу» (#1f46a0) — основной цвет админки
