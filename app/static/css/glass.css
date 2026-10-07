@@ -1,0 +1,996 @@
+/* =============================================================================
+   ТОО-АШУУ — слой «жидкого стекла» (подключается после style.css)
+   Северное сияние в фирменных цветах на фоне, матовое стекло с бликами
+   и зеркальными отражениями, плавные анимации.
+   ============================================================================= */
+:root {
+    --glass-bg: linear-gradient(145deg, rgba(255, 255, 255, .11) 0%, rgba(255, 255, 255, .035) 100%);
+    --glass-bg-strong: linear-gradient(145deg, rgba(255, 255, 255, .16) 0%, rgba(255, 255, 255, .06) 100%);
+    --glass-border: rgba(255, 255, 255, .16);
+    --glass-blur: blur(24px) saturate(170%);
+    --glass-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .28),
+        inset 0 -1px 0 rgba(255, 255, 255, .05),
+        0 20px 50px -12px rgba(0, 4, 20, .55);
+    --glass-shadow-hover:
+        inset 0 1px 0 rgba(255, 255, 255, .4),
+        inset 0 -1px 0 rgba(255, 255, 255, .08),
+        0 30px 70px -14px rgba(0, 4, 20, .7),
+        0 0 0 1px rgba(111, 209, 28, .18);
+    --r: 26px;
+    --r-lg: 36px;
+}
+
+/* Светлые секции больше не «бумажные» — всё в стекле на тёмном сиянии */
+.theme-light {
+    --bg: transparent;
+    --bg-alt: transparent;
+    --text: #f1f5fb;
+    --text-soft: #b8c7da;
+    --text-dim: #8296ae;
+    --surface: rgba(255, 255, 255, .06);
+    --surface-2: rgba(255, 255, 255, .1);
+    --stroke: rgba(255, 255, 255, .12);
+    --stroke-strong: rgba(255, 255, 255, .22);
+    --stroke-accent: rgba(111, 209, 28, .45);
+    --card-bg: rgba(255, 255, 255, .05);
+    --accent: #6fd11c;
+    --shadow: 0 22px 60px rgba(0, 4, 20, .5);
+    background: transparent;
+}
+
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+    overflow: hidden;
+}
+
+body {
+    background: #040a1a;
+}
+
+/* =============================================================================
+   ФОН: СЕВЕРНОЕ СИЯНИЕ + ЗЕРНО
+   ============================================================================= */
+.aurora {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    background:
+        radial-gradient(120% 80% at 50% -10%, #12285a 0%, transparent 60%),
+        linear-gradient(180deg, #050d22 0%, #040a1a 55%, #030714 100%);
+}
+
+.aurora__blob {
+    position: absolute;
+    width: 60vmax;
+    height: 60vmax;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: .7;
+    mix-blend-mode: screen;
+    will-change: transform;
+}
+
+.aurora__blob--1 {
+    top: -20vmax;
+    left: -15vmax;
+    background: radial-gradient(circle, #1f46a0 0%, transparent 65%);
+    animation: drift-1 28s ease-in-out infinite alternate;
+}
+
+.aurora__blob--2 {
+    top: 25vh;
+    right: -22vmax;
+    background: radial-gradient(circle, #59bc08 0%, transparent 62%);
+    opacity: .4;
+    animation: drift-2 34s ease-in-out infinite alternate;
+}
+
+.aurora__blob--3 {
+    bottom: -25vmax;
+    left: 20vw;
+    background: radial-gradient(circle, #1fb5c9 0%, transparent 62%);
+    opacity: .38;
+    animation: drift-3 40s ease-in-out infinite alternate;
+}
+
+@keyframes drift-1 { to { transform: translate(18vw, 22vh) scale(1.15); } }
+@keyframes drift-2 { to { transform: translate(-24vw, -18vh) scale(.9); } }
+@keyframes drift-3 { to { transform: translate(14vw, -30vh) scale(1.2); } }
+
+.grain {
+    position: fixed;
+    inset: -50%;
+    z-index: -1;
+    pointer-events: none;
+    opacity: .06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain 1.2s steps(6) infinite;
+}
+
+@keyframes grain {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-3%, 2%); }
+    40% { transform: translate(2%, -3%); }
+    60% { transform: translate(-2%, -1%); }
+    80% { transform: translate(3%, 3%); }
+}
+
+/* Курсорный свет поверх всей страницы */
+.cursor-light {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 520px;
+    height: 520px;
+    margin: -260px 0 0 -260px;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(140, 200, 255, .09) 0%, transparent 60%);
+    transform: translate3d(var(--cx, -999px), var(--cy, -999px), 0);
+    transition: opacity .4s;
+    mix-blend-mode: screen;
+}
+
+/* =============================================================================
+   БАЗОВЫЙ «СТЕКЛЯННЫЙ» КОМПОНЕНТ
+   ============================================================================= */
+.feature,
+.slope,
+.pass,
+.card,
+.review,
+.route,
+.forecast__day,
+.stats__item,
+.levels__item,
+.table-wrap,
+.sidebar-card,
+.service-item,
+.rental-item,
+.faq__item,
+.form--card,
+.contact-card,
+.empty,
+.today__grid,
+.booking-widget,
+.contact-strip,
+.insta,
+.tabs--sticky {
+    position: relative;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+    isolation: isolate;
+}
+
+/* Свет от курсора внутри стекла (координаты --mx/--my ставит JS) */
+.feature::before,
+.pass::before,
+.card::before,
+.review::before,
+.route::before,
+.stats__item::before,
+.rental-item::before,
+.contact-card::before,
+.service-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, .14), transparent 45%);
+    transition: opacity .5s;
+}
+
+.feature:hover::before,
+.pass:hover::before,
+.card:hover::before,
+.review:hover::before,
+.route:hover::before,
+.stats__item:hover::before,
+.rental-item:hover::before,
+.contact-card:hover::before,
+.service-item:hover::before {
+    opacity: 1;
+}
+
+/* Зеркальный блик, пробегающий по стеклу при наведении */
+.feature::after,
+.pass::after,
+.card::after,
+.review::after,
+.route::after,
+.rental-item::after,
+.contact-card::after,
+.btn--primary::after,
+.btn--glass::after,
+.btn--ghost::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    bottom: -50%;
+    left: -60%;
+    z-index: 3;
+    width: 40%;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, .28) 50%, transparent 100%);
+    transform: translateX(-120%) skewX(-18deg);
+    transition: transform 1.1s var(--ease);
+}
+
+.feature:hover::after,
+.pass:hover::after,
+.card:hover::after,
+.review:hover::after,
+.route:hover::after,
+.rental-item:hover::after,
+.contact-card:hover::after,
+.btn--primary:hover::after,
+.btn--glass:hover::after,
+.btn--ghost:hover::after {
+    transform: translateX(520%) skewX(-18deg);
+}
+
+.feature:hover,
+.slope:hover,
+.pass:hover,
+.card:hover,
+.review:hover,
+.route:hover,
+.rental-item:hover,
+.contact-card:hover {
+    border-color: rgba(255, 255, 255, .28);
+    box-shadow: var(--glass-shadow-hover);
+}
+
+/* 3D-наклон: перспектива задаётся JS через inline transform */
+[data-tilt] {
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+/* =============================================================================
+   СЕКЦИИ — прозрачные, без «полос»
+   ============================================================================= */
+.section,
+.section--alt,
+.today,
+.footer,
+.cta,
+.page-hero {
+    background: transparent;
+}
+
+.section + .section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: min(1100px, 86%);
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .14), transparent);
+}
+
+.section__title,
+.page-hero__title,
+.cta__title,
+.insta__title {
+    background: linear-gradient(180deg, #ffffff 0%, #ffffff 45%, #b9cde6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.section__title em,
+.cta__title em,
+.hero__title em {
+    background: linear-gradient(120deg, #d2f8b2 0%, #6fd11c 50%, #9fd8ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.section__eyebrow {
+    padding: 7px 16px 7px 14px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: var(--r-full);
+    background: rgba(255, 255, 255, .05);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    letter-spacing: .2em;
+}
+
+.section__eyebrow::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+}
+
+/* Появление: из размытия, а не просто снизу */
+.js [data-reveal] {
+    opacity: 0;
+    filter: blur(14px);
+    transform: translateY(36px) scale(.98);
+    transition:
+        opacity 1.2s var(--ease),
+        filter 1.2s var(--ease),
+        transform 1.2s var(--ease),
+        border-color .4s, box-shadow .6s var(--ease);
+    transition-delay: var(--d, 0s);
+}
+
+.js [data-reveal].is-visible {
+    opacity: 1;
+    filter: none;
+    transform: none;
+}
+
+/* =============================================================================
+   КНОПКИ — жидкое стекло
+   ============================================================================= */
+.btn {
+    isolation: isolate;
+    transition: transform .5s var(--ease), box-shadow .5s var(--ease), background .4s, border-color .4s, color .3s;
+}
+
+.btn--primary {
+    border: 1px solid rgba(255, 255, 255, .35);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, .45) 0%, rgba(255, 255, 255, 0) 52%),
+        linear-gradient(135deg, #b6f27f 0%, #6fd11c 45%, #3f9a06 100%);
+    color: #0b2002;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .6),
+        inset 0 -6px 14px rgba(20, 70, 0, .25),
+        0 12px 30px -6px rgba(89, 188, 8, .55);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, .35);
+}
+
+.btn--primary:hover {
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .7),
+        inset 0 -6px 14px rgba(20, 70, 0, .2),
+        0 18px 44px -8px rgba(89, 188, 8, .7);
+}
+
+.btn--ghost,
+.btn--glass {
+    border: 1px solid rgba(255, 255, 255, .22);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .04));
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    backdrop-filter: blur(16px) saturate(160%);
+    color: #fff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 10px 26px -10px rgba(0, 0, 0, .5);
+}
+
+.btn--ghost:hover,
+.btn--glass:hover {
+    border-color: rgba(255, 255, 255, .4);
+    color: #fff;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .24), rgba(255, 255, 255, .08));
+}
+
+.link-more {
+    color: #9fe46a;
+}
+
+/* =============================================================================
+   ШАПКА — парящая стеклянная капсула
+   ============================================================================= */
+.header {
+    top: 0;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.header::before {
+    display: none;
+}
+
+.header__top {
+    border-bottom: 0;
+}
+
+.header__inner {
+    height: 68px;
+    margin-top: 10px;
+    padding: 0 10px 0 16px;
+    max-width: calc(var(--container) - 32px);
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: var(--r-full);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .04));
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    backdrop-filter: blur(22px) saturate(180%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .3),
+        0 18px 40px -16px rgba(0, 0, 0, .6);
+    transition: background .5s var(--ease), box-shadow .5s var(--ease), margin .5s var(--ease), max-width .6s var(--ease);
+}
+
+.header.is-scrolled .header__inner {
+    margin-top: 12px;
+    max-width: calc(var(--container) - 120px);
+    background: linear-gradient(180deg, rgba(14, 28, 60, .72), rgba(8, 18, 42, .6));
+}
+
+.nav__link {
+    padding: 8px 12px;
+    border-radius: var(--r-full);
+    transition: color .3s, background .3s;
+}
+
+.nav {
+    gap: 2px;
+}
+
+.nav__link::after {
+    display: none;
+}
+
+.nav__link:hover,
+.nav__link.is-active {
+    background: rgba(255, 255, 255, .1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18);
+}
+
+.logo__name {
+    background: linear-gradient(180deg, #fff, #cfe0f5);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.logo__mark {
+    width: 42px;
+    height: 42px;
+    padding: 5px;
+    border-radius: 50%;
+    box-shadow: inset 0 -2px 6px rgba(0, 0, 0, .12), 0 6px 16px rgba(0, 0, 0, .35);
+}
+
+.burger {
+    border-color: rgba(255, 255, 255, .22);
+    background: rgba(255, 255, 255, .06);
+}
+
+/* =============================================================================
+   HERO — зеркальный заголовок, стеклянные элементы
+   ============================================================================= */
+.hero {
+    background: transparent;
+}
+
+.hero__overlay {
+    background:
+        linear-gradient(180deg, rgba(4, 10, 26, .55) 0%, rgba(4, 10, 26, .1) 32%, rgba(4, 10, 26, .3) 62%, #040a1a 100%),
+        linear-gradient(90deg, rgba(4, 10, 26, .6) 0%, transparent 65%),
+        radial-gradient(60% 50% at 80% 20%, rgba(31, 70, 160, .35), transparent 70%);
+}
+
+.hero__media {
+    will-change: transform;
+}
+
+.hero__title {
+    background: linear-gradient(180deg, #ffffff 0%, #ffffff 55%, #c8daf2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Зеркальное отражение заголовка, как в глади льда */
+    -webkit-box-reflect: below -.12em linear-gradient(transparent 0%, transparent 52%, rgba(255, 255, 255, .22) 100%);
+}
+
+.hero__text {
+    margin-top: .9em;
+    font-size: 19px;
+}
+
+.hero__eyebrow {
+    padding: 8px 18px;
+    border: 1px solid rgba(255, 255, 255, .2);
+    border-radius: var(--r-full);
+    background: rgba(255, 255, 255, .08);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    color: #d2f8b2;
+}
+
+.hero__eyebrow::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6fd11c;
+    box-shadow: 0 0 14px #6fd11c;
+}
+
+.hero__arrow {
+    background: linear-gradient(180deg, rgba(255, 255, 255, .18), rgba(255, 255, 255, .04));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3);
+}
+
+.booking-widget {
+    border-radius: 30px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .05));
+}
+
+.booking-widget .field__input,
+.field__input {
+    border: 1px solid rgba(255, 255, 255, .16);
+    background: rgba(255, 255, 255, .06);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .25);
+    color: #fff;
+}
+
+.field__input:focus {
+    border-color: rgba(111, 209, 28, .7);
+    background: rgba(255, 255, 255, .1);
+    box-shadow: 0 0 0 4px rgba(111, 209, 28, .16), inset 0 1px 2px rgba(0, 0, 0, .25);
+}
+
+.today {
+    padding-top: 30px;
+}
+
+.today__grid {
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.today__item + .today__item {
+    border-left-color: rgba(255, 255, 255, .1);
+}
+
+/* =============================================================================
+   БЕГУЩАЯ СТЕКЛЯННАЯ ЛЕНТА
+   ============================================================================= */
+.ticker {
+    position: relative;
+    margin: 30px 0 0;
+    padding: 18px 0;
+    overflow: hidden;
+    border-top: 1px solid rgba(255, 255, 255, .1);
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+    background: linear-gradient(90deg, rgba(255, 255, 255, .02), rgba(255, 255, 255, .07), rgba(255, 255, 255, .02));
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.ticker__track {
+    display: flex;
+    width: max-content;
+    gap: 48px;
+    animation: ticker 38s linear infinite;
+}
+
+.ticker:hover .ticker__track {
+    animation-play-state: paused;
+}
+
+.ticker__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 48px;
+    font: 500 30px/1 var(--font-display);
+    white-space: nowrap;
+    color: rgba(255, 255, 255, .85);
+}
+
+.ticker__item::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #b6f27f, #3f9a06);
+    box-shadow: 0 0 16px rgba(111, 209, 28, .8);
+}
+
+@keyframes ticker {
+    to { transform: translateX(-50%); }
+}
+
+/* =============================================================================
+   КАРТОЧКИ И ПЛИТКИ
+   ============================================================================= */
+.card {
+    overflow: hidden;
+    background: linear-gradient(160deg, rgba(255, 255, 255, .1), rgba(255, 255, 255, .03));
+}
+
+.card__media {
+    margin: 10px 10px 0;
+    border-radius: 18px;
+    background: transparent;
+}
+
+.card__media img,
+.card__media .scenery {
+    border-radius: 18px;
+}
+
+.card__badge,
+.intro__badge {
+    border: 1px solid rgba(255, 255, 255, .25);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .25), rgba(255, 255, 255, .08));
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    backdrop-filter: blur(14px) saturate(160%);
+    color: #fff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4);
+}
+
+.intro__badge span {
+    color: rgba(255, 255, 255, .8);
+}
+
+.tile {
+    border: 1px solid rgba(255, 255, 255, .14);
+    box-shadow: var(--glass-shadow);
+}
+
+.tile__body {
+    padding: 18px 20px;
+    border: 1px solid rgba(255, 255, 255, .2);
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .04));
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    backdrop-filter: blur(16px) saturate(160%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3);
+    transform: translateY(8px);
+    transition: transform .7s var(--ease);
+}
+
+.tile:hover .tile__body {
+    transform: none;
+}
+
+.tile__overlay {
+    background: linear-gradient(180deg, transparent 45%, rgba(4, 10, 26, .55) 100%);
+}
+
+.intro__media {
+    border: 1px solid rgba(255, 255, 255, .16);
+    box-shadow: var(--glass-shadow-hover);
+    /* Отражение фото, как в зеркале */
+    -webkit-box-reflect: below 14px linear-gradient(transparent 0%, transparent 78%, rgba(255, 255, 255, .16) 100%);
+}
+
+.pass--featured {
+    border: 1px solid rgba(111, 209, 28, .55);
+    background:
+        radial-gradient(120% 80% at 0% 0%, rgba(111, 209, 28, .2), transparent 60%),
+        linear-gradient(145deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .04));
+}
+
+.pass__tag {
+    border: 1px solid rgba(255, 255, 255, .4);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .45), rgba(255, 255, 255, 0) 55%), linear-gradient(135deg, #b6f27f, #4fa807);
+    color: #0b2002;
+}
+
+.pass .price__value,
+.stats__value,
+.stat__value,
+.today__value,
+.price__value {
+    background: linear-gradient(180deg, #ffffff 30%, #bcd6f0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.feature__icon,
+.route__icon,
+.rental-item__icon,
+.contact-card__icon {
+    border: 1px solid rgba(255, 255, 255, .2);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .18), rgba(255, 255, 255, .03));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 8px 20px -8px rgba(111, 209, 28, .5);
+    color: #9fe46a;
+}
+
+.slope__level {
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, .06), 0 0 28px var(--level-color);
+}
+
+.review__quote {
+    color: #6fd11c;
+}
+
+.forecast__day.is-open {
+    border-color: rgba(111, 209, 28, .5);
+    box-shadow: var(--glass-shadow), 0 0 30px -6px rgba(111, 209, 28, .45);
+}
+
+.forecast__icon svg {
+    stroke: #e6f0fb;
+}
+
+.forecast__snow {
+    color: #9fd8ff;
+}
+
+.tabs__item {
+    border-color: rgba(255, 255, 255, .16);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .1), rgba(255, 255, 255, .03));
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    color: rgba(255, 255, 255, .8);
+}
+
+.tabs__item.is-active {
+    border-color: rgba(255, 255, 255, .4);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .45), rgba(255, 255, 255, 0) 55%), linear-gradient(135deg, #b6f27f, #4fa807);
+    color: #0b2002;
+}
+
+.status--open {
+    background: rgba(111, 209, 28, .16);
+    color: #9fe46a;
+}
+
+.table th {
+    background: rgba(255, 255, 255, .04);
+}
+
+.menu-section__title {
+    border-bottom-color: rgba(255, 255, 255, .14);
+}
+
+.menu-item__price {
+    color: #9fe46a;
+}
+
+.gallery__item,
+.photo-grid__item {
+    border: 1px solid rgba(255, 255, 255, .14);
+    box-shadow: var(--glass-shadow);
+}
+
+.contact-strip,
+.insta {
+    background:
+        radial-gradient(80% 120% at 100% 0%, rgba(111, 209, 28, .22), transparent 60%),
+        radial-gradient(80% 120% at 0% 100%, rgba(31, 70, 160, .45), transparent 60%),
+        linear-gradient(145deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .03));
+}
+
+.page-hero__overlay {
+    background: linear-gradient(180deg, rgba(4, 10, 26, .5) 0%, rgba(4, 10, 26, .3) 50%, #040a1a 100%);
+}
+
+.page-hero .scenery,
+.cta .scenery {
+    opacity: .55;
+}
+
+.breadcrumbs {
+    display: inline-flex;
+    padding: 8px 16px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: var(--r-full);
+    background: rgba(255, 255, 255, .06);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+.cta__inner {
+    padding: 70px 40px;
+    border: 1px solid rgba(255, 255, 255, .16);
+    border-radius: var(--r-lg);
+    background: linear-gradient(145deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .03));
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: var(--glass-shadow);
+}
+
+/* =============================================================================
+   ПОДВАЛ, ФОРМЫ, МЕЛОЧИ
+   ============================================================================= */
+.footer {
+    border-top: 1px solid rgba(255, 255, 255, .1);
+    background: linear-gradient(180deg, transparent, rgba(2, 6, 18, .7));
+}
+
+.subscribe {
+    border-color: rgba(255, 255, 255, .18);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .1), rgba(255, 255, 255, .03));
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+}
+
+.socials__link {
+    border-color: rgba(255, 255, 255, .18);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .12), rgba(255, 255, 255, .02));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25);
+}
+
+.socials__link:hover {
+    border-color: rgba(111, 209, 28, .6);
+    color: #9fe46a;
+}
+
+.float-whatsapp {
+    border: 1px solid rgba(255, 255, 255, .4);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, .4), rgba(255, 255, 255, 0) 55%),
+        #25d366;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), 0 14px 34px -6px rgba(37, 211, 102, .6);
+}
+
+.message {
+    border: 1px solid rgba(255, 255, 255, .2);
+    background: linear-gradient(145deg, rgba(30, 50, 100, .7), rgba(10, 20, 45, .75));
+    -webkit-backdrop-filter: blur(20px) saturate(170%);
+    backdrop-filter: blur(20px) saturate(170%);
+}
+
+.lightbox {
+    background: rgba(3, 8, 20, .7);
+    -webkit-backdrop-filter: blur(26px) saturate(150%);
+    backdrop-filter: blur(26px) saturate(150%);
+}
+
+.lightbox__btn,
+.pagination__item {
+    border-color: rgba(255, 255, 255, .2);
+    background: linear-gradient(180deg, rgba(255, 255, 255, .14), rgba(255, 255, 255, .03));
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+.pagination__item.is-active {
+    background: linear-gradient(180deg, rgba(255, 255, 255, .45), rgba(255, 255, 255, 0) 55%), linear-gradient(135deg, #b6f27f, #4fa807);
+    color: #0b2002;
+}
+
+.map {
+    margin: 0 24px 60px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--glass-shadow);
+}
+
+select.field__input option {
+    background: #0b1a36;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #040a1a;
+}
+
+::-webkit-scrollbar-thumb {
+    border: 2px solid #040a1a;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #1f46a0, #59bc08);
+}
+
+/* =============================================================================
+   МОБИЛЬНОЕ МЕНЮ — стеклянный экран
+   ============================================================================= */
+@media (max-width: 1180px) {
+    .header__inner {
+        max-width: calc(100% - 24px);
+    }
+
+    .header.is-scrolled .header__inner {
+        max-width: calc(100% - 24px);
+    }
+
+    .nav {
+        background:
+            radial-gradient(80% 60% at 100% 0%, rgba(111, 209, 28, .2), transparent 60%),
+            radial-gradient(80% 60% at 0% 100%, rgba(31, 70, 160, .4), transparent 60%),
+            rgba(4, 10, 26, .82);
+        -webkit-backdrop-filter: blur(30px) saturate(160%);
+        backdrop-filter: blur(30px) saturate(160%);
+    }
+
+    .nav__link {
+        padding: 6px 0;
+        background: none !important;
+        box-shadow: none !important;
+    }
+}
+
+@media (max-width: 640px) {
+    :root {
+        --glass-blur: blur(16px) saturate(160%);
+    }
+
+    .hero__text {
+        margin-top: .7em;
+        font-size: 16px;
+    }
+
+    .header__inner {
+        height: 60px;
+        margin-top: 8px;
+    }
+
+    .ticker__item {
+        font-size: 22px;
+    }
+
+    .cta__inner {
+        padding: 50px 22px;
+    }
+
+    .aurora__blob {
+        filter: blur(60px);
+    }
+
+    .map {
+        margin: 0 12px 40px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .aurora__blob,
+    .grain,
+    .ticker__track {
+        animation: none;
+    }
+}
+
+/* Блик не выходит за края стекла */
+.feature,
+.pass,
+.review,
+.route,
+.rental-item,
+.contact-card,
+.service-item,
+.stats__item {
+    overflow: hidden;
+}
+
+.pass__tag {
+    top: 22px;
+    left: auto;
+    right: 22px;
+}
+
+/* Хлебные крошки — отдельной строкой над надзаголовком */
+.breadcrumbs {
+    display: flex;
+    width: fit-content;
+}
+
+/* Липкая панель вкладок (общее «стекло» выше ставит position: relative) */
+.tabs--sticky {
+    position: sticky;
+    top: calc(var(--header-h) + 14px);
+    z-index: 10;
+    margin: 0 -10px 10px;
+    border-radius: 30px;
+}
+
+@media (max-width: 640px) {
+    .hero__title {
+        -webkit-box-reflect: unset;
+    }
+}

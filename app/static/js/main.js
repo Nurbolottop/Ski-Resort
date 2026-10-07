@@ -36,6 +36,7 @@
         if (!burger) return;
         function setOpen(open) {
             document.body.classList.toggle('nav-open', open);
+            if (window.__lenis) { if (open) window.__lenis.stop(); else window.__lenis.start(); }
             burger.setAttribute('aria-expanded', open ? 'true' : 'false');
         }
         burger.addEventListener('click', function () {
@@ -221,11 +222,13 @@
             show(group.indexOf(link));
             box.classList.add('is-open');
             document.body.classList.add('lightbox-open');
+            if (window.__lenis) window.__lenis.stop();
         }
 
         function close() {
             box.classList.remove('is-open');
             document.body.classList.remove('lightbox-open');
+            if (window.__lenis) window.__lenis.start();
         }
 
         links.forEach(function (link) {
@@ -429,7 +432,111 @@
         });
     }
 
+    /* ---------------------------------------------------------------------
+       Плавная прокрутка (Lenis)
+       --------------------------------------------------------------------- */
+    function initSmoothScroll() {
+        if (reduceMotion || typeof window.Lenis !== 'function') return;
+        var lenis = new window.Lenis({
+            duration: 1.15,
+            easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+            smoothWheel: true,
+            anchors: { offset: -110 },
+        });
+        window.__lenis = lenis;
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+    }
+
+    var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var GLASS = '.feature, .pass, .card, .review, .route, .stats__item, .rental-item, .contact-card, .service-item';
+    var TILT = '.feature, .pass, .card, .review, .route, .slope, .stats__item, .tile';
+
+    /* ---------------------------------------------------------------------
+       Свет за курсором внутри стекла
+       --------------------------------------------------------------------- */
+    function initGlare() {
+        if (!finePointer) return;
+        $$(GLASS).forEach(function (el) {
+            el.addEventListener('pointermove', function (e) {
+                var r = el.getBoundingClientRect();
+                el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+                el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+            });
+        });
+        var light = document.createElement('div');
+        light.className = 'cursor-light';
+        document.body.appendChild(light);
+        window.addEventListener('pointermove', function (e) {
+            light.style.setProperty('--cx', e.clientX + 'px');
+            light.style.setProperty('--cy', e.clientY + 'px');
+        }, { passive: true });
+    }
+
+    /* ---------------------------------------------------------------------
+       Лёгкий 3D-наклон карточек за курсором
+       --------------------------------------------------------------------- */
+    function initTilt() {
+        if (!finePointer || reduceMotion) return;
+        $$(TILT).forEach(function (el) {
+            el.setAttribute('data-tilt', '');
+            var max = el.classList.contains('tile') ? 7 : 5;
+            el.addEventListener('pointermove', function (e) {
+                var r = el.getBoundingClientRect();
+                var x = (e.clientX - r.left) / r.width - 0.5;
+                var y = (e.clientY - r.top) / r.height - 0.5;
+                el.style.transition = 'transform .2s ease-out, border-color .4s, box-shadow .6s';
+                el.style.transform = 'perspective(900px) rotateX(' + (-y * max).toFixed(2) + 'deg) rotateY(' +
+                    (x * max).toFixed(2) + 'deg) translateY(-6px)';
+            });
+            el.addEventListener('pointerleave', function () {
+                el.style.transition = 'transform .8s cubic-bezier(.16,1,.3,1), border-color .4s, box-shadow .6s';
+                el.style.transform = '';
+            });
+        });
+    }
+
+    /* ---------------------------------------------------------------------
+       «Магнитные» кнопки
+       --------------------------------------------------------------------- */
+    function initMagnetic() {
+        if (!finePointer || reduceMotion) return;
+        $$('.btn--primary, .btn--glass, .hero__arrow, .float-whatsapp').forEach(function (el) {
+            el.addEventListener('pointermove', function (e) {
+                var r = el.getBoundingClientRect();
+                var x = e.clientX - r.left - r.width / 2;
+                var y = e.clientY - r.top - r.height / 2;
+                el.style.transform = 'translate(' + (x * 0.18).toFixed(1) + 'px,' + (y * 0.25).toFixed(1) + 'px)';
+            });
+            el.addEventListener('pointerleave', function () { el.style.transform = ''; });
+        });
+    }
+
+    /* ---------------------------------------------------------------------
+       Параллакс фона первого экрана
+       --------------------------------------------------------------------- */
+    function initParallax() {
+        if (reduceMotion) return;
+        var layers = $$('.hero__slides, .page-hero__bg');
+        if (!layers.length) return;
+        var ticking = false;
+        function update() {
+            var y = window.scrollY;
+            layers.forEach(function (el) {
+                el.style.transform = 'translate3d(0,' + (y * 0.35).toFixed(1) + 'px,0)';
+            });
+            ticking = false;
+        }
+        window.addEventListener('scroll', function () {
+            if (!ticking) { requestAnimationFrame(update); ticking = true; }
+        }, { passive: true });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
+        initSmoothScroll();
         initHeader();
         initNav();
         initSlider();
@@ -440,5 +547,9 @@
         initForms();
         initMessages();
         initWeather();
+        initGlare();
+        initTilt();
+        initMagnetic();
+        initParallax();
     });
 })();
