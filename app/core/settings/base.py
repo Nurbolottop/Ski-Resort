@@ -159,6 +159,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# После входа через /admin/login/ без ?next — в админку, а не на /accounts/profile/
+LOGIN_REDIRECT_URL = '/admin/'
+LOGIN_URL = '/admin/login/'
+
 
 # =============================================================================
 # ADMIN (АДМИНКА UNFOLD) — настройки вынесены в core/settings/unfold.py

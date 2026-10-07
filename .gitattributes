@@ -1,0 +1,3 @@
+# Скрипты и Dockerfile выполняются в Linux — только LF
+*.sh text eol=lf
+Dockerfile text eol=lf
