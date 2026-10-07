@@ -1,0 +1,41 @@
+{% with path=request.path %}
+<header class="header">
+    <div class="header__top">
+        <div class="container header__top-inner">
+            {% if site.phone %}<a class="header__contact" href="tel:{{ site.phone_href }}">{{ site.phone }}</a>{% endif %}
+            {% if site.address %}<span class="header__contact header__contact--hide-sm">{{ site.address }}</span>{% endif %}
+            {% if site.season %}<span class="header__season">{{ site.season }}</span>{% endif %}
+        </div>
+    </div>
+
+    <div class="header__main">
+        <div class="container header__inner">
+            <a class="logo" href="{% url 'base:home' %}">
+                <span class="logo__mark">▲</span>
+                <span class="logo__text">{{ site.name }}</span>
+            </a>
+
+            {# Мобильное меню на чистом CSS: чекбокс + label #}
+            <input type="checkbox" id="nav-toggle" class="nav-toggle">
+
+            <nav class="nav">
+                <a class="nav__link{% if '/about/' in path %} is-active{% endif %}" href="{% url 'base:about' %}">О курорте</a>
+                <a class="nav__link{% if '/slopes/' in path %} is-active{% endif %}" href="{% url 'cms:slopes' %}">Трассы</a>
+                <a class="nav__link{% if '/skipass/' in path %} is-active{% endif %}" href="{% url 'cms:skipass' %}">Ски-пассы</a>
+                <a class="nav__link{% if '/rooms/' in path %} is-active{% endif %}" href="{% url 'cms:room_list' %}">Проживание</a>
+                <a class="nav__link{% if '/services/' in path %} is-active{% endif %}" href="{% url 'cms:service_list' %}">Услуги</a>
+                <a class="nav__link{% if '/menu/' in path %} is-active{% endif %}" href="{% url 'cms:menu' %}">Меню</a>
+                <a class="nav__link{% if '/transfer/' in path %} is-active{% endif %}" href="{% url 'cms:transfer' %}">Трансфер</a>
+                <a class="nav__link{% if '/offers/' in path %} is-active{% endif %}" href="{% url 'cms:offer_list' %}">Акции</a>
+                <a class="nav__link{% if '/contacts/' in path %} is-active{% endif %}" href="{% url 'contacts:contacts' %}">Контакты</a>
+            </nav>
+
+            <a class="btn btn--primary header__cta" href="{% url 'contacts:booking' %}">Забронировать</a>
+
+            <label for="nav-toggle" class="burger" aria-label="Меню">
+                <span></span><span></span><span></span>
+            </label>
+        </div>
+    </div>
+</header>
+{% endwith %}

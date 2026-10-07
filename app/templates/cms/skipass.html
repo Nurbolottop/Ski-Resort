@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Ски-пассы и цены — {{ site.name }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Ски-пассы' eyebrow='Тарифы' text='Цены на подъёмники в текущем сезоне. Ски-пасс можно приобрести в кассах у нижней станции.' %}
+
+<section class="section">
+    <div class="container">
+        {% if ski_passes %}
+            <div class="grid grid--3">
+                {% for pass in ski_passes %}{% include 'include/skipass_card.html' %}{% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">Тарифы на новый сезон скоро появятся.</p>
+        {% endif %}
+    </div>
+</section>
+
+{% include 'include/cta.html' %}
+{% endblock %}

@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% load site_tags %}
+
+{% block body_class %}page-home{% endblock %}
+
+{% block content %}
+
+{# ---------- HERO: слайдер на CSS-анимации + виджет бронирования ---------- #}
+<section class="hero">
+    <div class="hero__slides hero__slides--{{ slides|length|default:1 }}">
+        {% for slide in slides %}
+            <div class="hero__slide hero__slide--ph{{ forloop.counter|divisibleby:2|yesno:'2,1' }}">
+                {% if slide.image %}
+                    <img class="hero__img" src="{{ slide.image.url }}" alt="" width="1920" height="1080"{% if not forloop.first %} loading="lazy"{% endif %}>
+                {% endif %}
+                <div class="hero__overlay"></div>
+                <div class="container hero__content">
+                    {% if slide.eyebrow %}<span class="hero__eyebrow">{{ slide.eyebrow }}</span>{% endif %}
+                    <h1 class="hero__title">{{ slide.title }}</h1>
+                </div>
+            </div>
+        {% empty %}
+            <div class="hero__slide hero__slide--ph1">
+                <div class="hero__overlay"></div>
+                <div class="container hero__content">
+                    {% if site.season %}<span class="hero__eyebrow">{{ site.season }}</span>{% endif %}
+                    <h1 class="hero__title">{{ site.name }}</h1>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if slides|length > 1 %}
+        <div class="hero__dots hero__dots--{{ slides|length }}" aria-hidden="true">
+            {% for slide in slides %}<span class="hero__dot"></span>{% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="container hero__booking">
+        <form class="booking-widget" action="{% url 'contacts:booking' %}" method="get">
+            <div class="booking-widget__field">
+                <label for="id_check_in">Заезд</label>
+                <input type="date" id="id_check_in" name="check_in" class="field__input" required>
+            </div>
+            <div class="booking-widget__field">
+                <label for="id_check_out">Выезд</label>
+                <input type="date" id="id_check_out" name="check_out" class="field__input" required>
+            </div>
+            <div class="booking-widget__field booking-widget__field--sm">
+                <label for="id_adults">Взрослых</label>
+                <input type="number" id="id_adults" name="adults" class="field__input" min="1" max="20" value="2" required>
+            </div>
+            <div class="booking-widget__field booking-widget__field--sm">
+                <label for="id_children">Детей</label>
+                <input type="number" id="id_children" name="children" class="field__input" min="0" max="10" value="0">
+            </div>
+            <button class="btn btn--primary booking-widget__submit" type="submit">Найти номер</button>
+        </form>
+    </div>
+</section>
+
+{# ---------- СЕГОДНЯ НА СКЛОНЕ ---------- #}
+<section class="conditions-bar">
+    <div class="container">
+        {% include 'include/conditions.html' %}
+    </div>
+</section>
+
+{# ---------- ПРЕИМУЩЕСТВА ---------- #}
+{% if advantages %}
+<section class="section">
+    <div class="container">
+        <div class="advantages">
+            {% for item in advantages %}
+                <div class="advantage">
+                    <h3 class="advantage__title">{{ item.title }}</h3>
+                    <p class="advantage__text">{{ item.text }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ---------- ТРАССЫ ---------- #}
+{% if slope_levels %}
+<section class="section section--muted">
+    <div class="container">
+        {% url 'cms:slopes' as slopes_url %}
+        {% include 'include/section_head.html' with eyebrow='Катание' title='Трассы' link_url=slopes_url link_text='Все трассы и подъёмники' %}
+        <div class="grid grid--4">
+            {% for level in slope_levels %}
+                <article class="slope">
+                    <span class="slope__level slope__level--{{ level.value }}"></span>
+                    <h3 class="slope__title">{{ level.label }}</h3>
+                    <p class="slope__meta">{{ level.count }} {{ level.count|ru_plural:"трасса,трассы,трасс" }} · {{ level.length_km }} км</p>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ---------- СКИ-ПАССЫ ---------- #}
+{% if ski_passes %}
+<section class="section">
+    <div class="container">
+        {% url 'cms:skipass' as skipass_url %}
+        {% include 'include/section_head.html' with eyebrow='Тарифы' title='Ски-пассы' link_url=skipass_url link_text='Все тарифы' %}
+        <div class="grid grid--3">
+            {% for pass in ski_passes %}
+                {% include 'include/skipass_card.html' %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ---------- ПРОЖИВАНИЕ ---------- #}
+{% if rooms %}
+<section class="section section--muted">
+    <div class="container">
+        {% url 'cms:room_list' as rooms_url %}
+        {% include 'include/section_head.html' with eyebrow='Размещение' title='Номера и жильё' link_url=rooms_url link_text='Все категории' %}
+        <div class="grid grid--3">
+            {% for room in rooms %}{% include 'include/room_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ---------- УСЛУГИ ---------- #}
+{% if service_categories %}
+<section class="section">
+    <div class="container">
+        {% url 'cms:service_list' as services_url %}
+        {% include 'include/section_head.html' with eyebrow='Инфраструктура' title='Услуги курорта' link_url=services_url link_text='Все услуги' %}
+        <div class="grid grid--4">
+            {% for category in service_categories %}{% include 'include/service_tile.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ---------- СПЕЦПРЕДЛОЖЕНИЯ ---------- #}
+{% if offers %}
+<section class="section section--muted">
+    <div class="container">
+        {% url 'cms:offer_list' as offers_url %}
+        {% include 'include/section_head.html' with eyebrow='Выгодно' title='Спецпредложения' link_url=offers_url link_text='Все акции' %}
+        <div class="grid grid--3">
+            {% for offer in offers %}{% include 'include/offer_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ---------- ОТЗЫВЫ ---------- #}
+{% if reviews %}
+<section class="section">
+    <div class="container">
+        {% url 'cms:reviews' as reviews_url %}
+        {% include 'include/section_head.html' with eyebrow='Гости о нас' title='Отзывы' link_url=reviews_url link_text='Все отзывы' %}
+        <div class="grid grid--3">
+            {% for review in reviews %}{% include 'include/review_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ---------- НОВОСТИ ---------- #}
+{% if posts %}
+<section class="section section--muted">
+    <div class="container">
+        {% url 'cms:post_list' as blog_url %}
+        {% include 'include/section_head.html' with eyebrow='Журнал' title='Новости и статьи' link_url=blog_url link_text='Все материалы' %}
+        <div class="grid grid--3">
+            {% for post in posts %}{% include 'include/post_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ---------- ТРАНСФЕР ---------- #}
+{% if transfer_routes %}
+<section class="section">
+    <div class="container">
+        {% url 'cms:transfer' as transfer_url %}
+        {% include 'include/section_head.html' with eyebrow='Как добраться' title='Трансфер до курорта' link_url=transfer_url link_text='Расписание и цены' %}
+        <div class="grid grid--3">
+            {% for route in transfer_routes %}
+                <a class="route route--link" href="{{ transfer_url }}">
+                    <h3 class="route__name">{{ route.name }}</h3>
+                    {% if route.schedule %}<p class="route__text">{{ route.schedule }}{% if route.duration %} · {{ route.duration }}{% endif %}</p>{% endif %}
+                    {% if route.price %}<p class="price route__price"><span class="price__value">{{ route.price|money }}</span> <span class="price__unit">сом{% if route.price_unit %} / {{ route.price_unit }}{% endif %}</span></p>{% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ---------- INSTAGRAM ---------- #}
+{% if site.instagram %}
+<section class="section section--tight">
+    <div class="container">
+        <a class="insta" href="{{ site.instagram }}" target="_blank" rel="noopener">
+            <div>
+                <span class="section__eyebrow">Instagram</span>
+                <h2 class="insta__title">Свежие видео со склона, погода и акции</h2>
+                <p class="insta__text">Подписывайтесь — публикуем состояние трасс каждое утро.</p>
+            </div>
+            <span class="btn btn--primary">Подписаться</span>
+        </a>
+    </div>
+</section>
+{% endif %}
+
+{% include 'include/cta.html' %}
+
+{% endblock %}

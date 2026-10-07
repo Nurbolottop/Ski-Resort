@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Бронирование — {{ site.name }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Бронирование' eyebrow='Заявка' text='Заполните форму — администратор свяжется с вами, уточнит детали и подтвердит бронь.' %}
+
+<section class="section section--tight" id="booking-form">
+    <div class="container container--narrow">
+        <form class="form form--card" method="post" action="#booking-form">
+            {% csrf_token %}
+            {% include 'include/form.html' with wide='room,comment' %}
+            <button class="btn btn--primary btn--lg" type="submit">Отправить заявку</button>
+            <p class="form__note">Нажимая кнопку, вы соглашаетесь с <a href="{% url 'base:page' 'privacy' %}">политикой конфиденциальности</a>.</p>
+        </form>
+    </div>
+</section>
+{% endblock %}

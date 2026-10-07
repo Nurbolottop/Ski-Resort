@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load site_tags %}
+
+{% block title %}Трансфер и как добраться — {{ site.name }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Трансфер' eyebrow='Как добраться' text='Регулярный трансфер до курорта и обратно. Места лучше бронировать заранее.' %}
+
+<section class="section section--tight">
+    <div class="container">
+        {% if routes %}
+            <div class="grid grid--3">
+                {% for route in routes %}
+                    <article class="route">
+                        <h3 class="route__name">{{ route.name }}</h3>
+                        <ul class="specs">
+                            {% if route.departure_point %}<li><span>Отправление</span><strong>{{ route.departure_point }}</strong></li>{% endif %}
+                            {% if route.schedule %}<li><span>Расписание</span><strong>{{ route.schedule }}</strong></li>{% endif %}
+                            {% if route.duration %}<li><span>В пути</span><strong>{{ route.duration }}</strong></li>{% endif %}
+                        </ul>
+                        {% if route.description %}<p class="route__text">{{ route.description|linebreaksbr }}</p>{% endif %}
+                        {% if route.price %}
+                            <p class="price route__price">
+                                <span class="price__value">{{ route.price|money }}</span>
+                                <span class="price__unit">сом{% if route.price_unit %} / {{ route.price_unit }}{% endif %}</span>
+                            </p>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">Расписание трансфера уточняйте по телефону.</p>
+        {% endif %}
+
+        {% if site.transfer_phone %}
+            <div class="contact-strip">
+                <div>
+                    <span class="contacts__label">Бронирование трансфера</span>
+                    <p class="contact-strip__text">
+                        {% if site.transfer_contact %}{{ site.transfer_contact }} · {% endif %}
+                        <a href="tel:{{ site.transfer_phone_href }}">{{ site.transfer_phone }}</a>
+                    </p>
+                </div>
+                <div class="actions actions--inline">
+                    <a class="btn btn--primary" href="tel:{{ site.transfer_phone_href }}">Позвонить</a>
+                    <a class="btn btn--ghost" href="https://wa.me/{{ site.transfer_phone_href|cut:'+' }}" target="_blank" rel="noopener">WhatsApp</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+{% if site.directions %}
+<section class="section section--muted">
+    <div class="container container--narrow">
+        {% include 'include/section_head.html' with eyebrow='Своим ходом' title='Как добраться' %}
+        <div class="prose">{{ site.directions|safe }}</div>
+    </div>
+</section>
+{% endif %}
+
+{% if site.map_embed_url %}
+<section class="map">
+    <iframe src="{{ site.map_embed_url }}" title="Карта" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+</section>
+{% endif %}
+
+{% include 'include/cta.html' %}
+{% endblock %}

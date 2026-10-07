@@ -1,0 +1,18 @@
+{# Лайтбокс на CSS :target. Параметры: images (у каждого .image и .caption), prefix — уникальный префикс id #}
+{% for item in images %}
+    <div class="lightbox" id="{{ prefix }}-{{ forloop.counter }}">
+        <a class="lightbox__backdrop" href="#!" aria-label="Закрыть"></a>
+        <figure class="lightbox__figure">
+            <img class="lightbox__image" src="{{ item.image.url }}" alt="{{ item.caption }}" loading="lazy">
+            {% if item.caption %}<figcaption class="lightbox__caption">{{ item.caption }}</figcaption>{% endif %}
+        </figure>
+        <a class="lightbox__close" href="#!" aria-label="Закрыть">×</a>
+        {% if not forloop.first %}
+            <a class="lightbox__nav lightbox__nav--prev" href="#{{ prefix }}-{{ forloop.counter|add:'-1' }}" aria-label="Предыдущее фото">‹</a>
+        {% endif %}
+        {% if not forloop.last %}
+            <a class="lightbox__nav lightbox__nav--next" href="#{{ prefix }}-{{ forloop.counter|add:'1' }}" aria-label="Следующее фото">›</a>
+        {% endif %}
+        <span class="lightbox__counter">{{ forloop.counter }} / {{ images|length }}</span>
+    </div>
+{% endfor %}

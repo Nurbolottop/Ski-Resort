@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Спецпредложения — {{ site.name }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Спецпредложения' eyebrow='Выгодно' text='Сезонные акции, пакетные туры и скидки для гостей курорта.' %}
+
+<section class="section">
+    <div class="container">
+        {% if offers %}
+            <div class="grid grid--3">
+                {% for offer in offers %}{% include 'include/offer_card.html' %}{% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">Сейчас активных акций нет. Подпишитесь на рассылку, чтобы не пропустить новые.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

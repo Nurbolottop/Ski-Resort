@@ -1,0 +1,8 @@
+<article class="review">
+    <div class="review__rating" aria-label="{{ review.rating }}/5">{{ review.stars }}</div>
+    <p class="review__text">{{ review.text|truncatechars:320 }}</p>
+    <div class="review__author">
+        <strong>{{ review.name }}</strong>
+        <span class="review__date">{{ review.created_at|date:'d.m.Y' }}</span>
+    </div>
+</article>

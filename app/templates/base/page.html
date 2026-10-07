@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page.seo_title|default:page.title }} — {{ site.name }}{% endblock %}
+{% block description %}{{ page.seo_description|default:page.title }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title=page.title image=page.image %}
+
+<section class="section section--tight">
+    <div class="container container--narrow">
+        <div class="prose">{{ page.content|safe }}</div>
+    </div>
+</section>
+{% endblock %}

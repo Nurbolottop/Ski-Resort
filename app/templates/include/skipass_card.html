@@ -1,0 +1,11 @@
+{% load site_tags %}
+<div class="pass{% if pass.is_featured %} pass--featured{% endif %}">
+    {% if pass.is_featured %}<span class="pass__tag">Популярный</span>{% endif %}
+    <h3 class="pass__name">{{ pass.name }}</h3>
+    <p class="price"><span class="price__value">{{ pass.price|money }}</span> <span class="price__unit">сом</span></p>
+    {% if pass.price_child %}<p class="pass__child">Детский — {{ pass.price_child|money }} сом</p>{% endif %}
+    <ul class="pass__list">
+        {% for feature in pass.features_list %}<li>{{ feature }}</li>{% endfor %}
+    </ul>
+    <a href="{% url 'contacts:contacts' %}" class="btn {% if pass.is_featured %}btn--primary{% else %}btn--ghost{% endif %}">Купить</a>
+</div>

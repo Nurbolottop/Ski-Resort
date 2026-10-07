@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.seo_title|default:post.title }} — {{ site.name }}{% endblock %}
+{% block description %}{{ post.seo_description|default:post.excerpt|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+{% url 'cms:post_list' as blog_url %}
+{% include 'include/page_hero.html' with title=post.title image=post.cover parent_title='Блог' parent_url=blog_url %}
+
+<article class="section section--tight">
+    <div class="container container--narrow">
+        <time class="note" datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:'d E Y' }}</time>
+        {% if post.excerpt %}<p class="lead">{{ post.excerpt }}</p>{% endif %}
+        <div class="prose">{{ post.content|safe }}</div>
+    </div>
+</article>
+
+{% if other_posts %}
+<section class="section section--muted">
+    <div class="container">
+        {% include 'include/section_head.html' with eyebrow='Журнал' title='Читайте также' link_url=blog_url link_text='Все материалы' %}
+        <div class="grid grid--3">
+            {% for post in other_posts %}{% include 'include/post_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ offer.seo_title|default:offer.title }} — {{ site.name }}{% endblock %}
+{% block description %}{{ offer.seo_description|default:offer.short_description|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+{% url 'cms:offer_list' as offers_url %}
+{% include 'include/page_hero.html' with title=offer.title eyebrow=offer.label image=offer.image parent_title='Спецпредложения' parent_url=offers_url %}
+
+<section class="section section--tight">
+    <div class="container container--narrow">
+        {% if offer.valid_from or offer.valid_to %}
+            <p class="note note--accent">
+                Действует{% if offer.valid_from %} с {{ offer.valid_from|date:'d.m.Y' }}{% endif %}{% if offer.valid_to %} до {{ offer.valid_to|date:'d.m.Y' }}{% endif %}
+            </p>
+        {% endif %}
+        {% if offer.short_description %}<p class="lead">{{ offer.short_description }}</p>{% endif %}
+        <div class="prose">{{ offer.content|safe }}</div>
+        <div class="actions">
+            <a class="btn btn--primary" href="{% url 'contacts:booking' %}">Забронировать</a>
+            <a class="btn btn--ghost" href="{{ offers_url }}">Все акции</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

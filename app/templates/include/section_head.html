@@ -1,0 +1,8 @@
+{# Параметры: eyebrow, title, link_url, link_text #}
+<header class="section__head">
+    <div>
+        {% if eyebrow %}<span class="section__eyebrow">{{ eyebrow }}</span>{% endif %}
+        <h2 class="section__title">{{ title }}</h2>
+    </div>
+    {% if link_url %}<a class="link-more" href="{{ link_url }}">{{ link_text }} →</a>{% endif %}
+</header>

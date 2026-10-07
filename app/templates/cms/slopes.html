@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load site_tags %}
+
+{% block title %}Трассы и подъёмники — {{ site.name }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Трассы и подъёмники' eyebrow='Катание' text='Актуальное состояние склона, список трасс по сложности и график работы подъёмников.' %}
+
+<section class="section section--tight">
+    <div class="container">
+        {% include 'include/conditions.html' %}
+        <p class="note">Обновлено: {{ site.conditions_updated_at|date:'d.m.Y H:i' }}</p>
+    </div>
+</section>
+
+<section class="section section--tight">
+    <div class="container">
+        {% include 'include/section_head.html' with eyebrow='Склон' title='Трассы' %}
+
+        {% if levels %}
+            <div class="levels">
+                {% for level in levels %}
+                    <span class="levels__item"><span class="slope__dot slope__dot--{{ level.value }}"></span>{{ level.label }}: {{ level.count }} · {{ level.length_km }} км</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if slopes %}
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr><th>Трасса</th><th>Сложность</th><th>Длина</th><th>Перепад</th><th>Статус</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for slope in slopes %}
+                            <tr>
+                                <td>
+                                    <strong>{{ slope.name }}</strong>
+                                    {% if slope.description %}<span class="table__sub">{{ slope.description }}</span>{% endif %}
+                                </td>
+                                <td><span class="slope__dot slope__dot--{{ slope.level }}"></span>{{ slope.get_level_display }}</td>
+                                <td>{% if slope.length_m %}{{ slope.length_m|money }} м{% else %}—{% endif %}</td>
+                                <td>{% if slope.vertical_drop_m %}{{ slope.vertical_drop_m|money }} м{% else %}—{% endif %}</td>
+                                <td>{% if slope.is_open %}<span class="status status--open">Открыта</span>{% else %}<span class="status status--closed">Закрыта</span>{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty">Информация о трассах скоро появится.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section section--muted">
+    <div class="container">
+        {% include 'include/section_head.html' with eyebrow='Инфраструктура' title='Подъёмники' %}
+
+        {% if lifts %}
+            <div class="table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr><th>Подъёмник</th><th>Тип</th><th>Длина</th><th>Пропускная способность</th><th>Часы работы</th><th>Статус</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for lift in lifts %}
+                            <tr>
+                                <td><strong>{{ lift.name }}</strong></td>
+                                <td>{{ lift.get_lift_type_display }}</td>
+                                <td>{% if lift.length_m %}{{ lift.length_m|money }} м{% else %}—{% endif %}</td>
+                                <td>{% if lift.capacity %}{{ lift.capacity|money }} чел/ч{% else %}—{% endif %}</td>
+                                <td>{{ lift.hours|default:'—' }}</td>
+                                <td>{% if lift.is_open %}<span class="status status--open">Работает</span>{% else %}<span class="status status--closed">Не работает</span>{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty">Информация о подъёмниках скоро появится.</p>
+        {% endif %}
+    </div>
+</section>
+
+{% include 'include/cta.html' %}
+{% endblock %}

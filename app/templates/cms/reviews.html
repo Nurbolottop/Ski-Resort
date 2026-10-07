@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Отзывы гостей — {{ site.name }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Отзывы' eyebrow='Гости о нас' text='Что говорят гости о курорте. Будем рады и вашему отзыву!' %}
+
+<section class="section">
+    <div class="container">
+        {% if page_obj %}
+            <div class="grid grid--3">
+                {% for review in page_obj %}{% include 'include/review_card.html' %}{% endfor %}
+            </div>
+            {% include 'include/pagination.html' %}
+        {% else %}
+            <p class="empty">Пока отзывов нет — станьте первым!</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section section--muted" id="review-form">
+    <div class="container container--narrow">
+        {% include 'include/section_head.html' with eyebrow='Ваше мнение' title='Оставить отзыв' %}
+        <form class="form" method="post" action="#review-form">
+            {% csrf_token %}
+            {% include 'include/form.html' with wide='text' %}
+            <button class="btn btn--primary" type="submit">Отправить отзыв</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

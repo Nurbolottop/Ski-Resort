@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load site_tags %}
+
+{% block title %}Меню кафе и ресторана — {{ site.name }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Меню' eyebrow='Кафе и ресторан' text='Горячие блюда, напитки и выпечка — на склоне и у нижней станции.' %}
+
+<section class="section section--tight">
+    <div class="container">
+        {% if categories %}
+            <nav class="tabs">
+                {% for category in categories %}
+                    <a class="tabs__item" href="#menu-{{ category.pk }}">{{ category.name }}</a>
+                {% endfor %}
+            </nav>
+
+            {% for category in categories %}
+                <div class="menu-section" id="menu-{{ category.pk }}">
+                    <h2 class="menu-section__title">{{ category.name }}</h2>
+                    <div class="menu-list">
+                        {% for item in category.items.all %}
+                            <article class="menu-item">
+                                {% if item.image %}
+                                    <img class="menu-item__img" src="{{ item.image.url }}" alt="{{ item.name }}" loading="lazy" width="96" height="96">
+                                {% endif %}
+                                <div class="menu-item__body">
+                                    <div class="menu-item__head">
+                                        <h3 class="menu-item__name">
+                                            {{ item.name }}{% if item.is_hit %} <span class="menu-item__hit">Хит</span>{% endif %}
+                                        </h3>
+                                        <span class="menu-item__dots"></span>
+                                        <span class="menu-item__price">{{ item.price|money }} сом</span>
+                                    </div>
+                                    {% if item.description or item.weight %}
+                                        <p class="menu-item__desc">
+                                            {{ item.description }}{% if item.description and item.weight %} · {% endif %}{{ item.weight }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </article>
+                        {% empty %}
+                            <p class="empty">Позиции скоро появятся.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty">Меню скоро появится.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

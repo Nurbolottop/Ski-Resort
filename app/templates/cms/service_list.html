@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Услуги курорта — {{ site.name }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Услуги курорта' eyebrow='Инфраструктура' text='Прокат, школа катания, рестораны, SPA и всё для отдыха после склона.' %}
+
+<section class="section">
+    <div class="container">
+        {% if categories %}
+            <div class="grid grid--3">
+                {% for category in categories %}{% include 'include/service_tile.html' %}{% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">Список услуг скоро появится.</p>
+        {% endif %}
+    </div>
+</section>
+
+{% include 'include/cta.html' %}
+{% endblock %}

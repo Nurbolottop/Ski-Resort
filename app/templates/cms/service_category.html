@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.seo_title|default:category.name }} — {{ site.name }}{% endblock %}
+{% block description %}{{ category.seo_description|default:category.name }}{% endblock %}
+
+{% block content %}
+{% url 'cms:service_list' as services_url %}
+{% include 'include/page_hero.html' with title=category.name eyebrow='Услуги' image=category.cover parent_title='Услуги' parent_url=services_url %}
+
+<section class="section section--tight">
+    <div class="container">
+        <nav class="tabs">
+            {% for item in categories %}
+                <a class="tabs__item{% if item.pk == category.pk %} is-active{% endif %}" href="{{ item.get_absolute_url }}">{{ item.name }}</a>
+            {% endfor %}
+        </nav>
+
+        {% if category.description %}
+            <div class="prose prose--intro">{{ category.description|safe }}</div>
+        {% endif %}
+
+        {% with services=category.services.all %}
+            {% if services %}
+                <div class="services-list">
+                    {% for service in services %}
+                        <article class="service-item">
+                            <div class="service-item__media">
+                                {% if service.image %}<img src="{{ service.image.url }}" alt="{{ service.name }}" loading="lazy">{% endif %}
+                            </div>
+                            <div class="service-item__body">
+                                <h3 class="service-item__title">{{ service.name }}</h3>
+                                {% if service.description %}<p class="service-item__text">{{ service.description|linebreaksbr }}</p>{% endif %}
+                                {% if service.price %}<p class="service-item__price">{{ service.price }}</p>{% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty">Услуги в этой категории скоро появятся.</p>
+            {% endif %}
+        {% endwith %}
+    </div>
+</section>
+
+{% include 'include/cta.html' %}
+{% endblock %}

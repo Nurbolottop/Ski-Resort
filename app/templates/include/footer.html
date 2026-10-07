@@ -1,0 +1,62 @@
+<footer class="footer">
+    <div class="container footer__inner">
+        <div class="footer__col">
+            <a class="logo logo--footer" href="{% url 'base:home' %}">
+                <span class="logo__mark">▲</span>
+                <span class="logo__text">{{ site.name }}</span>
+            </a>
+            {% if site.tagline %}<p class="footer__tagline">{{ site.tagline }}</p>{% endif %}
+            <div class="socials">
+                {% if site.instagram %}<a class="socials__link" href="{{ site.instagram }}" target="_blank" rel="noopener">Instagram</a>{% endif %}
+                {% if site.telegram %}<a class="socials__link" href="{{ site.telegram }}" target="_blank" rel="noopener">Telegram</a>{% endif %}
+                {% if site.facebook %}<a class="socials__link" href="{{ site.facebook }}" target="_blank" rel="noopener">Facebook</a>{% endif %}
+            </div>
+        </div>
+
+        <div class="footer__col">
+            <h4 class="footer__title">Разделы</h4>
+            <a class="footer__link" href="{% url 'base:about' %}">О курорте</a>
+            <a class="footer__link" href="{% url 'cms:slopes' %}">Трассы и подъёмники</a>
+            <a class="footer__link" href="{% url 'cms:skipass' %}">Ски-пассы</a>
+            <a class="footer__link" href="{% url 'cms:room_list' %}">Проживание</a>
+            <a class="footer__link" href="{% url 'cms:service_list' %}">Услуги</a>
+            <a class="footer__link" href="{% url 'cms:menu' %}">Меню</a>
+            <a class="footer__link" href="{% url 'cms:transfer' %}">Трансфер</a>
+            <a class="footer__link" href="{% url 'cms:offer_list' %}">Спецпредложения</a>
+            <a class="footer__link" href="{% url 'cms:gallery' %}">Галерея</a>
+            <a class="footer__link" href="{% url 'cms:reviews' %}">Отзывы</a>
+            <a class="footer__link" href="{% url 'cms:post_list' %}">Блог</a>
+        </div>
+
+        <div class="footer__col">
+            <h4 class="footer__title">Контакты</h4>
+            {% if site.phone %}<a class="footer__link" href="tel:{{ site.phone_href }}">{{ site.phone }}</a>{% endif %}
+            {% if site.phone_2 %}<a class="footer__link" href="tel:{{ site.phone_2_href }}">{{ site.phone_2 }}</a>{% endif %}
+            {% if site.email %}<a class="footer__link" href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}
+            {% if site.address %}<span class="footer__text">{{ site.address }}</span>{% endif %}
+            {% if site.whatsapp %}
+                <a class="btn btn--ghost btn--sm" href="https://wa.me/{{ site.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a>
+            {% endif %}
+        </div>
+
+        <div class="footer__col">
+            <h4 class="footer__title">Спецпредложения на почту</h4>
+            <p class="footer__text">Подпишитесь — присылаем акции и сезонные тарифы.</p>
+            <form class="subscribe" action="{% url 'contacts:subscribe' %}" method="post">
+                {% csrf_token %}
+                <input type="email" name="email" class="field__input" placeholder="email@example.com" required>
+                <button class="btn btn--primary btn--sm" type="submit">Подписаться</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="footer__bottom">
+        <div class="container footer__bottom-inner">
+            <span>© {% now "Y" %} {{ site.name }}</span>
+            <div class="footer__legal">
+                <a href="{% url 'base:page' 'privacy' %}">Политика конфиденциальности</a>
+                <a href="{% url 'base:page' 'offer' %}">Публичная оферта</a>
+            </div>
+        </div>
+    </div>
+</footer>

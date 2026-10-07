@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Контакты — {{ site.name }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Контакты' eyebrow='Связь с нами' %}
+
+<section class="section section--tight">
+    <div class="container contacts">
+        <div class="contacts__info">
+            {% if site.phone or site.phone_2 %}
+                <div class="contacts__block">
+                    <h3 class="contacts__label">Телефон</h3>
+                    {% if site.phone %}<a href="tel:{{ site.phone_href }}">{{ site.phone }}</a>{% endif %}
+                    {% if site.phone_2 %}<a href="tel:{{ site.phone_2_href }}">{{ site.phone_2 }}</a>{% endif %}
+                </div>
+            {% endif %}
+            {% if site.email %}
+                <div class="contacts__block">
+                    <h3 class="contacts__label">E-mail</h3>
+                    <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+                </div>
+            {% endif %}
+            {% if site.address %}
+                <div class="contacts__block">
+                    <h3 class="contacts__label">Адрес</h3>
+                    <span>{{ site.address }}</span>
+                </div>
+            {% endif %}
+            {% if site.working_hours_list %}
+                <div class="contacts__block">
+                    <h3 class="contacts__label">Режим работы</h3>
+                    {% for line in site.working_hours_list %}<span>{{ line }}</span>{% endfor %}
+                </div>
+            {% endif %}
+            <a class="link-more" href="{% url 'cms:transfer' %}">Как добраться и трансфер →</a>
+            {% if site.whatsapp %}
+                <a class="btn btn--ghost" href="https://wa.me/{{ site.whatsapp }}" target="_blank" rel="noopener">Написать в WhatsApp</a>
+            {% endif %}
+        </div>
+
+        <div class="contacts__form" id="contact-form">
+            <h2 class="detail__subtitle">Напишите нам</h2>
+            <form class="form" method="post" action="#contact-form">
+                {% csrf_token %}
+                {% include 'include/form.html' with wide='message' %}
+                <button class="btn btn--primary" type="submit">Отправить</button>
+                <p class="form__note">Нажимая кнопку, вы соглашаетесь с <a href="{% url 'base:page' 'privacy' %}">политикой конфиденциальности</a>.</p>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% if site.map_embed_url %}
+<section class="map">
+    <iframe src="{{ site.map_embed_url }}" title="Карта" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+</section>
+{% endif %}
+{% endblock %}

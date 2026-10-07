@@ -1,0 +1,5 @@
+<a class="tile tile--ph{{ forloop.counter|default:1 }}" href="{{ category.get_absolute_url }}">
+    {% if category.cover %}<img class="tile__img" src="{{ category.cover.url }}" alt="{{ category.name }}" loading="lazy" width="600" height="800">{% endif %}
+    <span class="tile__overlay"></span>
+    <span class="tile__title">{{ category.name }}</span>
+</a>

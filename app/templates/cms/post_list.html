@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Новости и статьи — {{ site.name }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Новости и статьи' eyebrow='Журнал' %}
+
+<section class="section">
+    <div class="container">
+        {% if posts %}
+            <div class="grid grid--3">
+                {% for post in posts %}{% include 'include/post_card.html' %}{% endfor %}
+            </div>
+            {% include 'include/pagination.html' %}
+        {% else %}
+            <p class="empty">Публикаций пока нет.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

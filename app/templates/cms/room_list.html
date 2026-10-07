@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Номера и проживание — {{ site.name }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Номера и жильё' eyebrow='Размещение' text='Номера отеля и коттеджи рядом со склоном.' %}
+
+<section class="section">
+    <div class="container">
+        {% if rooms %}
+            <div class="grid grid--3">
+                {% for room in rooms %}{% include 'include/room_card.html' %}{% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">Категории номеров скоро появятся.</p>
+        {% endif %}
+    </div>
+</section>
+
+{% include 'include/cta.html' %}
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page.seo_title|default:'О курорте' }} — {{ site.name }}{% endblock %}
+{% block description %}{{ page.seo_description|default:site.tagline }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='О курорте' eyebrow=site.name text=site.tagline image=page.image %}
+
+<section class="section section--tight">
+    <div class="container">
+        <ul class="stats">
+            <li class="stats__item"><span class="stats__value">{{ conditions.slopes.total }}</span><span class="stats__label">трасс</span></li>
+            <li class="stats__item"><span class="stats__value">{{ total_km }}</span><span class="stats__label">км спусков</span></li>
+            <li class="stats__item"><span class="stats__value">{{ lifts_count }}</span><span class="stats__label">подъёмников</span></li>
+            <li class="stats__item"><span class="stats__value">{{ rooms_count }}</span><span class="stats__label">категорий жилья</span></li>
+        </ul>
+    </div>
+</section>
+
+{% if page.content %}
+<section class="section section--tight">
+    <div class="container container--narrow">
+        <div class="prose">{{ page.content|safe }}</div>
+    </div>
+</section>
+{% endif %}
+
+{% if advantages %}
+<section class="section section--muted">
+    <div class="container">
+        {% include 'include/section_head.html' with eyebrow='Почему мы' title='Преимущества курорта' %}
+        <div class="advantages">
+            {% for item in advantages %}
+                <div class="advantage">
+                    <h3 class="advantage__title">{{ item.title }}</h3>
+                    <p class="advantage__text">{{ item.text }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% include 'include/cta.html' %}
+{% endblock %}

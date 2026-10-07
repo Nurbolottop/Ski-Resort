@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Галерея — {{ site.name }}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Галерея' eyebrow='Фото' text='Склоны, номера и атмосфера курорта.' %}
+
+<section class="section">
+    <div class="container">
+        {% if images %}
+            <div class="gallery">
+                {% for item in images %}
+                    <a class="gallery__item" href="#photo-{{ forloop.counter }}">
+                        <img src="{{ item.image.url }}" alt="{{ item.caption }}" loading="lazy">
+                    </a>
+                {% endfor %}
+            </div>
+            {% include 'include/lightbox.html' with prefix='photo' %}
+        {% else %}
+            <p class="empty">Фотографии скоро появятся.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

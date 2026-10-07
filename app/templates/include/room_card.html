@@ -1,0 +1,22 @@
+{% load site_tags %}
+<article class="card">
+    <a class="card__media" href="{{ room.get_absolute_url }}">
+        {% if room.cover %}<img src="{{ room.cover.url }}" alt="{{ room.name }}" loading="lazy" width="600" height="400">{% endif %}
+        <span class="card__badge">{{ room.name }}</span>
+    </a>
+    <div class="card__body">
+        <h3 class="card__title"><a href="{{ room.get_absolute_url }}">{{ room.name }}</a></h3>
+        <p class="card__meta">
+            до {{ room.max_guests }} гостей{% if room.beds %} · {{ room.beds }}{% endif %}{% if room.area %} · {{ room.area }} м²{% endif %}
+        </p>
+        {% if room.short_description %}<p class="card__text">{{ room.short_description|truncatechars:180 }}</p>{% endif %}
+        <div class="card__footer">
+            <span class="price">
+                <span class="price__from">от</span>
+                <span class="price__value">{{ room.price_from|money }}</span>
+                <span class="price__unit">сом / ночь</span>
+            </span>
+            <a class="btn btn--primary btn--sm" href="{{ room.get_absolute_url }}">Подробнее</a>
+        </div>
+    </div>
+</article>
