@@ -1,0 +1,38 @@
+{# Нарисованный горный пейзаж — подставляется, пока нет фото. Параметр: variant (1–3) #}
+{% with v=variant|default:1 %}
+<svg class="scenery" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+        <linearGradient id="sky-{{ v }}{{ uid }}" x1="0" y1="0" x2="0" y2="1">
+            {% if v == 2 %}
+                <stop offset="0" stop-color="#0b1730"/><stop offset=".55" stop-color="#3c4f7a"/><stop offset="1" stop-color="#e3a37a"/>
+            {% elif v == 3 %}
+                <stop offset="0" stop-color="#2c6aa3"/><stop offset=".6" stop-color="#8dbfe6"/><stop offset="1" stop-color="#e9f2fa"/>
+            {% else %}
+                <stop offset="0" stop-color="#050d16"/><stop offset=".55" stop-color="#14304c"/><stop offset="1" stop-color="#3a6a94"/>
+            {% endif %}
+        </linearGradient>
+        <radialGradient id="glow-{{ v }}{{ uid }}" cx="{% if v == 2 %}.5{% else %}.75{% endif %}" cy="{% if v == 2 %}.62{% else %}.25{% endif %}" r=".5">
+            <stop offset="0" stop-color="{% if v == 3 %}#ffffff{% else %}#f6b65a{% endif %}" stop-opacity="{% if v == 3 %}.6{% else %}.45{% endif %}"/>
+            <stop offset="1" stop-color="#f6b65a" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="snow-{{ v }}{{ uid }}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#c4d6e6"/>
+        </linearGradient>
+    </defs>
+    <rect width="1600" height="1000" fill="url(#sky-{{ v }}{{ uid }})"/>
+    <rect width="1600" height="1000" fill="url(#glow-{{ v }}{{ uid }})"/>
+    {% if v != 3 %}
+    <g fill="#fff" opacity=".7">
+        <circle cx="120" cy="90" r="1.4"/><circle cx="380" cy="60" r="1"/><circle cx="640" cy="140" r="1.2"/>
+        <circle cx="900" cy="70" r="1"/><circle cx="1180" cy="120" r="1.4"/><circle cx="1450" cy="60" r="1.1"/>
+        <circle cx="260" cy="210" r=".9"/><circle cx="1320" cy="230" r=".9"/>
+    </g>
+    {% endif %}
+    <path d="M0 640 180 470l110 80 190-230 140 150 110-90 170 160 210-300 180 220 120-90 190 170v460H0Z" fill="{% if v == 3 %}#7ea7c9{% else %}#2a4c71{% endif %}" opacity=".9"/>
+    <path d="M1110 240 1068 300l22-12 14 16 20-18 35 14Z" fill="url(#snow-{{ v }}{{ uid }})" opacity=".95"/>
+    <path d="M480 320 435 375l20-10 15 15 20-18 41 13Z" fill="url(#snow-{{ v }}{{ uid }})" opacity=".9"/>
+    <path d="M0 760 240 560l170 120 230-210 200 170 160-110 250 200 190-140 160 120v290H0Z" fill="{% if v == 3 %}#5c88ad{% else %}#244a6e{% endif %}"/>
+    <path d="M0 860 300 700l220 90 260-150 240 170 270-130 310 150v170H0Z" fill="url(#snow-{{ v }}{{ uid }})"/>
+    <path d="M300 700 520 790l-40 30-230-40Z" fill="#9db6cc" opacity=".35"/>
+</svg>
+{% endwith %}

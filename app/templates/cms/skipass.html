@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Ски-пассы и цены — {{ site.name }}{% endblock %}
+{% block title %}Ски-пассы — {{ site.name }}{% endblock %}
+{% block description %}Цены на ски-пассы горнолыжной базы {{ site.name }}.{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title='Ски-пассы' eyebrow='Тарифы' text='Цены на подъёмники в текущем сезоне. Ски-пасс можно приобрести в кассах у нижней станции.' %}
+{% include 'include/page_hero.html' with title='Ски-пассы' eyebrow='Ski pass' text='Цены на подъёмники в текущем сезоне. Ски-пасс покупается в кассе у нижней станции.' variant=2 %}
 
-<section class="section">
+<section class="section theme-light">
     <div class="container">
         {% if ski_passes %}
             <div class="grid grid--3">
@@ -14,6 +15,9 @@
         {% else %}
             <p class="empty">Тарифы на новый сезон скоро появятся.</p>
         {% endif %}
+        <div class="actions" data-reveal>
+            <a class="btn btn--ghost" href="{% url 'cms:prices' %}">Полный прайс: прокат, проживание, трансфер</a>
+        </div>
     </div>
 </section>
 

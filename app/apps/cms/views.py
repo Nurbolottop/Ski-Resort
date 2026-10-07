@@ -6,8 +6,8 @@ from django.views.generic import DetailView, ListView
 
 from apps.cms.forms import ReviewForm
 from apps.cms.models import (
-    GalleryImage, Lift, MenuCategory, MenuItem, Offer, Post, Review, Room, Service, ServiceCategory, SkiPass,
-    Slope, TransferRoute,
+    GalleryAlbum, GalleryImage, Lift, MenuCategory, MenuItem, Offer, Post, RentalItem, Review, Room, Service,
+    ServiceCategory, SkiPass, Slope, TransferRoute,
 )
 from apps.cms.utils import slope_conditions, slope_levels
 
@@ -24,6 +24,31 @@ def slopes(request):
 def ski_passes(request):
     return render(request, 'cms/skipass.html', {
         'ski_passes': SkiPass.objects.filter(is_active=True),
+    })
+
+
+def rental_groups():
+    """Позиции проката, сгруппированные по категориям (в порядке choices)."""
+    items = RentalItem.objects.filter(is_active=True)
+    groups = []
+    for value, label in RentalItem.Category.choices:
+        group = [item for item in items if item.category == value]
+        if group:
+            groups.append({'value': value, 'label': label, 'items': group})
+    return groups
+
+
+def rental(request):
+    return render(request, 'cms/rental.html', {'groups': rental_groups()})
+
+
+def prices(request):
+    """Сводный прайс: ски-пассы, прокат, проживание, трансфер."""
+    return render(request, 'cms/prices.html', {
+        'ski_passes': SkiPass.objects.filter(is_active=True),
+        'rental_groups': rental_groups(),
+        'rooms': Room.objects.filter(is_active=True),
+        'routes': TransferRoute.objects.filter(is_active=True),
     })
 
 
@@ -77,21 +102,31 @@ def transfer(request):
 
 
 class OfferListView(ListView):
-    queryset = Offer.objects.current()
     template_name = 'cms/offer_list.html'
     context_object_name = 'offers'
 
+    def get_queryset(self):
+        # Дата считается при каждом запросе, а не один раз при импорте модуля
+        return Offer.objects.current()
+
 
 class OfferDetailView(DetailView):
-    queryset = Offer.objects.current()
     template_name = 'cms/offer_detail.html'
     context_object_name = 'offer'
 
+    def get_queryset(self):
+        return Offer.objects.current()
+
 
 class GalleryView(ListView):
-    queryset = GalleryImage.objects.filter(is_active=True)
+    queryset = GalleryImage.objects.filter(is_active=True).select_related('album')
     template_name = 'cms/gallery.html'
     context_object_name = 'images'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['albums'] = GalleryAlbum.objects.filter(is_active=True, images__is_active=True).distinct()
+        return context
 
 
 def reviews(request):
@@ -109,16 +144,20 @@ def reviews(request):
 
 
 class PostListView(ListView):
-    queryset = Post.objects.published()
     template_name = 'cms/post_list.html'
     context_object_name = 'posts'
     paginate_by = 9
 
+    def get_queryset(self):
+        return Post.objects.published()
+
 
 class PostDetailView(DetailView):
-    queryset = Post.objects.published()
     template_name = 'cms/post_detail.html'
     context_object_name = 'post'
+
+    def get_queryset(self):
+        return Post.objects.published()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

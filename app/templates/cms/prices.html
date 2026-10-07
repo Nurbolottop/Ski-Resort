@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load site_tags %}
+
+{% block title %}Цены — {{ site.name }}{% endblock %}
+{% block description %}Прайс горнолыжной базы {{ site.name }}: ски-пассы, прокат, проживание и трансфер.{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with title='Цены' eyebrow='Прайс сезона' text='Ски-пассы, прокат, проживание и трансфер — все цены в одном месте.' variant=2 %}
+
+<section class="section theme-light">
+    <div class="container">
+        {% if ski_passes %}
+            <div class="price-block">
+                <div class="price-block__head" data-reveal>
+                    <h2 class="price-block__title">Ски-пассы</h2>
+                    <a class="link-more" href="{% url 'cms:skipass' %}">Подробнее <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
+                </div>
+                <div class="table-wrap" data-reveal>
+                    <table class="table">
+                        <tbody>
+                            {% for pass in ski_passes %}
+                                <tr>
+                                    <td><strong>{{ pass.name }}</strong>{% if pass.note %}<span class="table__sub">{{ pass.note }}</span>{% endif %}</td>
+                                    <td class="table__price">{{ pass.price|money }} сом</td>
+                                    <td>{{ pass.price_unit|default:'' }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if rental_groups %}
+            <div class="price-block">
+                <div class="price-block__head" data-reveal>
+                    <h2 class="price-block__title">Прокат</h2>
+                    <a class="link-more" href="{% url 'cms:rental' %}">Подробнее <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
+                </div>
+                <div class="table-wrap" data-reveal>
+                    <table class="table">
+                        <thead><tr><th>Позиция</th><th>День</th><th>Час</th></tr></thead>
+                        <tbody>
+                            {% for group in rental_groups %}
+                                {% for item in group.items %}
+                                    <tr>
+                                        <td><strong>{{ item.name }}</strong><span class="table__sub">{{ group.label }}{% if item.description %} · {{ item.description }}{% endif %}</span></td>
+                                        <td class="table__price">{% if item.price_day %}{{ item.price_day|money }} сом{% else %}—{% endif %}</td>
+                                        <td class="table__price">{% if item.price_hour %}{{ item.price_hour|money }} сом{% else %}—{% endif %}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if rooms %}
+            <div class="price-block">
+                <div class="price-block__head" data-reveal>
+                    <h2 class="price-block__title">Проживание</h2>
+                    <a class="link-more" href="{% url 'cms:room_list' %}">Подробнее <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
+                </div>
+                <div class="table-wrap" data-reveal>
+                    <table class="table">
+                        <tbody>
+                            {% for room in rooms %}
+                                <tr>
+                                    <td><a href="{{ room.get_absolute_url }}"><strong>{{ room.name }}</strong></a><span class="table__sub">до {{ room.max_guests }} гостей{% if room.beds %} · {{ room.beds }}{% endif %}</span></td>
+                                    <td class="table__price">от {{ room.price_from|money }} сом</td>
+                                    <td>за {{ room.price_unit }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if routes %}
+            <div class="price-block">
+                <div class="price-block__head" data-reveal>
+                    <h2 class="price-block__title">Трансфер</h2>
+                    <a class="link-more" href="{% url 'cms:transfer' %}">Подробнее <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
+                </div>
+                <div class="table-wrap" data-reveal>
+                    <table class="table">
+                        <tbody>
+                            {% for route in routes %}
+                                <tr>
+                                    <td><strong>{{ route.name }}</strong>{% if route.schedule %}<span class="table__sub">{{ route.schedule }}</span>{% endif %}</td>
+                                    <td class="table__price">{% if route.price %}{{ route.price|money }} сом{% else %}по запросу{% endif %}</td>
+                                    <td>{% if route.price and route.price_unit %}за {{ route.price_unit }}{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+
+        <p class="note" data-reveal>Цены указаны в сомах и могут меняться. Актуальную стоимость уточняйте по WhatsApp{% if site.whatsapp %} {{ site.whatsapp }}{% endif %}.</p>
+    </div>
+</section>
+
+{% include 'include/cta.html' %}
+{% endblock %}

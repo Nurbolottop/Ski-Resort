@@ -5,15 +5,15 @@
 <div class="form__grid">
     {% for field in form %}
         {% if field.widget_type == 'checkbox' %}
-        <label class="form__check form__field--wide">
-            {{ field }}<span>{{ field.label }}</span>
-        </label>
+            <label class="form__check form__field--wide">
+                {{ field }}<span>{{ field.label }}</span>
+            </label>
         {% else %}
-        <div class="form__field{% if field.name in wide %} form__field--wide{% endif %}{% if field.errors %} has-error{% endif %}">
-            <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
-            {{ field }}
-            {% for error in field.errors %}<span class="form__error">{{ error }}</span>{% endfor %}
-        </div>
+            <div class="form__field{% if field.name in wide %} form__field--wide{% endif %}{% if field.errors %} has-error{% endif %}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                {{ field }}
+                {% for error in field.errors %}<span class="form__error">{{ error }}</span>{% endfor %}
+            </div>
         {% endif %}
     {% endfor %}
 </div>

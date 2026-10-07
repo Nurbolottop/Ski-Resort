@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render
 
-from apps.base.models import Advantage, HeroSlide, Page
+from apps.base.models import FAQ, Advantage, HeroSlide, Page
 from apps.cms.models import Lift, Offer, Post, Review, Room, ServiceCategory, SkiPass, TransferRoute
 from apps.cms.utils import slope_conditions, slope_levels, total_slopes_km
 
@@ -18,6 +18,9 @@ def homepage(request):
         'reviews': Review.objects.filter(is_published=True)[:3],
         'posts': Post.objects.published()[:3],
         'transfer_routes': TransferRoute.objects.filter(is_active=True)[:3],
+        'about_page': Page.objects.filter(slug='about', is_published=True).first(),
+        'total_km': total_slopes_km(),
+        'lifts_count': Lift.objects.filter(is_active=True).count(),
     })
 
 
@@ -25,6 +28,7 @@ def about(request):
     return render(request, 'base/about.html', {
         'page': Page.objects.filter(slug='about', is_published=True).first(),
         'advantages': Advantage.objects.filter(is_active=True),
+        'faqs': FAQ.objects.filter(is_active=True),
         'conditions': slope_conditions(),
         'total_km': total_slopes_km(),
         'lifts_count': Lift.objects.filter(is_active=True).count(),

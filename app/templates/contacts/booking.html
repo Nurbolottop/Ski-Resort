@@ -3,16 +3,24 @@
 {% block title %}Бронирование — {{ site.name }}{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title='Бронирование' eyebrow='Заявка' text='Заполните форму — администратор свяжется с вами, уточнит детали и подтвердит бронь.' %}
+{% include 'include/page_hero.html' with title='Бронирование' eyebrow='Заявка' text='Оставьте заявку — администратор свяжется с вами, уточнит детали и подтвердит бронь.' variant=3 %}
 
-<section class="section section--tight" id="booking-form">
+<section class="section theme-light" id="booking-form">
     <div class="container container--narrow">
-        <form class="form form--card" method="post" action="#booking-form">
+        <form class="form form--card" method="post" action="#booking-form" data-reveal>
             {% csrf_token %}
             {% include 'include/form.html' with wide='room,comment' %}
             <button class="btn btn--primary btn--lg" type="submit">Отправить заявку</button>
-            <p class="form__note">Нажимая кнопку, вы соглашаетесь с <a href="{% url 'base:page' 'privacy' %}">политикой конфиденциальности</a>.</p>
+            <p class="form__note">
+                Работаем {{ site.open_days_label }}. Нажимая кнопку, вы соглашаетесь с
+                <a href="{% url 'base:page' 'privacy' %}">политикой конфиденциальности</a>.
+            </p>
         </form>
+        {% if site.whatsapp %}
+            <p class="note" style="text-align: center; margin-top: 26px">
+                Быстрее в WhatsApp: <a class="link-more" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener">{{ site.whatsapp }}</a>
+            </p>
+        {% endif %}
     </div>
 </section>
 {% endblock %}

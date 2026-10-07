@@ -1,0 +1,17 @@
+{% load site_tags %}
+<article class="rental-item" data-reveal style="--d:{{ forloop.counter0 }}0ms">
+    {% if item.image %}
+        <img class="rental-item__img" src="{{ item.image.url }}" alt="{{ item.name }}" loading="lazy">
+    {% else %}
+        <span class="rental-item__icon"><svg class="icon"><use href="#i-{% if item.category == 'snowboard' %}board{% elif item.category == 'clothes' %}shirt{% elif item.category == 'kids' or item.category == 'other' %}sled{% else %}ski{% endif %}"></use></svg></span>
+    {% endif %}
+    <div>
+        <h3 class="rental-item__name">{{ item.name }}</h3>
+        {% if item.description %}<p class="rental-item__desc">{{ item.description }}</p>{% endif %}
+        <div class="rental-item__prices">
+            {% if item.price_day %}<span class="price"><span class="price__value">{{ item.price_day|money }}</span><span class="price__unit">сом / день</span></span>{% endif %}
+            {% if item.price_hour %}<span class="price"><span class="price__value">{{ item.price_hour|money }}</span><span class="price__unit">сом / час</span></span>{% endif %}
+            {% if not item.price_day and not item.price_hour %}<span class="price__unit">Цена по запросу</span>{% endif %}
+        </div>
+    </div>
+</article>

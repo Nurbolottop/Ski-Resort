@@ -1,59 +1,98 @@
 {% extends 'base.html' %}
 
 {% block title %}Контакты — {{ site.name }}{% endblock %}
+{% block description %}Контакты горнолыжной базы {{ site.name }}: WhatsApp, трансфер, адрес и режим работы.{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title='Контакты' eyebrow='Связь с нами' %}
+{% include 'include/page_hero.html' with title='Контакты' eyebrow='На связи' text='Ответим на вопросы о снеге, ценах, проживании и трансфере.' variant=1 %}
 
-<section class="section section--tight">
+<section class="section theme-light">
     <div class="container contacts">
         <div class="contacts__info">
-            {% if site.phone or site.phone_2 %}
-                <div class="contacts__block">
-                    <h3 class="contacts__label">Телефон</h3>
-                    {% if site.phone %}<a href="tel:{{ site.phone_href }}">{{ site.phone }}</a>{% endif %}
-                    {% if site.phone_2 %}<a href="tel:{{ site.phone_2_href }}">{{ site.phone_2 }}</a>{% endif %}
+            {% if site.whatsapp %}
+                <div class="contact-card" data-reveal>
+                    <span class="contact-card__icon"><svg class="icon"><use href="#i-whatsapp"></use></svg></span>
+                    <div>
+                        <span class="contact-card__label">WhatsApp</span>
+                        <a class="contact-card__value" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener">{{ site.whatsapp }}</a>
+                    </div>
+                </div>
+            {% endif %}
+            {% if site.phone %}
+                <div class="contact-card" data-reveal>
+                    <span class="contact-card__icon"><svg class="icon"><use href="#i-phone"></use></svg></span>
+                    <div>
+                        <span class="contact-card__label">Телефон</span>
+                        <a class="contact-card__value" href="tel:{{ site.phone_href }}">{{ site.phone }}</a>
+                        {% if site.phone_2 %}<a class="contact-card__value" href="tel:{{ site.phone_2_href }}">{{ site.phone_2 }}</a>{% endif %}
+                    </div>
+                </div>
+            {% endif %}
+            {% if site.transfer_phone %}
+                <div class="contact-card" data-reveal>
+                    <span class="contact-card__icon"><svg class="icon"><use href="#i-car"></use></svg></span>
+                    <div>
+                        <span class="contact-card__label">Трансфер{% if site.transfer_contact %} · {{ site.transfer_contact }}{% endif %}</span>
+                        <a class="contact-card__value" href="tel:{{ site.transfer_phone_href }}">{{ site.transfer_phone }}</a>
+                    </div>
                 </div>
             {% endif %}
             {% if site.email %}
-                <div class="contacts__block">
-                    <h3 class="contacts__label">E-mail</h3>
-                    <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+                <div class="contact-card" data-reveal>
+                    <span class="contact-card__icon"><svg class="icon"><use href="#i-mail"></use></svg></span>
+                    <div>
+                        <span class="contact-card__label">E-mail</span>
+                        <a class="contact-card__value" href="mailto:{{ site.email }}">{{ site.email }}</a>
+                    </div>
                 </div>
             {% endif %}
             {% if site.address %}
-                <div class="contacts__block">
-                    <h3 class="contacts__label">Адрес</h3>
-                    <span>{{ site.address }}</span>
+                <div class="contact-card" data-reveal>
+                    <span class="contact-card__icon"><svg class="icon"><use href="#i-pin"></use></svg></span>
+                    <div>
+                        <span class="contact-card__label">Адрес</span>
+                        <span class="contact-card__value">{{ site.address }}</span>
+                        <a class="link-more" href="{% url 'cms:transfer' %}">Как добраться <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
+                    </div>
                 </div>
             {% endif %}
-            {% if site.working_hours_list %}
-                <div class="contacts__block">
-                    <h3 class="contacts__label">Режим работы</h3>
-                    {% for line in site.working_hours_list %}<span>{{ line }}</span>{% endfor %}
+            <div class="contact-card" data-reveal>
+                <span class="contact-card__icon"><svg class="icon"><use href="#i-clock"></use></svg></span>
+                <div>
+                    <span class="contact-card__label">Режим работы</span>
+                    <span class="contact-card__value">{{ site.open_days_label|capfirst }}{% if site.lift_hours %}, {{ site.lift_hours }}{% endif %}</span>
+                    {% for line in site.working_hours_list %}<span class="table__sub">{{ line }}</span>{% endfor %}
                 </div>
-            {% endif %}
-            <a class="link-more" href="{% url 'cms:transfer' %}">Как добраться и трансфер →</a>
-            {% if site.whatsapp %}
-                <a class="btn btn--ghost" href="https://wa.me/{{ site.whatsapp }}" target="_blank" rel="noopener">Написать в WhatsApp</a>
-            {% endif %}
+            </div>
         </div>
 
-        <div class="contacts__form" id="contact-form">
-            <h2 class="detail__subtitle">Напишите нам</h2>
-            <form class="form" method="post" action="#contact-form">
+        <div id="contact-form">
+            <form class="form form--card" method="post" action="#contact-form" data-reveal>
                 {% csrf_token %}
+                <div>
+                    <span class="section__eyebrow">Обратная связь</span>
+                    <h2 class="section__title" style="font-size: 44px">Напишите нам</h2>
+                </div>
                 {% include 'include/form.html' with wide='message' %}
-                <button class="btn btn--primary" type="submit">Отправить</button>
+                <button class="btn btn--primary btn--lg" type="submit">Отправить</button>
                 <p class="form__note">Нажимая кнопку, вы соглашаетесь с <a href="{% url 'base:page' 'privacy' %}">политикой конфиденциальности</a>.</p>
             </form>
         </div>
     </div>
 </section>
 
-{% if site.map_embed_url %}
+{% if faqs %}
+<section class="section theme-light section--alt">
+    <div class="container container--narrow">
+        {% include 'include/section_head.html' with eyebrow='FAQ' title='Частые вопросы' center=True %}
+        {% include 'include/faq.html' %}
+    </div>
+</section>
+{% endif %}
+
+{% if site.map_src %}
 <section class="map">
-    <iframe src="{{ site.map_embed_url }}" title="Карта" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    <iframe src="{{ site.map_src }}" title="Карта" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
 </section>
 {% endif %}
 {% endblock %}

@@ -1,8 +1,11 @@
-{# Параметры: eyebrow, title, link_url, link_text #}
-<header class="section__head">
+{# Параметры: eyebrow, title, lead, link_url, link_text, center #}
+<header class="section__head{% if center %} section__head--center{% endif %}" data-reveal>
     <div>
         {% if eyebrow %}<span class="section__eyebrow">{{ eyebrow }}</span>{% endif %}
         <h2 class="section__title">{{ title }}</h2>
+        {% if lead %}<p class="section__lead">{{ lead }}</p>{% endif %}
     </div>
-    {% if link_url %}<a class="link-more" href="{{ link_url }}">{{ link_text }} →</a>{% endif %}
+    {% if link_url %}
+        <a class="link-more" href="{{ link_url }}">{{ link_text }} <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
+    {% endif %}
 </header>

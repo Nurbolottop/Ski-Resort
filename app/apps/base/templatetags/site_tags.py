@@ -25,3 +25,19 @@ def ru_plural(value, forms):
     if 2 <= n <= 4:
         return few
     return many
+
+
+@register.filter
+def cycle_variant(value, count=3):
+    """Номер заглушки-пейзажа по порядковому номеру: 1, 2, 3, 1, 2…"""
+    try:
+        return (int(value) - 1) % int(count) + 1
+    except (TypeError, ValueError):
+        return 1
+
+
+@register.filter
+def instagram_handle(url):
+    """https://www.instagram.com/tooashuu.kg/ → @tooashuu.kg"""
+    handle = str(url).rstrip('/').rsplit('/', 1)[-1]
+    return f'@{handle}' if handle and 'instagram.com' not in handle else 'Instagram'

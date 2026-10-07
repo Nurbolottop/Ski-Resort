@@ -1,14 +1,19 @@
-<article class="card">
-    <a class="card__media" href="{{ offer.get_absolute_url }}">
-        {% if offer.image %}<img src="{{ offer.image.url }}" alt="{{ offer.title }}" loading="lazy" width="600" height="400">{% endif %}
+{% load site_tags %}
+<article class="card" data-reveal style="--d:{{ forloop.counter0|default:0 }}00ms">
+    <a class="card__media" href="{{ offer.get_absolute_url }}" tabindex="-1">
+        {% if offer.image %}
+            <img src="{{ offer.image.url }}" alt="{{ offer.title }}" loading="lazy" width="800" height="600">
+        {% else %}
+            {% include 'include/scenery.html' with variant=forloop.counter|default:1|cycle_variant uid=offer.pk %}
+        {% endif %}
         {% if offer.label %}<span class="card__badge card__badge--accent">{{ offer.label }}</span>{% endif %}
     </a>
     <div class="card__body">
-        {% if offer.valid_to %}<p class="card__meta">До {{ offer.valid_to|date:'d.m.Y' }}</p>{% endif %}
+        {% if offer.valid_to %}<p class="card__meta">Действует до {{ offer.valid_to|date:'j E' }}</p>{% endif %}
         <h3 class="card__title"><a href="{{ offer.get_absolute_url }}">{{ offer.title }}</a></h3>
-        {% if offer.short_description %}<p class="card__text">{{ offer.short_description|truncatechars:160 }}</p>{% endif %}
+        {% if offer.short_description %}<p class="card__text">{{ offer.short_description|truncatechars:150 }}</p>{% endif %}
         <div class="card__footer">
-            <a class="link-more" href="{{ offer.get_absolute_url }}">Подробнее →</a>
+            <a class="link-more" href="{{ offer.get_absolute_url }}">Подробнее <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
         </div>
     </div>
 </article>

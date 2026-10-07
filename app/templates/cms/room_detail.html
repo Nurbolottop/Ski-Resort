@@ -6,41 +6,40 @@
 
 {% block content %}
 {% url 'cms:room_list' as rooms_url %}
-{% include 'include/page_hero.html' with title=room.name eyebrow='Размещение' image=room.cover parent_title='Номера' parent_url=rooms_url %}
+{% include 'include/page_hero.html' with title=room.name eyebrow='Проживание' image=room.cover parent_title='Проживание' parent_url=rooms_url variant=3 %}
 
-<section class="section section--tight">
+<section class="section theme-light">
     <div class="container detail">
-        <div class="detail__main">
+        <div>
             {% with images=room.images.all %}
                 {% if images %}
-                    <div class="photo-grid">
+                    <div class="photo-grid" data-reveal>
                         {% for item in images %}
-                            <a class="photo-grid__item" href="#room-photo-{{ forloop.counter }}">
-                                <img src="{{ item.image.url }}" alt="{{ room.name }}" loading="lazy">
+                            <a class="photo-grid__item" href="{{ item.image.url }}" data-lightbox="room" data-caption="{{ room.name }}">
+                                <img src="{{ item.image.url }}" alt="{{ room.name }} — фото {{ forloop.counter }}" loading="lazy">
                             </a>
                         {% endfor %}
                     </div>
-                    {% include 'include/lightbox.html' with prefix='room-photo' %}
                 {% endif %}
             {% endwith %}
 
-            {% if room.short_description %}<p class="lead">{{ room.short_description }}</p>{% endif %}
-            {% if room.description %}<div class="prose">{{ room.description|safe }}</div>{% endif %}
+            {% if room.short_description %}<p class="lead" data-reveal>{{ room.short_description }}</p>{% endif %}
+            {% if room.description %}<div class="prose" data-reveal>{{ room.description|safe }}</div>{% endif %}
 
             {% if room.amenities_list %}
-                <h2 class="detail__subtitle">Удобства</h2>
-                <ul class="checklist">
-                    {% for item in room.amenities_list %}<li>{{ item }}</li>{% endfor %}
+                <h2 class="detail__subtitle" data-reveal>Удобства</h2>
+                <ul class="checklist" data-reveal>
+                    {% for item in room.amenities_list %}<li><svg class="icon"><use href="#i-check"></use></svg>{{ item }}</li>{% endfor %}
                 </ul>
             {% endif %}
         </div>
 
         <aside class="detail__aside">
-            <div class="sidebar-card">
+            <div class="sidebar-card" data-reveal>
                 <span class="price">
                     <span class="price__from">от</span>
                     <span class="price__value">{{ room.price_from|money }}</span>
-                    <span class="price__unit">сом / ночь</span>
+                    <span class="price__unit">сом / {{ room.price_unit }}</span>
                 </span>
                 <ul class="specs">
                     <li><span>Гостей</span><strong>до {{ room.max_guests }}</strong></li>
@@ -48,16 +47,18 @@
                     {% if room.area %}<li><span>Площадь</span><strong>{{ room.area }} м²</strong></li>{% endif %}
                 </ul>
                 <a class="btn btn--primary btn--block" href="{% url 'contacts:booking' %}?room={{ room.slug }}">Забронировать</a>
-                {% if site.phone %}<a class="sidebar-card__phone" href="tel:{{ site.phone_href }}">{{ site.phone }}</a>{% endif %}
+                {% if site.whatsapp %}
+                    <a class="sidebar-card__phone" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp"></use></svg>{{ site.whatsapp }}</a>
+                {% endif %}
             </div>
         </aside>
     </div>
 </section>
 
 {% if other_rooms %}
-<section class="section section--muted">
+<section class="section">
     <div class="container">
-        {% include 'include/section_head.html' with eyebrow='Размещение' title='Другие варианты' link_url=rooms_url link_text='Все категории' %}
+        {% include 'include/section_head.html' with eyebrow='Размещение' title='Другие варианты' link_url=rooms_url link_text='Всё проживание' %}
         <div class="grid grid--3">
             {% for room in other_rooms %}{% include 'include/room_card.html' %}{% endfor %}
         </div>

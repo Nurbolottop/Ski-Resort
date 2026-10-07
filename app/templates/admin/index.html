@@ -1,0 +1,106 @@
+{% extends 'admin/base.html' %}
+{% load i18n %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    {% include "unfold/helpers/site_branding.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="dash">
+
+    {# ---------- Приветствие ---------- #}
+    <section class="dash-hero">
+        <div>
+            <p class="dash-hero__eyebrow">{{ site.season|default:'Горнолыжная база' }}</p>
+            <h1 class="dash-hero__title">Добрый день{% if request.user.first_name %}, {{ request.user.first_name }}{% endif %}!</h1>
+            <p class="dash-hero__text">
+                {% if not site.is_season_open %}Сезон закрыт.
+                {% elif site.is_open_today %}Сегодня подъёмники работают{% if site.lift_hours %} {{ site.lift_hours }}{% endif %}.
+                {% else %}Сегодня выходной — работаем {{ site.open_days_label }}.{% endif %}
+            </p>
+        </div>
+        <div class="dash-hero__actions">
+            <a class="dash-btn dash-btn--primary" href="{% url 'admin:base_sitesettings_change' 1 %}#conditions">
+                <span class="material-symbols-outlined">ac_unit</span> Обновить условия на склоне
+            </a>
+            <a class="dash-btn" href="/" target="_blank">
+                <span class="material-symbols-outlined">open_in_new</span> Открыть сайт
+            </a>
+        </div>
+    </section>
+
+    {# ---------- KPI ---------- #}
+    <section class="dash-kpi">
+        {% for item in kpi %}
+            <a class="dash-card dash-kpi__item" href="{{ item.url }}">
+                <span class="dash-kpi__icon material-symbols-outlined">{{ item.icon }}</span>
+                <span class="dash-kpi__title">{{ item.title }}</span>
+                <span class="dash-kpi__value">{{ item.value }}</span>
+                <span class="dash-kpi__note">{{ item.note }}</span>
+            </a>
+        {% endfor %}
+    </section>
+
+    <div class="dash-grid">
+        {# ---------- Последние заявки ---------- #}
+        <section class="dash-card">
+            <header class="dash-card__head">
+                <h2>Последние заявки</h2>
+                <a href="{% url 'admin:contacts_bookingrequest_changelist' %}">Все заявки →</a>
+            </header>
+            {% if latest_bookings %}
+                <div class="dash-table-wrap">
+                    <table class="dash-table">
+                        <thead>
+                            <tr><th>Гость</th><th>Даты</th><th>Гостей</th><th>Номер</th><th>Статус</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in latest_bookings %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'admin:contacts_bookingrequest_change' booking.pk %}"><strong>{{ booking.name }}</strong></a>
+                                        <span class="dash-muted">{{ booking.phone }}</span>
+                                    </td>
+                                    <td>{{ booking.check_in|date:'d.m' }} – {{ booking.check_out|date:'d.m.Y' }}</td>
+                                    <td>{{ booking.adults }}{% if booking.children %} + {{ booking.children }} дет.{% endif %}</td>
+                                    <td>{{ booking.room|default:'—' }}{% if booking.need_transfer %} <span class="material-symbols-outlined dash-muted" title="Нужен трансфер">airport_shuttle</span>{% endif %}</td>
+                                    <td><span class="dash-status dash-status--{{ booking.status }}">{{ booking.get_status_display }}</span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="dash-empty">Заявок пока нет.</p>
+            {% endif %}
+        </section>
+
+        {# ---------- Склон сегодня ---------- #}
+        <section class="dash-card">
+            <header class="dash-card__head">
+                <h2>Склон сегодня</h2>
+                <a href="{% url 'admin:cms_slope_changelist' %}">Трассы →</a>
+            </header>
+            <ul class="dash-stats">
+                <li><span class="material-symbols-outlined">thermostat</span><span>Температура</span><strong>{% if site.temperature is not None %}{{ site.temperature }}°C{% else %}—{% endif %}</strong></li>
+                <li><span class="material-symbols-outlined">ac_unit</span><span>Снег</span><strong>{% if site.snow_depth is not None %}{{ site.snow_depth }} см{% else %}—{% endif %}</strong></li>
+                <li><span class="material-symbols-outlined">downhill_skiing</span><span>Трассы открыты</span><strong>{{ conditions.slopes.open }} / {{ conditions.slopes.total }}</strong></li>
+                <li><span class="material-symbols-outlined">airline_seat_recline_normal</span><span>Подъёмники</span><strong>{{ conditions.lifts.open }} / {{ conditions.lifts.total }}</strong></li>
+            </ul>
+            <p class="dash-muted dash-updated">Обновлено {{ site.conditions_updated_at|date:'d.m.Y H:i' }}</p>
+
+            <header class="dash-card__head dash-card__head--sub">
+                <h2>Быстрые действия</h2>
+            </header>
+            <div class="dash-actions">
+                <a href="{% url 'admin:cms_post_add' %}"><span class="material-symbols-outlined">edit_note</span>Новость</a>
+                <a href="{% url 'admin:cms_offer_add' %}"><span class="material-symbols-outlined">sell</span>Акция</a>
+                <a href="{% url 'admin:cms_galleryimage_add' %}"><span class="material-symbols-outlined">add_photo_alternate</span>Фото</a>
+                <a href="{% url 'admin:cms_menuitem_add' %}"><span class="material-symbols-outlined">restaurant</span>Блюдо</a>
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}

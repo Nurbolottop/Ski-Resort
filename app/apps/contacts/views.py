@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
+from apps.base.models import FAQ
 from apps.cms.models import Room
 from apps.contacts.forms import BookingForm, ContactForm, SubscribeForm
 from apps.contacts.models import Subscriber
@@ -17,7 +18,10 @@ def contacts(request):
             return redirect('contacts:contacts')
     else:
         form = ContactForm()
-    return render(request, 'contacts/contacts.html', {'form': form})
+    return render(request, 'contacts/contacts.html', {
+        'form': form,
+        'faqs': FAQ.objects.filter(is_active=True),
+    })
 
 
 def booking(request):

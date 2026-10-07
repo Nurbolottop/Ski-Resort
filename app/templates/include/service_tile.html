@@ -1,5 +1,15 @@
-<a class="tile tile--ph{{ forloop.counter|default:1 }}" href="{{ category.get_absolute_url }}">
-    {% if category.cover %}<img class="tile__img" src="{{ category.cover.url }}" alt="{{ category.name }}" loading="lazy" width="600" height="800">{% endif %}
+{% load site_tags %}
+{# Параметры: category ИЛИ title+url; variant — номер пейзажа-заглушки #}
+{% firstof variant forloop.counter 1 as n %}{% firstof url category.get_absolute_url as href %}{% firstof title category.name as label %}
+<a class="tile" href="{{ href }}" data-reveal style="--d:{{ n|add:'-1' }}00ms">
+    {% if category.cover %}
+        <img class="tile__img" src="{{ category.cover.url }}" alt="" loading="lazy" width="600" height="800">
+    {% else %}
+        {% include 'include/scenery.html' with variant=n|cycle_variant uid=n %}
+    {% endif %}
     <span class="tile__overlay"></span>
-    <span class="tile__title">{{ category.name }}</span>
+    <span class="tile__body">
+        <span class="tile__title">{{ label }}</span>
+        <span class="tile__more">Подробнее <svg class="icon"><use href="#i-arrow-right"></use></svg></span>
+    </span>
 </a>

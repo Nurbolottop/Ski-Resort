@@ -2,23 +2,26 @@
 
 {% block title %}{{ post.seo_title|default:post.title }} — {{ site.name }}{% endblock %}
 {% block description %}{{ post.seo_description|default:post.excerpt|truncatechars:160 }}{% endblock %}
+{% block og_title %}{{ post.title }}{% endblock %}
 
 {% block content %}
 {% url 'cms:post_list' as blog_url %}
-{% include 'include/page_hero.html' with title=post.title image=post.cover parent_title='Блог' parent_url=blog_url %}
+{% include 'include/page_hero.html' with title=post.title eyebrow=post.published_at|date:'j E Y' image=post.cover parent_title='Новости' parent_url=blog_url variant=2 %}
 
-<article class="section section--tight">
+<article class="section theme-light">
     <div class="container container--narrow">
-        <time class="note" datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:'d E Y' }}</time>
-        {% if post.excerpt %}<p class="lead">{{ post.excerpt }}</p>{% endif %}
-        <div class="prose">{{ post.content|safe }}</div>
+        {% if post.excerpt %}<p class="lead" data-reveal>{{ post.excerpt }}</p>{% endif %}
+        <div class="prose" data-reveal>{{ post.content|safe }}</div>
+        <div class="actions" data-reveal>
+            <a class="btn btn--ghost" href="{{ blog_url }}"><svg class="icon"><use href="#i-arrow-left"></use></svg>Все новости</a>
+        </div>
     </div>
 </article>
 
 {% if other_posts %}
-<section class="section section--muted">
+<section class="section">
     <div class="container">
-        {% include 'include/section_head.html' with eyebrow='Журнал' title='Читайте также' link_url=blog_url link_text='Все материалы' %}
+        {% include 'include/section_head.html' with eyebrow='Новости' title='Читайте также' link_url=blog_url link_text='Все новости' %}
         <div class="grid grid--3">
             {% for post in other_posts %}{% include 'include/post_card.html' %}{% endfor %}
         </div>

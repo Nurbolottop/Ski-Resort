@@ -32,6 +32,11 @@ CSRF_COOKIE_SECURE = True
 # =============================================================================
 
 INSTALLED_APPS = [
+    # Тема админки — должна стоять до django.contrib.admin
+    'unfold',
+    'unfold.contrib.forms',
+    'unfold.contrib.filters',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,8 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Third-party
-    'ckeditor',
-    'ckeditor_uploader',
     'django_resized',
 
     # Local apps
@@ -158,16 +161,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # =============================================================================
-# CKEDITOR (РЕДАКТОР CKEDITOR)
+# ADMIN (АДМИНКА UNFOLD) — настройки вынесены в core/settings/unfold.py
 # =============================================================================
 
-CKEDITOR_UPLOAD_PATH = 'uploads/'
-CKEDITOR_IMAGE_BACKEND = "pillow"
-
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',
-        'height': 300,
-        'width': '100%',
-    },
-}
+from core.settings.unfold import UNFOLD  # noqa: E402,F401

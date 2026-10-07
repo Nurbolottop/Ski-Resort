@@ -2,16 +2,18 @@
 {% load site_tags %}
 
 {% block title %}Трансфер и как добраться — {{ site.name }}{% endblock %}
+{% block description %}Трансфер из Бишкека до горнолыжной базы {{ site.name }} и как добраться самостоятельно.{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title='Трансфер' eyebrow='Как добраться' text='Регулярный трансфер до курорта и обратно. Места лучше бронировать заранее.' %}
+{% include 'include/page_hero.html' with title='Трансфер' eyebrow='Как добраться' text='Довезём из Бишкека до базы и обратно. Места лучше бронировать заранее.' variant=1 %}
 
-<section class="section section--tight">
+<section class="section theme-light">
     <div class="container">
         {% if routes %}
             <div class="grid grid--3">
                 {% for route in routes %}
-                    <article class="route">
+                    <article class="route" data-reveal style="--d:{{ forloop.counter0 }}00ms">
+                        <span class="route__icon"><svg class="icon"><use href="#i-car"></use></svg></span>
                         <h3 class="route__name">{{ route.name }}</h3>
                         <ul class="specs">
                             {% if route.departure_point %}<li><span>Отправление</span><strong>{{ route.departure_point }}</strong></li>{% endif %}
@@ -19,12 +21,14 @@
                             {% if route.duration %}<li><span>В пути</span><strong>{{ route.duration }}</strong></li>{% endif %}
                         </ul>
                         {% if route.description %}<p class="route__text">{{ route.description|linebreaksbr }}</p>{% endif %}
-                        {% if route.price %}
-                            <p class="price route__price">
+                        <p class="price route__price">
+                            {% if route.price %}
                                 <span class="price__value">{{ route.price|money }}</span>
                                 <span class="price__unit">сом{% if route.price_unit %} / {{ route.price_unit }}{% endif %}</span>
-                            </p>
-                        {% endif %}
+                            {% else %}
+                                <span class="price__unit">Цена по запросу</span>
+                            {% endif %}
+                        </p>
                     </article>
                 {% endfor %}
             </div>
@@ -33,17 +37,14 @@
         {% endif %}
 
         {% if site.transfer_phone %}
-            <div class="contact-strip">
+            <div class="contact-strip" data-reveal>
                 <div>
-                    <span class="contacts__label">Бронирование трансфера</span>
-                    <p class="contact-strip__text">
-                        {% if site.transfer_contact %}{{ site.transfer_contact }} · {% endif %}
-                        <a href="tel:{{ site.transfer_phone_href }}">{{ site.transfer_phone }}</a>
-                    </p>
+                    <span class="contact-strip__label">Бронирование трансфера</span>
+                    <p class="contact-strip__text">{% if site.transfer_contact %}{{ site.transfer_contact }} · {% endif %}{{ site.transfer_phone }}</p>
                 </div>
-                <div class="actions actions--inline">
-                    <a class="btn btn--primary" href="tel:{{ site.transfer_phone_href }}">Позвонить</a>
-                    <a class="btn btn--ghost" href="https://wa.me/{{ site.transfer_phone_href|cut:'+' }}" target="_blank" rel="noopener">WhatsApp</a>
+                <div class="actions">
+                    <a class="btn btn--primary" href="tel:{{ site.transfer_phone_href }}"><svg class="icon"><use href="#i-phone"></use></svg>Позвонить</a>
+                    <a class="btn btn--whatsapp" href="https://wa.me/{{ site.transfer_phone_href|cut:'+' }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp"></use></svg>WhatsApp</a>
                 </div>
             </div>
         {% endif %}
@@ -51,17 +52,17 @@
 </section>
 
 {% if site.directions %}
-<section class="section section--muted">
+<section class="section">
     <div class="container container--narrow">
         {% include 'include/section_head.html' with eyebrow='Своим ходом' title='Как добраться' %}
-        <div class="prose">{{ site.directions|safe }}</div>
+        <div class="prose" data-reveal>{{ site.directions|safe }}</div>
     </div>
 </section>
 {% endif %}
 
-{% if site.map_embed_url %}
+{% if site.map_src %}
 <section class="map">
-    <iframe src="{{ site.map_embed_url }}" title="Карта" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    <iframe src="{{ site.map_src }}" title="Карта проезда" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
 </section>
 {% endif %}
 

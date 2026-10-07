@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title %}Отзывы гостей — {{ site.name }}{% endblock %}
+{% block title %}Отзывы — {{ site.name }}{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title='Отзывы' eyebrow='Гости о нас' text='Что говорят гости о курорте. Будем рады и вашему отзыву!' %}
+{% include 'include/page_hero.html' with title='Отзывы' eyebrow='Гости о нас' text='Что говорят гости о базе. Будем рады и вашему отзыву.' variant=1 %}
 
-<section class="section">
+<section class="section theme-light">
     <div class="container">
         {% if page_obj %}
             <div class="grid grid--3">
@@ -18,10 +18,10 @@
     </div>
 </section>
 
-<section class="section section--muted" id="review-form">
+<section class="section" id="review-form">
     <div class="container container--narrow">
-        {% include 'include/section_head.html' with eyebrow='Ваше мнение' title='Оставить отзыв' %}
-        <form class="form" method="post" action="#review-form">
+        {% include 'include/section_head.html' with eyebrow='Ваше мнение' title='Оставить отзыв' lead='Отзыв появится на сайте после проверки администратором.' %}
+        <form class="form form--card" method="post" action="#review-form" data-reveal>
             {% csrf_token %}
             {% include 'include/form.html' with wide='text' %}
             <button class="btn btn--primary" type="submit">Отправить отзыв</button>

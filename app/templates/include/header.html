@@ -2,40 +2,66 @@
 <header class="header">
     <div class="header__top">
         <div class="container header__top-inner">
-            {% if site.phone %}<a class="header__contact" href="tel:{{ site.phone_href }}">{{ site.phone }}</a>{% endif %}
-            {% if site.address %}<span class="header__contact header__contact--hide-sm">{{ site.address }}</span>{% endif %}
-            {% if site.season %}<span class="header__season">{{ site.season }}</span>{% endif %}
+            {% if not site.is_season_open %}
+                <span class="open-badge open-badge--closed">Сезон закрыт</span>
+            {% elif site.is_open_today %}
+                <span class="open-badge open-badge--open">Сегодня работаем{% if site.lift_hours %} · {{ site.lift_hours }}{% endif %}</span>
+            {% else %}
+                <span class="open-badge open-badge--closed">Работаем {{ site.open_days_label }}</span>
+            {% endif %}
+            {% if site.whatsapp %}
+                <a class="header__contact" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener">
+                    <svg class="icon"><use href="#i-whatsapp"></use></svg>{{ site.whatsapp }}
+                </a>
+            {% endif %}
+            {% if site.transfer_phone %}
+                <a class="header__contact" href="tel:{{ site.transfer_phone_href }}">
+                    <svg class="icon"><use href="#i-car"></use></svg>Трансфер: {{ site.transfer_phone }}
+                </a>
+            {% endif %}
+            <div class="header__socials">
+                {% if site.instagram %}<a href="{{ site.instagram }}" target="_blank" rel="noopener" aria-label="Instagram"><svg class="icon"><use href="#i-instagram"></use></svg></a>{% endif %}
+                {% if site.telegram %}<a href="{{ site.telegram }}" target="_blank" rel="noopener" aria-label="Telegram"><svg class="icon"><use href="#i-telegram"></use></svg></a>{% endif %}
+                {% if site.facebook %}<a href="{{ site.facebook }}" target="_blank" rel="noopener" aria-label="Facebook"><svg class="icon"><use href="#i-facebook"></use></svg></a>{% endif %}
+            </div>
         </div>
     </div>
 
-    <div class="header__main">
-        <div class="container header__inner">
-            <a class="logo" href="{% url 'base:home' %}">
-                <span class="logo__mark">▲</span>
-                <span class="logo__text">{{ site.name }}</span>
-            </a>
+    <div class="container header__inner">
+        <a class="logo" href="{% url 'base:home' %}" aria-label="{{ site.name }} — на главную">
+            {% if site.logo %}
+                <img class="logo__img" src="{{ site.logo.url }}" alt="{{ site.name }}">
+            {% else %}
+                {% include 'include/logo_mark.html' %}
+                <span class="logo__text">
+                    <span class="logo__name">{{ site.name }}</span>
+                    <span class="logo__sub">горнолыжная база</span>
+                </span>
+            {% endif %}
+        </a>
 
-            {# Мобильное меню на чистом CSS: чекбокс + label #}
-            <input type="checkbox" id="nav-toggle" class="nav-toggle">
+        <nav class="nav" aria-label="Основное меню">
+            <a class="nav__link{% if '/about/' in path %} is-active{% endif %}" href="{% url 'base:about' %}">О базе</a>
+            <a class="nav__link{% if '/slopes/' in path %} is-active{% endif %}" href="{% url 'cms:slopes' %}">Трассы</a>
+            <a class="nav__link{% if '/prices/' in path or '/skipass/' in path %} is-active{% endif %}" href="{% url 'cms:prices' %}">Цены</a>
+            <a class="nav__link{% if '/rental/' in path %} is-active{% endif %}" href="{% url 'cms:rental' %}">Прокат</a>
+            <a class="nav__link{% if '/rooms/' in path %} is-active{% endif %}" href="{% url 'cms:room_list' %}">Проживание</a>
+            <a class="nav__link{% if '/menu/' in path %} is-active{% endif %}" href="{% url 'cms:menu' %}">Меню</a>
+            <a class="nav__link{% if '/transfer/' in path %} is-active{% endif %}" href="{% url 'cms:transfer' %}">Трансфер</a>
+            <a class="nav__link{% if '/gallery/' in path %} is-active{% endif %}" href="{% url 'cms:gallery' %}">Галерея</a>
+            <a class="nav__link{% if '/contacts/' in path %} is-active{% endif %}" href="{% url 'contacts:contacts' %}">Контакты</a>
 
-            <nav class="nav">
-                <a class="nav__link{% if '/about/' in path %} is-active{% endif %}" href="{% url 'base:about' %}">О курорте</a>
-                <a class="nav__link{% if '/slopes/' in path %} is-active{% endif %}" href="{% url 'cms:slopes' %}">Трассы</a>
-                <a class="nav__link{% if '/skipass/' in path %} is-active{% endif %}" href="{% url 'cms:skipass' %}">Ски-пассы</a>
-                <a class="nav__link{% if '/rooms/' in path %} is-active{% endif %}" href="{% url 'cms:room_list' %}">Проживание</a>
-                <a class="nav__link{% if '/services/' in path %} is-active{% endif %}" href="{% url 'cms:service_list' %}">Услуги</a>
-                <a class="nav__link{% if '/menu/' in path %} is-active{% endif %}" href="{% url 'cms:menu' %}">Меню</a>
-                <a class="nav__link{% if '/transfer/' in path %} is-active{% endif %}" href="{% url 'cms:transfer' %}">Трансфер</a>
-                <a class="nav__link{% if '/offers/' in path %} is-active{% endif %}" href="{% url 'cms:offer_list' %}">Акции</a>
-                <a class="nav__link{% if '/contacts/' in path %} is-active{% endif %}" href="{% url 'contacts:contacts' %}">Контакты</a>
-            </nav>
+            <div class="nav__mobile-extra">
+                {% if site.whatsapp %}<a class="btn btn--whatsapp" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp"></use></svg>{{ site.whatsapp }}</a>{% endif %}
+                <a class="btn btn--primary" href="{% url 'contacts:booking' %}">Забронировать</a>
+            </div>
+        </nav>
 
-            <a class="btn btn--primary header__cta" href="{% url 'contacts:booking' %}">Забронировать</a>
+        <a class="btn btn--primary btn--sm header__cta" href="{% url 'contacts:booking' %}">Забронировать</a>
 
-            <label for="nav-toggle" class="burger" aria-label="Меню">
-                <span></span><span></span><span></span>
-            </label>
-        </div>
+        <button class="burger" type="button" data-burger aria-label="Меню" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
     </div>
 </header>
 {% endwith %}

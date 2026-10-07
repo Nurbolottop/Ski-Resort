@@ -1,31 +1,36 @@
 {% extends 'base.html' %}
+{% load site_tags %}
 
 {% block title %}{{ category.seo_title|default:category.name }} — {{ site.name }}{% endblock %}
 {% block description %}{{ category.seo_description|default:category.name }}{% endblock %}
 
 {% block content %}
 {% url 'cms:service_list' as services_url %}
-{% include 'include/page_hero.html' with title=category.name eyebrow='Услуги' image=category.cover parent_title='Услуги' parent_url=services_url %}
+{% include 'include/page_hero.html' with title=category.name eyebrow='Услуги' image=category.cover parent_title='Услуги' parent_url=services_url variant=2 %}
 
-<section class="section section--tight">
+<section class="section theme-light">
     <div class="container">
-        <nav class="tabs">
+        <nav class="tabs" data-reveal>
             {% for item in categories %}
                 <a class="tabs__item{% if item.pk == category.pk %} is-active{% endif %}" href="{{ item.get_absolute_url }}">{{ item.name }}</a>
             {% endfor %}
         </nav>
 
         {% if category.description %}
-            <div class="prose prose--intro">{{ category.description|safe }}</div>
+            <div class="prose" style="max-width: 820px; margin-top: 44px" data-reveal>{{ category.description|safe }}</div>
         {% endif %}
 
         {% with services=category.services.all %}
             {% if services %}
                 <div class="services-list">
                     {% for service in services %}
-                        <article class="service-item">
+                        <article class="service-item" data-reveal>
                             <div class="service-item__media">
-                                {% if service.image %}<img src="{{ service.image.url }}" alt="{{ service.name }}" loading="lazy">{% endif %}
+                                {% if service.image %}
+                                    <img src="{{ service.image.url }}" alt="{{ service.name }}" loading="lazy">
+                                {% else %}
+                                    {% include 'include/scenery.html' with variant=forloop.counter|cycle_variant uid=service.pk %}
+                                {% endif %}
                             </div>
                             <div class="service-item__body">
                                 <h3 class="service-item__title">{{ service.name }}</h3>
@@ -36,7 +41,7 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p class="empty">Услуги в этой категории скоро появятся.</p>
+                <p class="empty" style="margin-top: 44px">Услуги в этой категории скоро появятся.</p>
             {% endif %}
         {% endwith %}
     </div>

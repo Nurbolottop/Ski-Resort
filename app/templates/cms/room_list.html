@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}Номера и проживание — {{ site.name }}{% endblock %}
+{% block title %}Проживание — {{ site.name }}{% endblock %}
+{% block description %}Номера и домики на горнолыжной базе {{ site.name }}.{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title='Номера и жильё' eyebrow='Размещение' text='Номера отеля и коттеджи рядом со склоном.' %}
+{% include 'include/page_hero.html' with title='Проживание' eyebrow='Размещение' text='Номера и домики прямо на базе — утром сразу на склон.' variant=3 %}
 
-<section class="section">
+<section class="section theme-light">
     <div class="container">
         {% if rooms %}
             <div class="grid grid--3">
                 {% for room in rooms %}{% include 'include/room_card.html' %}{% endfor %}
             </div>
         {% else %}
-            <p class="empty">Категории номеров скоро появятся.</p>
+            <p class="empty">Варианты проживания скоро появятся.</p>
         {% endif %}
     </div>
 </section>

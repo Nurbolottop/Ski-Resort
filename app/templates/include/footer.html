@@ -1,50 +1,58 @@
 <footer class="footer">
     <div class="container footer__inner">
         <div class="footer__col">
-            <a class="logo logo--footer" href="{% url 'base:home' %}">
-                <span class="logo__mark">▲</span>
-                <span class="logo__text">{{ site.name }}</span>
+            <a class="logo" href="{% url 'base:home' %}">
+                {% include 'include/logo_mark.html' %}
+                <span class="logo__text">
+                    <span class="logo__name">{{ site.name }}</span>
+                    <span class="logo__sub">горнолыжная база</span>
+                </span>
             </a>
             {% if site.tagline %}<p class="footer__tagline">{{ site.tagline }}</p>{% endif %}
             <div class="socials">
-                {% if site.instagram %}<a class="socials__link" href="{{ site.instagram }}" target="_blank" rel="noopener">Instagram</a>{% endif %}
-                {% if site.telegram %}<a class="socials__link" href="{{ site.telegram }}" target="_blank" rel="noopener">Telegram</a>{% endif %}
-                {% if site.facebook %}<a class="socials__link" href="{{ site.facebook }}" target="_blank" rel="noopener">Facebook</a>{% endif %}
+                {% if site.instagram %}<a class="socials__link" href="{{ site.instagram }}" target="_blank" rel="noopener" aria-label="Instagram"><svg class="icon"><use href="#i-instagram"></use></svg></a>{% endif %}
+                {% if site.whatsapp %}<a class="socials__link" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener" aria-label="WhatsApp"><svg class="icon"><use href="#i-whatsapp"></use></svg></a>{% endif %}
+                {% if site.telegram %}<a class="socials__link" href="{{ site.telegram }}" target="_blank" rel="noopener" aria-label="Telegram"><svg class="icon"><use href="#i-telegram"></use></svg></a>{% endif %}
+                {% if site.facebook %}<a class="socials__link" href="{{ site.facebook }}" target="_blank" rel="noopener" aria-label="Facebook"><svg class="icon"><use href="#i-facebook"></use></svg></a>{% endif %}
             </div>
         </div>
 
         <div class="footer__col">
             <h4 class="footer__title">Разделы</h4>
-            <a class="footer__link" href="{% url 'base:about' %}">О курорте</a>
-            <a class="footer__link" href="{% url 'cms:slopes' %}">Трассы и подъёмники</a>
-            <a class="footer__link" href="{% url 'cms:skipass' %}">Ски-пассы</a>
-            <a class="footer__link" href="{% url 'cms:room_list' %}">Проживание</a>
-            <a class="footer__link" href="{% url 'cms:service_list' %}">Услуги</a>
-            <a class="footer__link" href="{% url 'cms:menu' %}">Меню</a>
-            <a class="footer__link" href="{% url 'cms:transfer' %}">Трансфер</a>
-            <a class="footer__link" href="{% url 'cms:offer_list' %}">Спецпредложения</a>
-            <a class="footer__link" href="{% url 'cms:gallery' %}">Галерея</a>
-            <a class="footer__link" href="{% url 'cms:reviews' %}">Отзывы</a>
-            <a class="footer__link" href="{% url 'cms:post_list' %}">Блог</a>
+            <div class="footer__links-grid">
+                <a class="footer__link" href="{% url 'base:about' %}">О базе</a>
+                <a class="footer__link" href="{% url 'cms:slopes' %}">Трассы</a>
+                <a class="footer__link" href="{% url 'cms:prices' %}">Цены</a>
+                <a class="footer__link" href="{% url 'cms:skipass' %}">Ски-пассы</a>
+                <a class="footer__link" href="{% url 'cms:rental' %}">Прокат</a>
+                <a class="footer__link" href="{% url 'cms:room_list' %}">Проживание</a>
+                <a class="footer__link" href="{% url 'cms:service_list' %}">Услуги</a>
+                <a class="footer__link" href="{% url 'cms:menu' %}">Меню</a>
+                <a class="footer__link" href="{% url 'cms:transfer' %}">Трансфер</a>
+                <a class="footer__link" href="{% url 'cms:offer_list' %}">Акции</a>
+                <a class="footer__link" href="{% url 'cms:gallery' %}">Галерея</a>
+                <a class="footer__link" href="{% url 'cms:reviews' %}">Отзывы</a>
+                <a class="footer__link" href="{% url 'cms:post_list' %}">Новости</a>
+                <a class="footer__link" href="{% url 'contacts:contacts' %}">Контакты</a>
+            </div>
         </div>
 
         <div class="footer__col">
             <h4 class="footer__title">Контакты</h4>
-            {% if site.phone %}<a class="footer__link" href="tel:{{ site.phone_href }}">{{ site.phone }}</a>{% endif %}
-            {% if site.phone_2 %}<a class="footer__link" href="tel:{{ site.phone_2_href }}">{{ site.phone_2 }}</a>{% endif %}
-            {% if site.email %}<a class="footer__link" href="mailto:{{ site.email }}">{{ site.email }}</a>{% endif %}
-            {% if site.address %}<span class="footer__text">{{ site.address }}</span>{% endif %}
-            {% if site.whatsapp %}
-                <a class="btn btn--ghost btn--sm" href="https://wa.me/{{ site.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a>
-            {% endif %}
+            {% if site.whatsapp %}<a class="footer__link" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp"></use></svg>{{ site.whatsapp }}</a>{% endif %}
+            {% if site.phone %}<a class="footer__link" href="tel:{{ site.phone_href }}"><svg class="icon"><use href="#i-phone"></use></svg>{{ site.phone }}</a>{% endif %}
+            {% if site.transfer_phone %}<a class="footer__link" href="tel:{{ site.transfer_phone_href }}"><svg class="icon"><use href="#i-car"></use></svg>{{ site.transfer_phone }}</a>{% endif %}
+            {% if site.email %}<a class="footer__link" href="mailto:{{ site.email }}"><svg class="icon"><use href="#i-mail"></use></svg>{{ site.email }}</a>{% endif %}
+            {% if site.address %}<span class="footer__link"><svg class="icon"><use href="#i-pin"></use></svg>{{ site.address }}</span>{% endif %}
+            <span class="footer__link"><svg class="icon"><use href="#i-clock"></use></svg>{{ site.open_days_label|capfirst }}{% if site.lift_hours %}, {{ site.lift_hours }}{% endif %}</span>
         </div>
 
         <div class="footer__col">
-            <h4 class="footer__title">Спецпредложения на почту</h4>
-            <p class="footer__text">Подпишитесь — присылаем акции и сезонные тарифы.</p>
+            <h4 class="footer__title">Акции и новости</h4>
+            <p class="footer__text">Подпишитесь — пришлём открытие сезона, свежий снег и спецпредложения.</p>
             <form class="subscribe" action="{% url 'contacts:subscribe' %}" method="post">
                 {% csrf_token %}
-                <input type="email" name="email" class="field__input" placeholder="email@example.com" required>
+                <input type="email" name="email" class="field__input" placeholder="Ваш e-mail" required aria-label="E-mail">
                 <button class="btn btn--primary btn--sm" type="submit">Подписаться</button>
             </form>
         </div>
@@ -52,7 +60,7 @@
 
     <div class="footer__bottom">
         <div class="container footer__bottom-inner">
-            <span>© {% now "Y" %} {{ site.name }}</span>
+            <span>© {% now "Y" %} {{ site.full_name|default:site.name }}</span>
             <div class="footer__legal">
                 <a href="{% url 'base:page' 'privacy' %}">Политика конфиденциальности</a>
                 <a href="{% url 'base:page' 'offer' %}">Публичная оферта</a>

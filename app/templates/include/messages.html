@@ -1,7 +1,11 @@
 {% if messages %}
-    <div class="messages container">
+    <div class="messages" role="status">
         {% for message in messages %}
-            <div class="message message--{{ message.tags }}">{{ message }}</div>
+            <div class="message message--{{ message.tags }}">
+                <svg class="icon"><use href="#{% if message.tags == 'error' %}i-close{% else %}i-check{% endif %}"></use></svg>
+                <span>{{ message }}</span>
+                <button class="message__close" type="button" aria-label="Закрыть">×</button>
+            </div>
         {% endfor %}
     </div>
 {% endif %}

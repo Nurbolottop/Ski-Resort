@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title %}Новости и статьи — {{ site.name }}{% endblock %}
+{% block title %}Новости — {{ site.name }}{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title='Новости и статьи' eyebrow='Журнал' %}
+{% include 'include/page_hero.html' with title='Новости' eyebrow='Жизнь на склоне' text='Открытие сезона, свежий снег, события и полезные советы.' variant=2 %}
 
-<section class="section">
+<section class="section theme-light">
     <div class="container">
         {% if posts %}
             <div class="grid grid--3">

@@ -1,10 +1,9 @@
-from ckeditor_uploader.fields import RichTextUploadingField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
-from apps.base.models import OrderedModel, SEOModel, TimeStampedModel, image_field
+from apps.base.models import OrderedModel, RichTextField, SEOModel, TimeStampedModel, image_field
 
 
 def split_lines(text):
@@ -21,11 +20,13 @@ class Slope(OrderedModel):
         BLUE = 'blue', 'Синяя'
         RED = 'red', 'Красная'
         BLACK = 'black', 'Чёрная'
+        FREERIDE = 'freeride', 'Фрирайд'
 
     name = models.CharField('Название', max_length=120)
     level = models.CharField('Сложность', max_length=10, choices=Level.choices)
     length_m = models.PositiveIntegerField('Длина, м', null=True, blank=True)
     vertical_drop_m = models.PositiveIntegerField('Перепад высот, м', null=True, blank=True)
+    steepness = models.PositiveSmallIntegerField('Макс. уклон, °', null=True, blank=True)
     description = models.TextField('Описание', blank=True)
     is_open = models.BooleanField('Открыта', default=True)
 
@@ -47,6 +48,7 @@ class Lift(OrderedModel):
     name = models.CharField('Название', max_length=120)
     lift_type = models.CharField('Тип', max_length=10, choices=Type.choices)
     length_m = models.PositiveIntegerField('Длина, м', null=True, blank=True)
+    ride_minutes = models.PositiveSmallIntegerField('Время подъёма, мин', null=True, blank=True)
     capacity = models.PositiveIntegerField('Пропускная способность, чел/ч', null=True, blank=True)
     hours = models.CharField('Часы работы', max_length=60, blank=True)
     is_open = models.BooleanField('Работает', default=True)
@@ -62,7 +64,8 @@ class Lift(OrderedModel):
 class SkiPass(OrderedModel):
     name = models.CharField('Название', max_length=120)
     price = models.PositiveIntegerField('Цена, сом')
-    price_child = models.PositiveIntegerField('Цена для детей, сом', null=True, blank=True)
+    price_unit = models.CharField('Цена за', max_length=40, blank=True, default='день')
+    note = models.CharField('Примечание', max_length=255, blank=True, help_text='Например: дети до 6 лет — бесплатно')
     features = models.TextField('Что входит', blank=True, help_text='Каждая строка — отдельный пункт')
     is_featured = models.BooleanField('Выделить', default=False)
 
@@ -78,6 +81,29 @@ class SkiPass(OrderedModel):
         return split_lines(self.features)
 
 
+class RentalItem(OrderedModel):
+    class Category(models.TextChoices):
+        SKI = 'ski', 'Горные лыжи'
+        SNOWBOARD = 'snowboard', 'Сноуборд'
+        CLOTHES = 'clothes', 'Одежда и защита'
+        KIDS = 'kids', 'Для детей'
+        OTHER = 'other', 'Другое'
+
+    category = models.CharField('Категория', max_length=20, choices=Category.choices)
+    name = models.CharField('Название', max_length=120)
+    description = models.CharField('Что входит', max_length=255, blank=True)
+    price_day = models.PositiveIntegerField('Цена за день, сом', null=True, blank=True)
+    price_hour = models.PositiveIntegerField('Цена за час, сом', null=True, blank=True)
+    image = image_field('rental/', size=(800, 600), blank=True)
+
+    class Meta(OrderedModel.Meta):
+        verbose_name = 'Позиция проката'
+        verbose_name_plural = 'Прокат'
+
+    def __str__(self):
+        return self.name
+
+
 # =============================================================================
 # ПРОЖИВАНИЕ
 # =============================================================================
@@ -87,11 +113,12 @@ class Room(OrderedModel, SEOModel):
     slug = models.SlugField('URL', unique=True)
     cover = image_field('rooms/covers/', blank=True)
     short_description = models.TextField('Краткое описание', blank=True)
-    description = RichTextUploadingField('Описание', blank=True)
+    description = RichTextField('Описание', blank=True)
     max_guests = models.PositiveSmallIntegerField('Гостей, до', default=2)
     beds = models.CharField('Кровати', max_length=120, blank=True)
     area = models.PositiveSmallIntegerField('Площадь, м²', null=True, blank=True)
-    price_from = models.PositiveIntegerField('Цена от, сом / ночь')
+    price_from = models.PositiveIntegerField('Цена от, сом')
+    price_unit = models.CharField('Цена за', max_length=40, default='ночь')
     amenities = models.TextField('Удобства', blank=True, help_text='Каждая строка — отдельный пункт')
 
     class Meta(OrderedModel.Meta):
@@ -131,7 +158,7 @@ class ServiceCategory(OrderedModel, SEOModel):
     name = models.CharField('Название', max_length=120)
     slug = models.SlugField('URL', unique=True)
     cover = image_field('services/covers/', blank=True)
-    description = RichTextUploadingField('Описание', blank=True)
+    description = RichTextField('Описание', blank=True)
 
     class Meta(OrderedModel.Meta):
         verbose_name = 'Категория услуг'
@@ -200,11 +227,11 @@ class MenuItem(OrderedModel):
 # =============================================================================
 
 class TransferRoute(OrderedModel):
-    name = models.CharField('Маршрут', max_length=120, help_text='Например: Бишкек → курорт')
+    name = models.CharField('Маршрут', max_length=120, help_text='Например: Бишкек → Тоо-Ашуу')
     departure_point = models.CharField('Место отправления', max_length=255, blank=True)
     schedule = models.CharField('Расписание', max_length=255, blank=True, help_text='Например: сб и вс в 7:00')
     duration = models.CharField('В пути', max_length=60, blank=True, help_text='Например: ~2,5 часа')
-    price = models.PositiveIntegerField('Цена, сом', null=True, blank=True)
+    price = models.PositiveIntegerField('Цена, сом', null=True, blank=True, help_text='Пусто — «по запросу»')
     price_unit = models.CharField('Цена за', max_length=60, blank=True, default='место')
     description = models.TextField('Описание', blank=True)
 
@@ -234,7 +261,7 @@ class Offer(OrderedModel, SEOModel, TimeStampedModel):
     image = image_field('offers/', blank=True)
     label = models.CharField('Плашка', max_length=60, blank=True, help_text='Например: −20%')
     short_description = models.TextField('Краткое описание', blank=True)
-    content = RichTextUploadingField('Описание', blank=True)
+    content = RichTextField('Описание', blank=True)
     valid_from = models.DateField('Действует с', null=True, blank=True)
     valid_to = models.DateField('Действует до', null=True, blank=True)
 
@@ -255,13 +282,29 @@ class Offer(OrderedModel, SEOModel, TimeStampedModel):
 # ГАЛЕРЕЯ
 # =============================================================================
 
+class GalleryAlbum(OrderedModel):
+    title = models.CharField('Название', max_length=120, help_text='Например: Сезон 2025–2026')
+    slug = models.SlugField('URL', unique=True)
+
+    class Meta(OrderedModel.Meta):
+        verbose_name = 'Альбом'
+        verbose_name_plural = 'Галерея: альбомы'
+
+    def __str__(self):
+        return self.title
+
+
 class GalleryImage(OrderedModel):
-    image = image_field('gallery/', size=(1920, 1440))
+    album = models.ForeignKey(
+        GalleryAlbum, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='images', verbose_name='Альбом',
+    )
+    image = image_field('gallery/', size=(2000, 1500))
     caption = models.CharField('Подпись', max_length=255, blank=True)
 
     class Meta(OrderedModel.Meta):
-        verbose_name = 'Фото галереи'
-        verbose_name_plural = 'Галерея'
+        verbose_name = 'Фото'
+        verbose_name_plural = 'Галерея: фото'
 
     def __str__(self):
         return self.caption or f'Фото {self.pk}'
@@ -306,7 +349,7 @@ class Post(SEOModel, TimeStampedModel):
     slug = models.SlugField('URL', unique=True, max_length=255)
     cover = image_field('blog/', blank=True)
     excerpt = models.TextField('Анонс', blank=True)
-    content = RichTextUploadingField('Текст', blank=True)
+    content = RichTextField('Текст', blank=True)
     published_at = models.DateTimeField('Дата публикации', default=timezone.now)
     is_published = models.BooleanField('Опубликована', default=True)
 

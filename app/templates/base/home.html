@@ -5,76 +5,139 @@
 
 {% block content %}
 
-{# ---------- HERO: слайдер на CSS-анимации + виджет бронирования ---------- #}
-<section class="hero">
-    <div class="hero__slides hero__slides--{{ slides|length|default:1 }}">
+{# ================= HERO ================= #}
+<section class="hero" data-slider>
+    <div class="hero__slides">
         {% for slide in slides %}
-            <div class="hero__slide hero__slide--ph{{ forloop.counter|divisibleby:2|yesno:'2,1' }}">
-                {% if slide.image %}
-                    <img class="hero__img" src="{{ slide.image.url }}" alt="" width="1920" height="1080"{% if not forloop.first %} loading="lazy"{% endif %}>
-                {% endif %}
+            <div class="hero__slide{% if forloop.first %} is-active{% endif %}" data-slide>
+                <div class="hero__media">
+                    {% if slide.image %}
+                        <img class="hero__img" src="{{ slide.image.url }}" alt="" width="2400" height="1350"{% if not forloop.first %} loading="lazy"{% endif %}>
+                    {% else %}
+                        {% include 'include/scenery.html' with variant=forloop.counter|cycle_variant uid='hero' %}
+                    {% endif %}
+                </div>
                 <div class="hero__overlay"></div>
-                <div class="container hero__content">
-                    {% if slide.eyebrow %}<span class="hero__eyebrow">{{ slide.eyebrow }}</span>{% endif %}
-                    <h1 class="hero__title">{{ slide.title }}</h1>
+                <div class="hero__content">
+                    <div class="container">
+                        {% if slide.eyebrow %}<span class="hero__eyebrow">{{ slide.eyebrow }}</span>{% endif %}
+                        <h1 class="hero__title">{{ slide.title }}</h1>
+                        {% if slide.text %}<p class="hero__text">{{ slide.text }}</p>{% endif %}
+                    </div>
                 </div>
             </div>
         {% empty %}
-            <div class="hero__slide hero__slide--ph1">
+            <div class="hero__slide is-active" data-slide>
+                <div class="hero__media">{% include 'include/scenery.html' with variant=1 uid='hero' %}</div>
                 <div class="hero__overlay"></div>
-                <div class="container hero__content">
-                    {% if site.season %}<span class="hero__eyebrow">{{ site.season }}</span>{% endif %}
-                    <h1 class="hero__title">{{ site.name }}</h1>
+                <div class="hero__content">
+                    <div class="container">
+                        <span class="hero__eyebrow">{{ site.season|default:'Горнолыжная база' }}</span>
+                        <h1 class="hero__title">{{ site.name }}</h1>
+                        {% if site.tagline %}<p class="hero__text">{{ site.tagline }}</p>{% endif %}
+                    </div>
                 </div>
             </div>
         {% endfor %}
     </div>
+    <div class="snowfall"></div>
 
     {% if slides|length > 1 %}
-        <div class="hero__dots hero__dots--{{ slides|length }}" aria-hidden="true">
-            {% for slide in slides %}<span class="hero__dot"></span>{% endfor %}
+        <div class="hero__controls">
+            <div class="container">
+                <div class="hero__dots">
+                    {% for slide in slides %}
+                        <button class="hero__dot{% if forloop.first %} is-active{% endif %}" type="button" data-slide-to="{{ forloop.counter0 }}" aria-label="Слайд {{ forloop.counter }}"></button>
+                    {% endfor %}
+                </div>
+                <div class="hero__arrows">
+                    <button class="hero__arrow" type="button" data-slider-prev aria-label="Предыдущий слайд"><svg class="icon"><use href="#i-arrow-left"></use></svg></button>
+                    <button class="hero__arrow" type="button" data-slider-next aria-label="Следующий слайд"><svg class="icon"><use href="#i-arrow-right"></use></svg></button>
+                </div>
+            </div>
         </div>
     {% endif %}
 
     <div class="container hero__booking">
         <form class="booking-widget" action="{% url 'contacts:booking' %}" method="get">
             <div class="booking-widget__field">
-                <label for="id_check_in">Заезд</label>
-                <input type="date" id="id_check_in" name="check_in" class="field__input" required>
+                <label for="bw_check_in">Заезд</label>
+                <input type="date" id="bw_check_in" name="check_in" class="field__input" required>
             </div>
             <div class="booking-widget__field">
-                <label for="id_check_out">Выезд</label>
-                <input type="date" id="id_check_out" name="check_out" class="field__input" required>
+                <label for="bw_check_out">Выезд</label>
+                <input type="date" id="bw_check_out" name="check_out" class="field__input" required>
             </div>
-            <div class="booking-widget__field booking-widget__field--sm">
-                <label for="id_adults">Взрослых</label>
-                <input type="number" id="id_adults" name="adults" class="field__input" min="1" max="20" value="2" required>
+            <div class="booking-widget__field">
+                <label for="bw_adults">Взрослых</label>
+                <input type="number" id="bw_adults" name="adults" class="field__input" min="1" max="20" value="2" required>
             </div>
-            <div class="booking-widget__field booking-widget__field--sm">
-                <label for="id_children">Детей</label>
-                <input type="number" id="id_children" name="children" class="field__input" min="0" max="10" value="0">
+            <div class="booking-widget__field">
+                <label for="bw_children">Детей</label>
+                <input type="number" id="bw_children" name="children" class="field__input" min="0" max="10" value="0">
             </div>
-            <button class="btn btn--primary booking-widget__submit" type="submit">Найти номер</button>
+            <button class="btn btn--primary booking-widget__submit" type="submit">Найти жильё</button>
         </form>
     </div>
 </section>
 
-{# ---------- СЕГОДНЯ НА СКЛОНЕ ---------- #}
-<section class="conditions-bar">
+{# ================= СЕГОДНЯ НА СКЛОНЕ ================= #}
+<section class="today">
     <div class="container">
-        {% include 'include/conditions.html' %}
+        {% include 'include/today.html' %}
     </div>
 </section>
 
-{# ---------- ПРЕИМУЩЕСТВА ---------- #}
+{# ================= О БАЗЕ ================= #}
+<section class="section theme-light">
+    <div class="container intro">
+        <div>
+            <span class="section__eyebrow" data-reveal>О базе</span>
+            <h2 class="section__title" data-reveal style="--d:.1s">Снег <em>выше облаков</em> — в паре часов от Бишкека</h2>
+            <div class="intro__text" data-reveal style="--d:.2s">
+                {% if about_page and about_page.content %}
+                    <div class="prose">{{ about_page.content|safe|truncatewords_html:70 }}</div>
+                {% else %}
+                    <p>{{ site.tagline }}</p>
+                {% endif %}
+            </div>
+            <div class="intro__stats" data-reveal style="--d:.3s">
+                {% if site.altitude_top %}
+                    <div><span class="stat__value"><span data-count="{{ site.altitude_top }}">{{ site.altitude_top|money }}</span> <small>м</small></span><span class="stat__label">высота над уровнем моря</span></div>
+                {% endif %}
+                <div><span class="stat__value"><span data-count="{{ total_km|stringformat:'s' }}">{{ total_km }}</span> <small>км</small></span><span class="stat__label">трасс и спусков</span></div>
+                {% if site.distance_km %}
+                    <div><span class="stat__value"><span data-count="{{ site.distance_km }}">{{ site.distance_km }}</span> <small>км</small></span><span class="stat__label">от Бишкека</span></div>
+                {% else %}
+                    <div><span class="stat__value"><span data-count="{{ lifts_count }}">{{ lifts_count }}</span></span><span class="stat__label">подъёмника</span></div>
+                {% endif %}
+            </div>
+            <a class="btn btn--ghost" href="{% url 'base:about' %}" data-reveal style="--d:.4s">Подробнее о базе <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
+        </div>
+        <div class="intro__media" data-reveal style="--d:.2s">
+            {% if site.about_image %}
+                <img src="{{ site.about_image.url }}" alt="{{ site.name }}" loading="lazy">
+            {% else %}
+                {% include 'include/scenery.html' with variant=3 uid='intro' %}
+            {% endif %}
+            {% if site.snow_depth %}
+                <div class="intro__badge"><strong>{{ site.snow_depth }} см</strong><span>снега на склоне сегодня</span></div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{# ================= ПРЕИМУЩЕСТВА ================= #}
 {% if advantages %}
-<section class="section">
+<section class="section theme-light section--alt">
     <div class="container">
-        <div class="advantages">
+        {% include 'include/section_head.html' with eyebrow='Почему мы' title='Всё для идеального дня в горах' center=True %}
+        <div class="features">
             {% for item in advantages %}
-                <div class="advantage">
-                    <h3 class="advantage__title">{{ item.title }}</h3>
-                    <p class="advantage__text">{{ item.text }}</p>
+                <div class="feature" data-reveal style="--d:{{ forloop.counter0 }}00ms">
+                    <span class="feature__icon"><svg class="icon"><use href="#i-{{ item.icon|default:'mountain' }}"></use></svg></span>
+                    <h3 class="feature__title">{{ item.title }}</h3>
+                    <p class="feature__text">{{ item.text }}</p>
                 </div>
             {% endfor %}
         </div>
@@ -82,18 +145,18 @@
 </section>
 {% endif %}
 
-{# ---------- ТРАССЫ ---------- #}
+{# ================= ТРАССЫ ================= #}
 {% if slope_levels %}
-<section class="section section--muted">
+<section class="section">
     <div class="container">
         {% url 'cms:slopes' as slopes_url %}
-        {% include 'include/section_head.html' with eyebrow='Катание' title='Трассы' link_url=slopes_url link_text='Все трассы и подъёмники' %}
-        <div class="grid grid--4">
+        {% include 'include/section_head.html' with eyebrow='Катание' title='Трассы на любой уровень' lead='Широкие ухоженные склоны для новичков, крутые участки и фрирайд для тех, кто ищет больше.' link_url=slopes_url link_text='Трассы и подъёмники' %}
+        <div class="grid grid--{% if slope_levels|length >= 4 %}4{% else %}{{ slope_levels|length }}{% endif %}">
             {% for level in slope_levels %}
-                <article class="slope">
-                    <span class="slope__level slope__level--{{ level.value }}"></span>
+                <article class="slope slope--{{ level.value }}" data-reveal style="--d:{{ forloop.counter0 }}00ms">
+                    <span class="slope__level"></span>
                     <h3 class="slope__title">{{ level.label }}</h3>
-                    <p class="slope__meta">{{ level.count }} {{ level.count|ru_plural:"трасса,трассы,трасс" }} · {{ level.length_km }} км</p>
+                    <p class="slope__meta">{{ level.count }} {{ level.count|ru_plural:"трасса,трассы,трасс" }}{% if level.length_km %} · {{ level.length_km }} км{% endif %}</p>
                 </article>
             {% endfor %}
         </div>
@@ -101,27 +164,25 @@
 </section>
 {% endif %}
 
-{# ---------- СКИ-ПАССЫ ---------- #}
+{# ================= СКИ-ПАССЫ ================= #}
 {% if ski_passes %}
-<section class="section">
+<section class="section section--alt">
     <div class="container">
-        {% url 'cms:skipass' as skipass_url %}
-        {% include 'include/section_head.html' with eyebrow='Тарифы' title='Ски-пассы' link_url=skipass_url link_text='Все тарифы' %}
+        {% url 'cms:prices' as prices_url %}
+        {% include 'include/section_head.html' with eyebrow='Ski pass' title='Цены на подъёмники' link_url=prices_url link_text='Весь прайс' %}
         <div class="grid grid--3">
-            {% for pass in ski_passes %}
-                {% include 'include/skipass_card.html' %}
-            {% endfor %}
+            {% for pass in ski_passes %}{% include 'include/skipass_card.html' %}{% endfor %}
         </div>
     </div>
 </section>
 {% endif %}
 
-{# ---------- ПРОЖИВАНИЕ ---------- #}
+{# ================= ПРОЖИВАНИЕ ================= #}
 {% if rooms %}
-<section class="section section--muted">
+<section class="section theme-light">
     <div class="container">
         {% url 'cms:room_list' as rooms_url %}
-        {% include 'include/section_head.html' with eyebrow='Размещение' title='Номера и жильё' link_url=rooms_url link_text='Все категории' %}
+        {% include 'include/section_head.html' with eyebrow='Размещение' title='Жильё прямо у склона' lead='Проснуться на высоте почти 3 000 метров и встать на лыжи сразу после завтрака.' link_url=rooms_url link_text='Все варианты' %}
         <div class="grid grid--3">
             {% for room in rooms %}{% include 'include/room_card.html' %}{% endfor %}
         </div>
@@ -129,22 +190,45 @@
 </section>
 {% endif %}
 
-{# ---------- УСЛУГИ ---------- #}
-{% if service_categories %}
+{# ================= СЕРВИС ================= #}
 <section class="section">
     <div class="container">
         {% url 'cms:service_list' as services_url %}
-        {% include 'include/section_head.html' with eyebrow='Инфраструктура' title='Услуги курорта' link_url=services_url link_text='Все услуги' %}
+        {% url 'cms:rental' as rental_url %}
+        {% url 'cms:menu' as menu_url %}
+        {% url 'cms:transfer' as transfer_url %}
+        {% url 'cms:skipass' as skipass_url %}
+        {% include 'include/section_head.html' with eyebrow='Сервис' title='Прокат, кафе и всё для отдыха' link_url=services_url link_text='Все услуги' %}
         <div class="grid grid--4">
-            {% for category in service_categories %}{% include 'include/service_tile.html' %}{% endfor %}
+            {% include 'include/service_tile.html' with title='Прокат снаряжения' url=rental_url category=None variant=1 %}
+            {% include 'include/service_tile.html' with title='Меню кафе' url=menu_url category=None variant=2 %}
+            {% include 'include/service_tile.html' with title='Трансфер' url=transfer_url category=None variant=3 %}
+            {% with category=service_categories.0 %}
+                {% if category %}
+                    {% include 'include/service_tile.html' with variant=4 %}
+                {% else %}
+                    {% include 'include/service_tile.html' with title='Ски-пассы' url=skipass_url category=None variant=4 %}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</section>
+
+{# ================= ПРОГНОЗ ================= #}
+{% if site.latitude and site.longitude %}
+<section class="section theme-light section--alt">
+    <div class="container">
+        {% include 'include/section_head.html' with eyebrow='Погода на перевале' title='Прогноз на неделю' lead='Дни, когда работают подъёмники, выделены. Данные — Open-Meteo.' %}
+        <div class="forecast" data-forecast data-lat="{{ site.latitude|stringformat:'s' }}" data-lon="{{ site.longitude|stringformat:'s' }}" data-open-days="{{ site.open_weekdays }}" data-reveal>
+            <p class="empty forecast__fallback">Загружаем прогноз…</p>
         </div>
     </div>
 </section>
 {% endif %}
 
-{# ---------- СПЕЦПРЕДЛОЖЕНИЯ ---------- #}
+{# ================= АКЦИИ ================= #}
 {% if offers %}
-<section class="section section--muted">
+<section class="section">
     <div class="container">
         {% url 'cms:offer_list' as offers_url %}
         {% include 'include/section_head.html' with eyebrow='Выгодно' title='Спецпредложения' link_url=offers_url link_text='Все акции' %}
@@ -155,9 +239,36 @@
 </section>
 {% endif %}
 
-{# ---------- ОТЗЫВЫ ---------- #}
+{# ================= ТРАНСФЕР ================= #}
+{% if transfer_routes %}
+<section class="section section--alt">
+    <div class="container">
+        {% url 'cms:transfer' as transfer_url %}
+        {% include 'include/section_head.html' with eyebrow='Как добраться' title='Трансфер до базы' link_url=transfer_url link_text='Расписание и детали' %}
+        <div class="grid grid--{% if transfer_routes|length == 2 %}2{% else %}3{% endif %}">
+            {% for route in transfer_routes %}
+                <a class="route route--link" href="{{ transfer_url }}" data-reveal style="--d:{{ forloop.counter0 }}00ms">
+                    <span class="route__icon"><svg class="icon"><use href="#i-car"></use></svg></span>
+                    <h3 class="route__name">{{ route.name }}</h3>
+                    {% if route.schedule %}<p class="route__text">{{ route.schedule }}{% if route.duration %} · {{ route.duration }}{% endif %}</p>{% endif %}
+                    <p class="price route__price">
+                        {% if route.price %}
+                            <span class="price__value">{{ route.price|money }}</span>
+                            <span class="price__unit">сом{% if route.price_unit %} / {{ route.price_unit }}{% endif %}</span>
+                        {% else %}
+                            <span class="price__unit">Цена по запросу</span>
+                        {% endif %}
+                    </p>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ================= ОТЗЫВЫ ================= #}
 {% if reviews %}
-<section class="section">
+<section class="section theme-light">
     <div class="container">
         {% url 'cms:reviews' as reviews_url %}
         {% include 'include/section_head.html' with eyebrow='Гости о нас' title='Отзывы' link_url=reviews_url link_text='Все отзывы' %}
@@ -168,12 +279,12 @@
 </section>
 {% endif %}
 
-{# ---------- НОВОСТИ ---------- #}
+{# ================= НОВОСТИ ================= #}
 {% if posts %}
-<section class="section section--muted">
+<section class="section theme-light section--alt">
     <div class="container">
         {% url 'cms:post_list' as blog_url %}
-        {% include 'include/section_head.html' with eyebrow='Журнал' title='Новости и статьи' link_url=blog_url link_text='Все материалы' %}
+        {% include 'include/section_head.html' with eyebrow='Новости' title='Жизнь на склоне' link_url=blog_url link_text='Все новости' %}
         <div class="grid grid--3">
             {% for post in posts %}{% include 'include/post_card.html' %}{% endfor %}
         </div>
@@ -181,36 +292,17 @@
 </section>
 {% endif %}
 
-{# ---------- ТРАНСФЕР ---------- #}
-{% if transfer_routes %}
-<section class="section">
-    <div class="container">
-        {% url 'cms:transfer' as transfer_url %}
-        {% include 'include/section_head.html' with eyebrow='Как добраться' title='Трансфер до курорта' link_url=transfer_url link_text='Расписание и цены' %}
-        <div class="grid grid--3">
-            {% for route in transfer_routes %}
-                <a class="route route--link" href="{{ transfer_url }}">
-                    <h3 class="route__name">{{ route.name }}</h3>
-                    {% if route.schedule %}<p class="route__text">{{ route.schedule }}{% if route.duration %} · {{ route.duration }}{% endif %}</p>{% endif %}
-                    {% if route.price %}<p class="price route__price"><span class="price__value">{{ route.price|money }}</span> <span class="price__unit">сом{% if route.price_unit %} / {{ route.price_unit }}{% endif %}</span></p>{% endif %}
-                </a>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-{% endif %}
-
-{# ---------- INSTAGRAM ---------- #}
+{# ================= INSTAGRAM ================= #}
 {% if site.instagram %}
 <section class="section section--tight">
     <div class="container">
-        <a class="insta" href="{{ site.instagram }}" target="_blank" rel="noopener">
+        <a class="insta" href="{{ site.instagram }}" target="_blank" rel="noopener" data-reveal>
             <div>
-                <span class="section__eyebrow">Instagram</span>
-                <h2 class="insta__title">Свежие видео со склона, погода и акции</h2>
-                <p class="insta__text">Подписывайтесь — публикуем состояние трасс каждое утро.</p>
+                <span class="insta__handle"><svg class="icon"><use href="#i-instagram"></use></svg>{{ site.instagram|instagram_handle }}</span>
+                <h2 class="insta__title">Свежий снег, видео со склона и новости — каждый день</h2>
+                <p class="insta__text">Подписывайтесь, чтобы первыми узнавать об открытии трасс и погоде на перевале.</p>
             </div>
-            <span class="btn btn--primary">Подписаться</span>
+            <span class="btn btn--primary btn--lg">Подписаться</span>
         </a>
     </div>
 </section>

@@ -1,42 +1,57 @@
 {% extends 'base.html' %}
+{% load site_tags %}
 
-{% block title %}{{ page.seo_title|default:'О курорте' }} — {{ site.name }}{% endblock %}
+{% block title %}{{ page.seo_title|default:'О базе' }} — {{ site.name }}{% endblock %}
 {% block description %}{{ page.seo_description|default:site.tagline }}{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title='О курорте' eyebrow=site.name text=site.tagline image=page.image %}
+{% include 'include/page_hero.html' with title=page.title|default:'О базе' eyebrow=site.full_name|default:site.name text=site.tagline image=page.image variant=3 %}
 
-<section class="section section--tight">
+<section class="section theme-light">
     <div class="container">
         <ul class="stats">
-            <li class="stats__item"><span class="stats__value">{{ conditions.slopes.total }}</span><span class="stats__label">трасс</span></li>
-            <li class="stats__item"><span class="stats__value">{{ total_km }}</span><span class="stats__label">км спусков</span></li>
-            <li class="stats__item"><span class="stats__value">{{ lifts_count }}</span><span class="stats__label">подъёмников</span></li>
-            <li class="stats__item"><span class="stats__value">{{ rooms_count }}</span><span class="stats__label">категорий жилья</span></li>
+            {% if site.altitude_base and site.altitude_top %}
+                <li class="stats__item" data-reveal><span class="stats__value">{{ site.altitude_base|money }}–{{ site.altitude_top|money }}</span><span class="stats__label">метров над уровнем моря</span></li>
+            {% endif %}
+            <li class="stats__item" data-reveal style="--d:.1s"><span class="stats__value" data-count="{{ total_km|stringformat:'s' }}">{{ total_km }}</span><span class="stats__label">км трасс</span></li>
+            <li class="stats__item" data-reveal style="--d:.2s"><span class="stats__value" data-count="{{ lifts_count }}">{{ lifts_count }}</span><span class="stats__label">{{ lifts_count|ru_plural:"подъёмник,подъёмника,подъёмников" }}</span></li>
+            {% if site.distance_km %}
+                <li class="stats__item" data-reveal style="--d:.3s"><span class="stats__value" data-count="{{ site.distance_km }}">{{ site.distance_km }}</span><span class="stats__label">км от Бишкека</span></li>
+            {% else %}
+                <li class="stats__item" data-reveal style="--d:.3s"><span class="stats__value" data-count="{{ rooms_count }}">{{ rooms_count }}</span><span class="stats__label">вариантов жилья</span></li>
+            {% endif %}
         </ul>
+
+        {% if page.content %}
+            <div class="container--narrow" style="margin: 80px auto 0" data-reveal>
+                <div class="prose">{{ page.content|safe }}</div>
+            </div>
+        {% endif %}
     </div>
 </section>
 
-{% if page.content %}
-<section class="section section--tight">
-    <div class="container container--narrow">
-        <div class="prose">{{ page.content|safe }}</div>
+{% if advantages %}
+<section class="section">
+    <div class="container">
+        {% include 'include/section_head.html' with eyebrow='Почему мы' title='Преимущества базы' center=True %}
+        <div class="features">
+            {% for item in advantages %}
+                <div class="feature" data-reveal style="--d:{{ forloop.counter0 }}00ms">
+                    <span class="feature__icon"><svg class="icon"><use href="#i-{{ item.icon|default:'mountain' }}"></use></svg></span>
+                    <h3 class="feature__title">{{ item.title }}</h3>
+                    <p class="feature__text">{{ item.text }}</p>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </section>
 {% endif %}
 
-{% if advantages %}
-<section class="section section--muted">
-    <div class="container">
-        {% include 'include/section_head.html' with eyebrow='Почему мы' title='Преимущества курорта' %}
-        <div class="advantages">
-            {% for item in advantages %}
-                <div class="advantage">
-                    <h3 class="advantage__title">{{ item.title }}</h3>
-                    <p class="advantage__text">{{ item.text }}</p>
-                </div>
-            {% endfor %}
-        </div>
+{% if faqs %}
+<section class="section theme-light section--alt">
+    <div class="container container--narrow">
+        {% include 'include/section_head.html' with eyebrow='FAQ' title='Частые вопросы' center=True %}
+        {% include 'include/faq.html' %}
     </div>
 </section>
 {% endif %}

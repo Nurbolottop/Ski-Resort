@@ -1,22 +1,24 @@
 {% load site_tags %}
-<article class="card">
-    <a class="card__media" href="{{ room.get_absolute_url }}">
-        {% if room.cover %}<img src="{{ room.cover.url }}" alt="{{ room.name }}" loading="lazy" width="600" height="400">{% endif %}
-        <span class="card__badge">{{ room.name }}</span>
+<article class="card" data-reveal style="--d:{{ forloop.counter0|default:0 }}00ms">
+    <a class="card__media" href="{{ room.get_absolute_url }}" tabindex="-1">
+        {% if room.cover %}
+            <img src="{{ room.cover.url }}" alt="{{ room.name }}" loading="lazy" width="800" height="600">
+        {% else %}
+            {% include 'include/scenery.html' with variant=forloop.counter|default:1|cycle_variant uid=room.pk %}
+        {% endif %}
+        <span class="card__badge">до {{ room.max_guests }} гостей</span>
     </a>
     <div class="card__body">
         <h3 class="card__title"><a href="{{ room.get_absolute_url }}">{{ room.name }}</a></h3>
-        <p class="card__meta">
-            до {{ room.max_guests }} гостей{% if room.beds %} · {{ room.beds }}{% endif %}{% if room.area %} · {{ room.area }} м²{% endif %}
-        </p>
-        {% if room.short_description %}<p class="card__text">{{ room.short_description|truncatechars:180 }}</p>{% endif %}
+        <p class="card__meta">{{ room.beds }}{% if room.beds and room.area %} · {% endif %}{% if room.area %}{{ room.area }} м²{% endif %}</p>
+        {% if room.short_description %}<p class="card__text">{{ room.short_description|truncatechars:150 }}</p>{% endif %}
         <div class="card__footer">
             <span class="price">
                 <span class="price__from">от</span>
                 <span class="price__value">{{ room.price_from|money }}</span>
-                <span class="price__unit">сом / ночь</span>
+                <span class="price__unit">сом / {{ room.price_unit }}</span>
             </span>
-            <a class="btn btn--primary btn--sm" href="{{ room.get_absolute_url }}">Подробнее</a>
+            <a class="link-more" href="{{ room.get_absolute_url }}">Подробнее <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
         </div>
     </div>
 </article>

@@ -1,8 +1,9 @@
-<article class="review">
-    <div class="review__rating" aria-label="{{ review.rating }}/5">{{ review.stars }}</div>
-    <p class="review__text">{{ review.text|truncatechars:320 }}</p>
+<article class="review" data-reveal style="--d:{{ forloop.counter0|default:0 }}00ms">
+    <span class="review__quote" aria-hidden="true">“</span>
+    <div class="review__rating" aria-label="Оценка {{ review.rating }} из 5">{{ review.stars }}</div>
+    <p class="review__text">{{ review.text|truncatechars:280 }}</p>
     <div class="review__author">
         <strong>{{ review.name }}</strong>
-        <span class="review__date">{{ review.created_at|date:'d.m.Y' }}</span>
+        <span class="review__date">{{ review.created_at|date:'E Y' }}</span>
     </div>
 </article>

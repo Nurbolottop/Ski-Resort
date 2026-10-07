@@ -1,19 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %}Услуги курорта — {{ site.name }}{% endblock %}
+{% block title %}Услуги — {{ site.name }}{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title='Услуги курорта' eyebrow='Инфраструктура' text='Прокат, школа катания, рестораны, SPA и всё для отдыха после склона.' %}
+{% include 'include/page_hero.html' with title='Услуги' eyebrow='Сервис' text='Инструкторы, кафе, прокат и трансфер — всё, чтобы день в горах прошёл легко.' variant=1 %}
 
-<section class="section">
+<section class="section theme-light">
     <div class="container">
-        {% if categories %}
-            <div class="grid grid--3">
-                {% for category in categories %}{% include 'include/service_tile.html' %}{% endfor %}
-            </div>
-        {% else %}
-            <p class="empty">Список услуг скоро появится.</p>
-        {% endif %}
+        <div class="grid grid--4">
+            {% url 'cms:rental' as rental_url %}
+            {% url 'cms:menu' as menu_url %}
+            {% url 'cms:transfer' as transfer_url %}
+            {% include 'include/service_tile.html' with title='Прокат снаряжения' url=rental_url category=None variant=1 %}
+            {% include 'include/service_tile.html' with title='Меню кафе' url=menu_url category=None variant=2 %}
+            {% include 'include/service_tile.html' with title='Трансфер' url=transfer_url category=None variant=3 %}
+            {% for category in categories %}
+                {% include 'include/service_tile.html' with variant=forloop.counter|add:3 %}
+            {% endfor %}
+        </div>
     </div>
 </section>
 

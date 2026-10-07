@@ -1,11 +1,14 @@
 {% load site_tags %}
-<div class="pass{% if pass.is_featured %} pass--featured{% endif %}">
+<div class="pass{% if pass.is_featured %} pass--featured{% endif %}" data-reveal style="--d:{{ forloop.counter0|default:0 }}00ms">
     {% if pass.is_featured %}<span class="pass__tag">Популярный</span>{% endif %}
     <h3 class="pass__name">{{ pass.name }}</h3>
-    <p class="price"><span class="price__value">{{ pass.price|money }}</span> <span class="price__unit">сом</span></p>
-    {% if pass.price_child %}<p class="pass__child">Детский — {{ pass.price_child|money }} сом</p>{% endif %}
+    <p class="price">
+        <span class="price__value">{{ pass.price|money }}</span>
+        <span class="price__unit">сом{% if pass.price_unit %} / {{ pass.price_unit }}{% endif %}</span>
+    </p>
+    {% if pass.note %}<p class="pass__note">{{ pass.note }}</p>{% endif %}
     <ul class="pass__list">
         {% for feature in pass.features_list %}<li>{{ feature }}</li>{% endfor %}
     </ul>
-    <a href="{% url 'contacts:contacts' %}" class="btn {% if pass.is_featured %}btn--primary{% else %}btn--ghost{% endif %}">Купить</a>
+    <a href="{% url 'contacts:contacts' %}" class="btn {% if pass.is_featured %}btn--primary{% else %}btn--ghost{% endif %}">Узнать подробнее</a>
 </div>

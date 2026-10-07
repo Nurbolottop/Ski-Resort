@@ -1,0 +1,48 @@
+{# Сегодня на склоне. Нужны: site, conditions #}
+<div class="today__grid" data-reveal>
+    <div class="today__item today__item--status">
+        <span class="today__label">Статус базы</span>
+        {% if not site.is_season_open %}
+            <span class="open-badge open-badge--closed">Сезон закрыт</span>
+        {% elif site.is_open_today %}
+            <span class="open-badge open-badge--open">Сегодня открыто</span>
+        {% else %}
+            <span class="open-badge open-badge--closed">Сегодня закрыто</span>
+        {% endif %}
+        <span class="today__note">Работаем {{ site.open_days_label }}{% if site.lift_hours %}, {{ site.lift_hours }}{% endif %}</span>
+    </div>
+
+    {% if site.latitude and site.longitude %}
+        <div class="today__item" data-weather data-lat="{{ site.latitude|stringformat:'s' }}" data-lon="{{ site.longitude|stringformat:'s' }}">
+            <span class="today__label">Погода сейчас</span>
+            <span class="today__value">
+                <span data-weather-icon><svg class="icon"><use href="#i-thermo"></use></svg></span>
+                <span data-weather-temp>{% if site.temperature is not None %}{{ site.temperature }}°{% else %}—{% endif %}</span>
+            </span>
+            <span class="today__note" data-weather-note>на перевале</span>
+        </div>
+    {% else %}
+        <div class="today__item">
+            <span class="today__label">Температура</span>
+            <span class="today__value"><svg class="icon"><use href="#i-thermo"></use></svg>{% if site.temperature is not None %}{{ site.temperature }}°{% else %}—{% endif %}</span>
+        </div>
+    {% endif %}
+
+    <div class="today__item">
+        <span class="today__label">Снег на склоне</span>
+        <span class="today__value"><svg class="icon"><use href="#i-snow"></use></svg>{% if site.snow_depth is not None %}{{ site.snow_depth }} см{% else %}—{% endif %}</span>
+        {% if site.snow_note %}<span class="today__note">{{ site.snow_note }}</span>{% endif %}
+    </div>
+
+    <div class="today__item">
+        <span class="today__label">Трассы</span>
+        <span class="today__value"><svg class="icon"><use href="#i-ski"></use></svg>{{ conditions.slopes.open }} / {{ conditions.slopes.total }}</span>
+        <span class="today__note">открыто</span>
+    </div>
+
+    <div class="today__item">
+        <span class="today__label">Подъёмники</span>
+        <span class="today__value"><svg class="icon"><use href="#i-lift"></use></svg>{{ conditions.lifts.open }} / {{ conditions.lifts.total }}</span>
+        <span class="today__note">работают</span>
+    </div>
+</div>

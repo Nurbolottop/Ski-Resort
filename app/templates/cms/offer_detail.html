@@ -5,18 +5,19 @@
 
 {% block content %}
 {% url 'cms:offer_list' as offers_url %}
-{% include 'include/page_hero.html' with title=offer.title eyebrow=offer.label image=offer.image parent_title='Спецпредложения' parent_url=offers_url %}
+{% include 'include/page_hero.html' with title=offer.title eyebrow=offer.label|default:'Акция' image=offer.image parent_title='Акции' parent_url=offers_url variant=2 %}
 
-<section class="section section--tight">
+<section class="section theme-light">
     <div class="container container--narrow">
         {% if offer.valid_from or offer.valid_to %}
-            <p class="note note--accent">
-                Действует{% if offer.valid_from %} с {{ offer.valid_from|date:'d.m.Y' }}{% endif %}{% if offer.valid_to %} до {{ offer.valid_to|date:'d.m.Y' }}{% endif %}
+            <p class="levels__item" style="margin-bottom: 28px" data-reveal>
+                <svg class="icon" style="margin-right: 8px; color: var(--accent)"><use href="#i-calendar"></use></svg>
+                Действует{% if offer.valid_from %} с {{ offer.valid_from|date:'j E' }}{% endif %}{% if offer.valid_to %} до {{ offer.valid_to|date:'j E Y' }}{% endif %}
             </p>
         {% endif %}
-        {% if offer.short_description %}<p class="lead">{{ offer.short_description }}</p>{% endif %}
-        <div class="prose">{{ offer.content|safe }}</div>
-        <div class="actions">
+        {% if offer.short_description %}<p class="lead" data-reveal>{{ offer.short_description }}</p>{% endif %}
+        <div class="prose" data-reveal>{{ offer.content|safe }}</div>
+        <div class="actions" data-reveal>
             <a class="btn btn--primary" href="{% url 'contacts:booking' %}">Забронировать</a>
             <a class="btn btn--ghost" href="{{ offers_url }}">Все акции</a>
         </div>

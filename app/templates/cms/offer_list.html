@@ -1,18 +1,18 @@
 {% extends 'base.html' %}
 
-{% block title %}Спецпредложения — {{ site.name }}{% endblock %}
+{% block title %}Акции — {{ site.name }}{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title='Спецпредложения' eyebrow='Выгодно' text='Сезонные акции, пакетные туры и скидки для гостей курорта.' %}
+{% include 'include/page_hero.html' with title='Акции' eyebrow='Выгодно' text='Сезонные предложения, скидки для семей и компаний.' variant=2 %}
 
-<section class="section">
+<section class="section theme-light">
     <div class="container">
         {% if offers %}
             <div class="grid grid--3">
                 {% for offer in offers %}{% include 'include/offer_card.html' %}{% endfor %}
             </div>
         {% else %}
-            <p class="empty">Сейчас активных акций нет. Подпишитесь на рассылку, чтобы не пропустить новые.</p>
+            <p class="empty">Сейчас активных акций нет. Подпишитесь на рассылку внизу страницы — сообщим о новых.</p>
         {% endif %}
     </div>
 </section>

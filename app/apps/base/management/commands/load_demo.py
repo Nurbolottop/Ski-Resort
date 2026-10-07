@@ -1,17 +1,26 @@
-from datetime import timedelta
+"""
+Стартовое наполнение сайта данными горнолыжной базы «Тоо-Ашуу».
+
+Источники: профиль @tooashuu.kg, 24.kg (январь 2024), adrenalinicsilence.kz,
+nomadsland.travel. Цены — по публикациям прошлых сезонов: перед запуском
+сверьте их с актуальным прайсом в админке.
+
+Повторный запуск безопасен: существующие записи не перезаписываются.
+"""
+from decimal import Decimal
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from django.utils import timezone
 
-from apps.base.models import Advantage, HeroSlide, Page, SiteSettings
+from apps.base.models import FAQ, Advantage, HeroSlide, Page, SiteSettings
 from apps.cms.models import (
-    Lift, MenuCategory, MenuItem, Offer, Post, Review, Room, Service, ServiceCategory, SkiPass, Slope, TransferRoute,
+    GalleryAlbum, Lift, MenuCategory, MenuItem, Post, RentalItem, Room, Service, ServiceCategory, SkiPass, Slope,
+    TransferRoute,
 )
 
 
 class Command(BaseCommand):
-    help = 'Заполняет сайт демо-контентом. Существующие записи (по slug/названию) не перезаписываются.'
+    help = 'Заполняет сайт стартовыми данными базы «Тоо-Ашуу» (существующие записи не трогает).'
 
     @transaction.atomic
     def handle(self, *args, **options):
@@ -19,169 +28,169 @@ class Command(BaseCommand):
         self.home()
         self.slopes()
         self.ski_passes()
+        self.rental()
         self.rooms()
         self.services()
         self.menu()
         self.transfer()
-        self.offers()
-        self.reviews()
+        self.gallery()
+        self.faq()
         self.posts()
         self.pages()
-        self.stdout.write(self.style.SUCCESS('Демо-данные загружены.'))
+        self.stdout.write(self.style.SUCCESS('Данные «Тоо-Ашуу» загружены. Проверьте цены в админке.'))
 
     def settings(self):
         site = SiteSettings.load()
-        if not site.phone:
-            site.tagline = 'Зимний отдых вашей мечты в горах'
-            site.season = 'Сезон 2026/2027'
-            site.phone = '+996 555 000 000'
-            site.phone_2 = '+996 700 000 000'
-            site.email = 'info@example.com'
-            site.address = 'Адрес курорта'
-            site.working_hours = 'Подъёмники: 9:00 – 17:00\nПрокат: 8:30 – 18:00\nЕжедневно в сезон'
-            site.whatsapp = '996555000000'
-            site.temperature = -6
-            site.snow_depth = 85
-            site.save()
-        if not site.transfer_phone:
-            site.instagram = site.instagram or 'https://www.instagram.com/'
-            site.transfer_contact = 'Диспетчер трансфера'
-            site.transfer_phone = '+996 555 111 111'
-            site.directions = (
-                '<p><strong>На автомобиле.</strong> Из Бишкека по трассе на юг, около 2,5 часов в пути. '
-                'Зимой обязательна зимняя резина, на перевале возможны цепи.</p>'
-                '<p><strong>Парковка</strong> у нижней станции подъёмника — бесплатно для гостей.</p>'
-                '<p><strong>Трансфер.</strong> По выходным курсирует микроавтобус — расписание выше.</p>'
-            )
-            site.save()
+        if site.whatsapp:
+            return
+        site.name = 'Тоо-Ашуу'
+        site.full_name = 'Горнолыжная база «Тоо-Ашуу»'
+        site.tagline = 'Горнолыжная база на перевале Тоо-Ашуу — почти 3 000 метров, солнце и снег больше метра всю зиму.'
+        site.season = 'Сезон 2026/2027'
+        site.open_weekdays = '5,6'
+        site.lift_hours = '9:30 – 16:30'
+        site.whatsapp = '+996 701 797 480'
+        site.transfer_contact = 'Владимир'
+        site.transfer_phone = '+996 558 616 133'
+        site.address = 'Чуйская область, перевал Тоо-Ашуу, трасса Бишкек — Ош'
+        site.working_hours = (
+            'Подъёмники: 9:30 – 16:30\n'
+            'Суббота и воскресенье\n'
+            'Перед поездкой уточняйте состояние дороги через перевал'
+        )
+        site.instagram = 'https://www.instagram.com/tooashuu.kg/'
+        site.latitude = Decimal('42.333000')
+        site.longitude = Decimal('73.817000')
+        site.altitude_base = 2520
+        site.altitude_top = 3000
+        site.distance_km = 120
+        site.directions = (
+            '<p><strong>На машине.</strong> Из Бишкека — по трассе Бишкек — Ош через Кара-Балтинское ущелье '
+            'до перевала Тоо-Ашуу, около 120 км и 2,5–3 часа в пути. База находится на южной стороне перевала, '
+            'у въезда в Суусамырскую долину, сразу за тоннелем.</p>'
+            '<p><strong>Зимой</strong> обязательна зимняя резина; на перевале бывают снегопады и ограничения движения — '
+            'проверьте статус дороги перед выездом.</p>'
+            '<p><strong>Трансфер.</strong> По выходным из Бишкека возит Владимир — бронируйте место заранее.</p>'
+        )
+        site.save()
 
     def home(self):
         slides = [
-            ('Горнолыжный курорт · Сезон 2026/2027', 'Ski Resort'),
-            ('14 трасс · 5 подъёмников', 'Снег, горы и свобода'),
-            ('Отель и коттеджи у склона', 'Ski-in / Ski-out'),
+            ('Перевал Тоо-Ашуу · 3 000 м', 'Снег выше облаков',
+             'Горнолыжная база в 120 км от Бишкека — каждые выходные сезона.'),
+            ('Суббота и воскресенье', 'Выходные на склоне',
+             'Кресельный подъёмник, широкие трассы и фрирайд по свежему снегу.'),
+            ('Прокат · кафе · трансфер', 'Приезжайте налегке',
+             'Снаряжение, горячая еда и трансфер из Бишкека — всё на месте.'),
         ]
-        for i, (eyebrow, title) in enumerate(slides):
-            HeroSlide.objects.get_or_create(title=title, defaults={'eyebrow': eyebrow, 'order': i})
+        for i, (eyebrow, title, text) in enumerate(slides):
+            HeroSlide.objects.get_or_create(title=title, defaults={'eyebrow': eyebrow, 'text': text, 'order': i})
 
         advantages = [
-            ('Трассы и подъёмники', '14 трасс всех уровней сложности, кресельные и бугельные подъёмники, ночное катание.'),
-            ('Прокат и школа', 'Лыжи, сноуборды и экипировка. Инструкторы для детей и взрослых.'),
-            ('Отель и коттеджи', 'Номера разных категорий и коттеджи в шаговой доступности от склона.'),
-            ('Рестораны и SPA', 'Кафе на склоне, ресторан, сауны и бассейн для отдыха после катания.'),
+            ('mountain', 'Почти 3 000 метров',
+             'Высокогорье и южный солнечный склон: снег лежит больше метра всю зиму.'),
+            ('lift', 'Кресельный подъёмник',
+             'Подъём наверх около 17 минут, а для начинающих — бугель.'),
+            ('ski', 'Трассы и фрирайд',
+             'Широкий склон для новичков и целина вокруг — для любителей пухляка.'),
+            ('car', 'Трансфер из Бишкека',
+             'По выходным возим гостей до базы и обратно — бронируйте место заранее.'),
         ]
-        for i, (title, text) in enumerate(advantages):
-            Advantage.objects.get_or_create(title=title, defaults={'text': text, 'order': i})
+        for i, (icon, title, text) in enumerate(advantages):
+            Advantage.objects.get_or_create(title=title, defaults={'icon': icon, 'text': text, 'order': i})
 
     def slopes(self):
         slopes = [
-            ('Учебная', 'green', 400, 40, 'Учебная зона с траволатором'),
-            ('Солнечная', 'green', 1200, 150, ''),
-            ('Семейная', 'green', 1600, 200, ''),
-            ('Лесная', 'blue', 2100, 320, 'Проходит через еловый лес'),
-            ('Панорама', 'blue', 2500, 380, 'Виды на всю долину'),
-            ('Бульвар', 'blue', 1800, 260, ''),
-            ('Красная стрела', 'red', 2300, 480, ''),
-            ('Вираж', 'red', 1900, 420, 'Серия крутых поворотов'),
-            ('Чёрный кулуар', 'black', 1400, 520, 'Только для опытных'),
-            ('Фрирайд-зона', 'black', 1600, 600, 'Вне подготовленных трасс, с гидом'),
+            ('Длинный спуск', 'green', 3000, None, 19, 'Пологая трасса — подходит для новичков'),
+            ('Главный склон', 'blue', 2800, 700, 30, 'Основная трасса вдоль кресельного подъёмника'),
+            ('Крутой склон', 'red', 2600, None, 32, 'Для уверенно катающихся'),
+            ('Фрирайд-зона', 'freeride', None, None, None, 'Целина вокруг трасс — только с опытом и лавинным снаряжением'),
         ]
-        for i, (name, level, length, drop, desc) in enumerate(slopes):
+        for i, (name, level, length, drop, steep, desc) in enumerate(slopes):
             Slope.objects.get_or_create(name=name, defaults={
-                'level': level, 'length_m': length, 'vertical_drop_m': drop,
-                'description': desc, 'order': i, 'is_open': name != 'Фрирайд-зона',
+                'level': level, 'length_m': length, 'vertical_drop_m': drop, 'steepness': steep,
+                'description': desc, 'order': i,
             })
 
         lifts = [
-            ('Гондола «Вершина»', 'gondola', 3200, 2400, '9:00 – 16:30'),
-            ('Кресельный №1', 'chair', 1800, 1800, '9:00 – 17:00'),
-            ('Кресельный №2', 'chair', 1500, 1500, '9:00 – 17:00'),
-            ('Бугель «Учебный»', 'drag', 450, 900, '9:00 – 17:00'),
-            ('Траволатор', 'carpet', 120, 600, '9:00 – 17:00'),
+            ('Кресельный подъёмник', 'chair', 17),
+            ('Бугельный подъёмник', 'drag', None),
         ]
-        for i, (name, lift_type, length, capacity, hours) in enumerate(lifts):
+        for i, (name, lift_type, minutes) in enumerate(lifts):
             Lift.objects.get_or_create(name=name, defaults={
-                'lift_type': lift_type, 'length_m': length, 'capacity': capacity, 'hours': hours, 'order': i,
+                'lift_type': lift_type, 'ride_minutes': minutes, 'hours': '9:30 – 16:30', 'order': i,
             })
 
     def ski_passes(self):
         passes = [
-            ('Полдня', 1500, 1000, 'С 13:00 до 17:00\nВсе подъёмники', False),
-            ('Весь день', 2500, 1700, 'С 9:00 до 17:00\nВсе подъёмники\nНочное катание по пятницам', True),
-            ('3 дня', 6500, 4500, 'Три любых дня в течение недели\nВсе подъёмники', False),
-            ('Сезонный', 35000, 22000, 'Весь сезон без ограничений\nСкидка 10% на прокат', False),
+            ('Взрослый', 1200, '', True),
+            ('Студенческий', 1000, 'При предъявлении студенческого билета', False),
+            ('Детский', 890, 'Дети до 6 лет катаются бесплатно', False),
         ]
-        for i, (name, price, child, features, featured) in enumerate(passes):
+        for i, (name, price, note, featured) in enumerate(passes):
             SkiPass.objects.get_or_create(name=name, defaults={
-                'price': price, 'price_child': child, 'features': features, 'is_featured': featured, 'order': i,
+                'price': price, 'price_unit': 'день', 'note': note, 'is_featured': featured, 'order': i,
+                'features': 'Все подъёмники\nС 9:30 до 16:30',
+            })
+
+    def rental(self):
+        items = [
+            ('ski', 'Комплект горных лыж', 'Лыжи, ботинки, палки', 600),
+            ('snowboard', 'Комплект сноуборда', 'Доска и ботинки', 700),
+            ('clothes', 'Горнолыжный костюм', 'Куртка и штаны', None),
+            ('kids', 'Санки', '', 300),
+        ]
+        for i, (category, name, desc, price) in enumerate(items):
+            RentalItem.objects.get_or_create(name=name, defaults={
+                'category': category, 'description': desc, 'price_day': price, 'order': i,
             })
 
     def rooms(self):
-        amenities = 'Wi-Fi\nТелевизор\nСейф\nФен\nСушилка для обуви\nХранение лыж'
         rooms = [
-            ('Стандарт', 'standard', 2, '1 Queen-size / 2 Twin', 22, 8000,
-             'Уютный номер с видом на горы. Завтрак и хранение снаряжения включены.'),
-            ('Делюкс', 'deluxe', 3, '1 King-size + диван', 32, 12000,
-             'Просторный номер с балконом и панорамным видом на склон.'),
-            ('Семейный', 'family', 4, '1 King-size + 2 Twin', 45, 16000,
-             'Две комнаты для семьи с детьми, детская кроватка по запросу.'),
-            ('Коттедж', 'cottage', 6, '3 спальни', 90, 25000,
-             'Деревянный коттедж с камином, кухней и террасой для семьи или компании.'),
+            ('Номер в гостинице', 'standard', 2, '2 кровати', 6500, 'ночь',
+             'Тёплый номер на базе на высоте почти 3 000 м — утром сразу на склон.'),
+            ('Домик', 'cottage', 6, 'Несколько спален', 11900, 'ночь',
+             'Отдельный домик для семьи или компании прямо у трассы.'),
+            ('Вагончик', 'wagon', 10, 'Общие спальные места', 700, 'место',
+             'Бюджетный вариант для компании: до 10 человек, оплата за место.'),
         ]
-        for i, (name, slug, guests, beds, area, price, short) in enumerate(rooms):
+        for i, (name, slug, guests, beds, price, unit, short) in enumerate(rooms):
             Room.objects.get_or_create(slug=slug, defaults={
-                'name': name, 'max_guests': guests, 'beds': beds, 'area': area, 'price_from': price,
-                'short_description': short, 'amenities': amenities, 'order': i,
-                'description': f'<p>{short}</p><p>В стоимость входит завтрак «шведский стол», '
-                               'посещение бассейна и бесплатный трансфер до нижней станции подъёмника.</p>',
+                'name': name, 'max_guests': guests, 'beds': beds, 'price_from': price, 'price_unit': unit,
+                'short_description': short, 'order': i,
+                'amenities': 'Отопление\nКафе на базе\nХранение лыж\nВид на горы',
+                'description': f'<p>{short}</p><p>Наша база устроена «наоборот»: жильё стоит наверху, '
+                               'поэтому утром не нужно ждать подъёмника — выходите и катите вниз.</p>',
             })
 
     def services(self):
-        categories = {
-            ('Прокат снаряжения', 'rental'): [
-                ('Комплект горных лыж', 'Лыжи, ботинки, палки', 'от 1 500 сом / день'),
-                ('Комплект сноуборда', 'Сноуборд и ботинки', 'от 1 500 сом / день'),
-                ('Шлем и маска', '', '500 сом / день'),
-                ('Сервис', 'Заточка кантов, парафин, ремонт скользяка', 'от 800 сом'),
-            ],
-            ('Школа катания', 'school'): [
-                ('Индивидуальное занятие', 'Инструктор по лыжам или сноуборду', '3 000 сом / час'),
-                ('Групповое занятие', 'Группы до 6 человек', '1 500 сом / час'),
-                ('Детская школа', 'Для детей от 4 лет, игровая форма', '2 000 сом / час'),
-            ],
-            ('Рестораны и бары', 'restaurants'): [
-                ('Ресторан «Вершина»', 'Европейская и национальная кухня', ''),
-                ('Кафе на склоне', 'Горячие напитки, супы, выпечка', ''),
-                ('Après-ski бар', 'Музыка и напитки после катания', ''),
-            ],
-            ('SPA и бассейн', 'spa'): [
-                ('Бассейн', 'Подогреваемый бассейн с видом на горы', 'бесплатно для гостей'),
-                ('Сауна и хаммам', '', 'от 2 000 сом / час'),
-                ('Массаж', 'Спортивный и расслабляющий', 'от 2 500 сом'),
-            ],
-        }
-        for i, ((name, slug), services) in enumerate(categories.items()):
-            category, created = ServiceCategory.objects.get_or_create(slug=slug, defaults={'name': name, 'order': i})
-            if created:
-                for j, (s_name, desc, price) in enumerate(services):
-                    Service.objects.create(category=category, name=s_name, description=desc, price=price, order=j)
+        category, created = ServiceCategory.objects.get_or_create(
+            slug='instructors', defaults={'name': 'Инструкторы', 'order': 0},
+        )
+        if created:
+            services = [
+                ('Индивидуальное занятие', 'Горные лыжи или сноуборд, для любого уровня', '1 000 сом / час'),
+                ('Занятие для детей', 'Спокойный темп и игровая форма', 'по запросу'),
+            ]
+            for j, (name, desc, price) in enumerate(services):
+                Service.objects.create(category=category, name=name, description=desc, price=price, order=j)
 
     def menu(self):
         menu = {
             'Горячие блюда': [
-                ('Лагман', 'Домашняя лапша, говядина, овощи', '350 г', 380, True),
-                ('Плов', 'Рис, баранина, морковь, нут', '300 г', 360, False),
-                ('Манты', 'С бараниной и тыквой, 5 шт.', '300 г', 340, False),
-                ('Шорпо', 'Наваристый суп из баранины', '400 мл', 320, False),
+                ('Лагман', 'Домашняя лапша, говядина, овощи', '350 г', 450, True),
+                ('Плов', 'Рис, говядина, морковь', '300 г', 450, False),
+                ('Манты', 'С мясом и луком, 5 шт.', '300 г', 400, False),
+                ('Шорпо', 'Наваристый суп', '400 мл', 400, False),
             ],
             'Выпечка': [
-                ('Самса', 'С говядиной', '1 шт.', 120, True),
-                ('Боорсоки', 'С каймаком и вареньем', '150 г', 180, False),
+                ('Самса', 'С мясом', '1 шт.', 120, True),
+                ('Боорсоки', 'С вареньем', '150 г', 150, False),
             ],
             'Напитки': [
-                ('Чай травяной', 'Чабрец, шиповник, мёд', '0,5 л', 150, False),
-                ('Глинтвейн безалкогольный', 'Вишнёвый сок, специи, цитрусы', '0,3 л', 220, True),
-                ('Кофе американо', '', '0,25 л', 160, False),
+                ('Чай травяной', 'Чабрец, шиповник', '0,5 л', 100, False),
+                ('Кофе', '', '0,25 л', 150, False),
+                ('Глинтвейн безалкогольный', 'Вишнёвый сок и специи', '0,3 л', 200, True),
             ],
         }
         for i, (name, items) in enumerate(menu.items()):
@@ -195,66 +204,70 @@ class Command(BaseCommand):
 
     def transfer(self):
         routes = [
-            ('Бишкек → курорт', 'Центр города, площадь Ала-Тоо', 'Сб и вс в 7:00', '~2,5 часа', 800),
-            ('Курорт → Бишкек', 'Нижняя станция подъёмника', 'Сб и вс в 17:30', '~2,5 часа', 800),
-            ('Индивидуальный', 'Из любой точки Бишкека', 'В любое время по заявке', '~2,5 часа', 7000),
+            ('Бишкек → Тоо-Ашуу', 'Бишкек, место встречи — по договорённости',
+             'Сб и вс утром — время уточняйте у Владимира', '2,5–3 часа'),
+            ('Тоо-Ашуу → Бишкек', 'База Тоо-Ашуу', 'Сб и вс после закрытия подъёмников', '2,5–3 часа'),
         ]
-        for i, (name, point, schedule, duration, price) in enumerate(routes):
+        for i, (name, point, schedule, duration) in enumerate(routes):
             TransferRoute.objects.get_or_create(name=name, defaults={
-                'departure_point': point, 'schedule': schedule, 'duration': duration, 'price': price,
-                'price_unit': 'машину' if name == 'Индивидуальный' else 'место', 'order': i,
+                'departure_point': point, 'schedule': schedule, 'duration': duration, 'order': i,
             })
 
-    def offers(self):
-        today = timezone.localdate()
-        offers = [
-            ('Раннее бронирование', 'early-booking', '−20%', 'Скидка на проживание при бронировании за 30 дней.'),
-            ('Ски-пасс в подарок', 'free-skipass', 'Подарок', 'При проживании от 5 ночей — ски-пасс на 1 день бесплатно.'),
-            ('Семейный уикенд', 'family-weekend', 'Семья', 'Дети до 7 лет проживают и катаются бесплатно.'),
+    def gallery(self):
+        albums = [
+            ('Сезон 2025–2026', 'season-2025-2026'),
+            ('Сезон 2024–2025', 'season-2024-2025'),
+            ('Сезон 2023–2024', 'season-2023-2024'),
         ]
-        for i, (title, slug, label, short) in enumerate(offers):
-            Offer.objects.get_or_create(slug=slug, defaults={
-                'title': title, 'label': label, 'short_description': short, 'order': i,
-                'content': f'<p>{short}</p><p>Условия акции уточняйте у администратора.</p>',
-                'valid_to': today + timedelta(days=90),
-            })
+        for i, (title, slug) in enumerate(albums):
+            GalleryAlbum.objects.get_or_create(slug=slug, defaults={'title': title, 'order': i})
 
-    def reviews(self):
-        reviews = [
-            ('Айгуль', 5, 'Отличные трассы и быстрые подъёмники, почти без очередей. '
-                          'Инструктор за два дня поставил ребёнка на лыжи. Обязательно вернёмся!'),
-            ('Дмитрий', 5, 'Жили в коттедже прямо у склона — вышел из двери и сразу на трассу. '
-                           'Вечером сауна и ужин в ресторане. Идеальный отдых.'),
-            ('Эрлан', 4, 'Брали снаряжение в прокате: всё новое, подобрали быстро. '
-                         'Персонал внимательный, кафе на склоне с вкусной едой.'),
+    def faq(self):
+        items = [
+            ('Когда работает база?',
+             '<p>По субботам и воскресеньям, подъёмники — с 9:30 до 16:30. '
+             'Перед поездкой уточните статус в WhatsApp: погода на перевале меняется быстро.</p>'),
+            ('Как добраться?',
+             '<p>Около 120 км от Бишкека по трассе Бишкек — Ош, 2,5–3 часа в пути. '
+             'Можно доехать на своей машине (обязательно зимняя резина) или трансфером — '
+             'подробности на странице «Трансфер».</p>'),
+            ('Сколько стоит ски-пасс?',
+             '<p>Взрослый — 1 200 сом, студенческий — 1 000 сом, детский — 890 сом. '
+             'Дети до 6 лет катаются бесплатно. Актуальные цены — в разделе «Цены».</p>'),
+            ('Можно ли взять снаряжение в прокат?',
+             '<p>Да: лыжи, сноуборды, костюмы и санки. В выходные спрос высокий — '
+             'лучше написать заранее, чтобы мы подготовили комплект.</p>'),
+            ('Что взять с собой?',
+             '<p>Солнцезащитные очки и крем — на высоте 3 000 м солнце очень активное, '
+             'тёплую одежду, перчатки и документы.</p>'),
         ]
-        for name, rating, text in reviews:
-            Review.objects.get_or_create(name=name, text=text, defaults={'rating': rating, 'is_published': True})
+        for i, (question, answer) in enumerate(items):
+            FAQ.objects.get_or_create(question=question, defaults={'answer': answer, 'order': i})
 
     def posts(self):
-        now = timezone.now()
-        posts = [
-            ('Открытие сезона 2026/2027', 'season-opening',
-             'Рассказываем о дате открытия, новых трассах и ценах на ски-пассы в этом сезоне.', 1),
-            ('Новый кресельный подъёмник', 'new-chairlift',
-             'Пропускная способность выросла вдвое — меньше очередей и больше катания.', 15),
-            ('Детская школа катания', 'kids-school',
-             'Набираем группы для детей от 4 лет. Занятия с опытными инструкторами.', 30),
-        ]
-        for title, slug, excerpt, days_ago in posts:
-            Post.objects.get_or_create(slug=slug, defaults={
-                'title': title, 'excerpt': excerpt, 'published_at': now - timedelta(days=days_ago),
-                'content': f'<p>{excerpt}</p><p>Подробности — по телефону или в разделе «Контакты».</p>',
-            })
+        Post.objects.get_or_create(slug='new-website', defaults={
+            'title': 'У базы «Тоо-Ашуу» новый сайт',
+            'excerpt': 'Состояние склона, погода на перевале, цены, прокат и трансфер — теперь в одном месте.',
+            'content': '<p>Мы запустили сайт, где собрали всё, что нужно перед поездкой: статус базы на сегодня, '
+                       'прогноз погоды на перевале, цены на ски-пассы и прокат, меню кафе и расписание трансфера.</p>'
+                       '<p>Оставить заявку на проживание можно прямо на сайте или написать нам в WhatsApp.</p>',
+        })
 
     def pages(self):
         pages = [
-            ('О курорте', 'about',
-             '<p>Наш курорт — это современный горнолыжный комплекс для всей семьи. '
-             'Трассы для новичков и профессионалов, удобные подъёмники, '
-             'проживание у самого склона и всё для отдыха после катания.</p>'),
-            ('Политика конфиденциальности', 'privacy', '<p>Текст политики конфиденциальности.</p>'),
-            ('Публичная оферта', 'offer', '<p>Текст публичной оферты.</p>'),
+            ('О базе', 'about',
+             '<p>«Тоо-Ашуу» — горнолыжная база на южном склоне одноимённого перевала, у въезда в Суусамырскую '
+             'долину, в 120 км от Бишкека. Высота — от 2 500 до 3 000 метров над уровнем моря.</p>'
+             '<p>Благодаря высоте снег здесь лежит больше метра всю зиму, а южная экспозиция дарит солнце '
+             'с утра до вечера. С верхней точки открывается панорама на горы и Суусамырскую долину.</p>'
+             '<p>База устроена «наоборот»: жильё и кафе находятся наверху, поэтому утро начинается со спуска. '
+             'На склоне работают кресельный и бугельный подъёмники, рядом — широкие трассы для новичков '
+             'и целина для любителей фрирайда.</p>'
+             '<p>Мы работаем по субботам и воскресеньям. Есть прокат, кафе с домашней кухней и трансфер из Бишкека.</p>'),
+            ('Политика конфиденциальности', 'privacy',
+             '<p>Мы используем имя, телефон и e-mail из форм на сайте только для обработки заявок '
+             'и связи с вами. Данные не передаются третьим лицам.</p>'),
+            ('Публичная оферта', 'offer', '<p>Текст публичной оферты будет опубликован позже.</p>'),
         ]
         for title, slug, content in pages:
             Page.objects.get_or_create(slug=slug, defaults={'title': title, 'content': content})

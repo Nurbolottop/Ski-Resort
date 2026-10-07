@@ -3,21 +3,29 @@
 {% block title %}Галерея — {{ site.name }}{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title='Галерея' eyebrow='Фото' text='Склоны, номера и атмосфера курорта.' %}
+{% include 'include/page_hero.html' with title='Галерея' eyebrow='Фото' text='Склоны, снег и атмосфера базы — по сезонам.' variant=3 %}
 
-<section class="section">
+<section class="section theme-light">
     <div class="container">
         {% if images %}
-            <div class="gallery">
+            {% if albums %}
+                <div class="tabs tabs--center" data-filter-group="#gallery">
+                    <button class="tabs__item is-active" type="button" data-filter="all">Все фото</button>
+                    {% for album in albums %}
+                        <button class="tabs__item" type="button" data-filter="{{ album.slug }}">{{ album.title }}</button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="gallery" id="gallery">
                 {% for item in images %}
-                    <a class="gallery__item" href="#photo-{{ forloop.counter }}">
-                        <img src="{{ item.image.url }}" alt="{{ item.caption }}" loading="lazy">
+                    <a class="gallery__item" href="{{ item.image.url }}" data-lightbox="gallery" data-caption="{{ item.caption }}" data-album="{{ item.album.slug|default:'none' }}">
+                        <img src="{{ item.image.url }}" alt="{{ item.caption|default:site.name }}" loading="lazy">
                     </a>
                 {% endfor %}
             </div>
-            {% include 'include/lightbox.html' with prefix='photo' %}
         {% else %}
-            <p class="empty">Фотографии скоро появятся.</p>
+            <p class="empty">Фотографии скоро появятся.{% if site.instagram %} А пока — свежие фото в <a class="link-more" href="{{ site.instagram }}" target="_blank" rel="noopener">Instagram</a>.{% endif %}</p>
         {% endif %}
     </div>
 </section>
