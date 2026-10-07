@@ -9,7 +9,7 @@
         <h3 class="rental-item__name">{{ item.name }}</h3>
         {% if item.description %}<p class="rental-item__desc">{{ item.description }}</p>{% endif %}
         <div class="rental-item__prices">
-            {% if item.price_day %}<span class="price"><span class="price__value">{{ item.price_day|money }}</span><span class="price__unit">сом / день</span></span>{% endif %}
+            {% if item.price_day %}<span class="price"><span class="price__value">{{ item.price_day|money }}</span><span class="price__unit">сом</span></span>{% endif %}
             {% if item.price_hour %}<span class="price"><span class="price__value">{{ item.price_hour|money }}</span><span class="price__unit">сом / час</span></span>{% endif %}
             {% if not item.price_day and not item.price_hour %}<span class="price__unit">Цена по запросу</span>{% endif %}
         </div>

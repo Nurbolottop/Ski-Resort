@@ -402,7 +402,7 @@
             });
 
             forecasts.forEach(function (box) {
-                var openDays = (box.getAttribute('data-open-days') || '').split(',').map(Number);
+                var openDays = (box.getAttribute('data-open-days') || '').split(',').filter(Boolean).map(Number);
                 var names = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
                 var html = '';
                 data.daily.time.forEach(function (day, i) {

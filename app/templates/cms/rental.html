@@ -4,7 +4,7 @@
 {% block description %}Прокат горных лыж, сноубордов и экипировки на базе {{ site.name }}.{% endblock %}
 
 {% block content %}
-{% include 'include/page_hero.html' with title='Прокат' eyebrow='Снаряжение' text='Лыжи, сноуборды, костюмы и защита — подберём комплект по росту и уровню катания прямо на базе.' variant=3 %}
+{% include 'include/page_hero.html' with title='Прокат' eyebrow='Снаряжение' text='Прейскурант цен на прокат снаряжения: лыжи, сноуборды, ботинки, очки и перчатки.' variant=3 %}
 
 <section class="section theme-light">
     <div class="container">
@@ -23,8 +23,8 @@
 
         <div class="contact-strip" data-reveal>
             <div>
-                <span class="contact-strip__label">Забронировать снаряжение</span>
-                <p class="contact-strip__text">Напишите заранее — подготовим комплект к приезду</p>
+                <span class="contact-strip__label">Вопросы по прокату</span>
+                <p class="contact-strip__text">Пишите в WhatsApp отдела бронирования</p>
             </div>
             <div class="actions">
                 {% if site.whatsapp %}<a class="btn btn--whatsapp" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp"></use></svg>WhatsApp</a>{% endif %}

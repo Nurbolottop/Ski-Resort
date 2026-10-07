@@ -5,8 +5,8 @@
         <span class="section__eyebrow" data-reveal>{{ site.season|default:'Новый сезон' }}</span>
         <h2 class="cta__title" data-reveal style="--d:.1s">Встретимся <em>на склоне</em></h2>
         <p class="cta__text" data-reveal style="--d:.2s">
-            Работаем {{ site.open_days_label }}{% if site.lift_hours %}, подъёмники {{ site.lift_hours }}{% endif %}.
-            Оставьте заявку — поможем с проживанием, прокатом и трансфером.
+            {% if site.is_season_open %}Работаем {{ site.open_days_label }}.{% else %}Сезон закрыт — до скорой встречи в новом сезоне!{% endif %}
+            Бронирование проживания и трансфера — через сайт или WhatsApp.
         </p>
         <div class="actions" data-reveal style="--d:.3s">
             <a class="btn btn--primary btn--lg" href="{% url 'contacts:booking' %}">Забронировать</a>

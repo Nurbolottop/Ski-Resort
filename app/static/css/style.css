@@ -1,24 +1,27 @@
 /* =============================================================================
    ТОО-АШУУ — дизайн-система
-   Палитра: ночь над перевалом (тёмно-синий), снег (слоновая кость),
-   солнце южного склона (янтарь). Все цвета — в переменных ниже.
+   Фирменные цвета логотипа: синий #1f46a0 и салатовый #59bc08.
+   Тёмные секции — глубокий фирменный синий, светлые — снег.
+   Все цвета — в переменных ниже.
    ============================================================================= */
 :root {
-    --night-950: #050d16;
-    --night-900: #08131f;
-    --night-850: #0b1a2a;
-    --night-800: #0f2236;
-    --night-700: #163050;
+    --night-950: #050c1d;
+    --night-900: #081329;
+    --night-850: #0b1a36;
+    --night-800: #10234a;
+    --night-700: #1a3570;
+    --brand-blue: #1f46a0;
+    --brand-green: #59bc08;
     --ice: #9fcbed;
     --snow: #f6f3ee;
     --snow-2: #ece6dd;
     --ink: #0c1a28;
 
-    --accent: #eaa24c;
-    --accent-light: #ffd9a3;
-    --accent-deep: #b96a1c;
-    --accent-grad: linear-gradient(135deg, #ffe2b3 0%, #f2b45f 45%, #d17f2b 100%);
-    --on-accent: #241303;
+    --accent: #6fd11c;
+    --accent-light: #b9ef8a;
+    --accent-deep: #3f8c05;
+    --accent-grad: linear-gradient(135deg, #c3f59a 0%, #7ad62a 45%, #4fa807 100%);
+    --on-accent: #0d2403;
 
     --green: #3fb36b;
     --blue: #3d8bfd;
@@ -55,7 +58,7 @@
     --surface-2: rgba(255, 255, 255, .08);
     --stroke: rgba(255, 255, 255, .1);
     --stroke-strong: rgba(255, 255, 255, .2);
-    --stroke-accent: rgba(234, 162, 76, .45);
+    --stroke-accent: rgba(111, 209, 28, .45);
     --card-bg: var(--night-850);
 }
 
@@ -70,9 +73,9 @@
     --surface-2: #fbf9f5;
     --stroke: rgba(12, 26, 40, .1);
     --stroke-strong: rgba(12, 26, 40, .22);
-    --stroke-accent: rgba(185, 106, 28, .45);
+    --stroke-accent: rgba(31, 70, 160, .35);
     --card-bg: #ffffff;
-    --accent: #c47621;
+    --accent: #1f46a0;
     --shadow: 0 22px 60px rgba(12, 26, 40, .12);
     color: var(--text);
     background: var(--bg);
@@ -174,6 +177,13 @@ button {
     stroke: none;
 }
 
+/* Обычные (лининг) цифры везде: шорткат font: сбрасывает font-variant, поэтому !important */
+*,
+*::before,
+*::after {
+    font-variant-numeric: lining-nums !important;
+}
+
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -255,12 +265,12 @@ button {
     background-size: 160% 160%;
     background-position: 0 0;
     color: var(--on-accent);
-    box-shadow: 0 10px 30px rgba(234, 162, 76, .25);
+    box-shadow: 0 10px 30px rgba(111, 209, 28, .25);
 }
 
 .btn--primary:hover {
     background-position: 100% 100%;
-    box-shadow: 0 16px 40px rgba(234, 162, 76, .35);
+    box-shadow: 0 16px 40px rgba(111, 209, 28, .35);
 }
 
 .btn--ghost {
@@ -350,13 +360,13 @@ button {
 .field__input:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgba(234, 162, 76, .15);
+    box-shadow: 0 0 0 4px rgba(111, 209, 28, .15);
 }
 
 select.field__input {
     appearance: none;
     padding-right: 44px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23eaa24c' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236fd11c' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 16px center;
     background-size: 18px;
@@ -502,8 +512,12 @@ select.field__input option {
 }
 
 .logo__mark {
-    width: 42px;
-    height: 42px;
+    width: 46px;
+    height: 46px;
+    padding: 6px;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
 }
 
 .logo__text {
@@ -1172,7 +1186,7 @@ select.field__input option {
     place-items: center;
     margin-bottom: 26px;
     border-radius: 50%;
-    background: rgba(234, 162, 76, .12);
+    background: rgba(111, 209, 28, .12);
     color: var(--accent);
 }
 
@@ -1671,7 +1685,7 @@ select.field__input option {
     display: grid;
     place-items: center;
     border-radius: 50%;
-    background: rgba(234, 162, 76, .12);
+    background: rgba(111, 209, 28, .12);
     color: var(--accent);
     font-size: 24px;
 }
@@ -1700,7 +1714,7 @@ select.field__input option {
     border-radius: var(--r);
     color: #fff;
     background:
-        radial-gradient(ellipse at 100% 0%, rgba(234, 162, 76, .35), transparent 60%),
+        radial-gradient(ellipse at 100% 0%, rgba(111, 209, 28, .35), transparent 60%),
         linear-gradient(135deg, var(--night-850), var(--night-700));
 }
 
@@ -1736,7 +1750,7 @@ select.field__input option {
     color: #fff;
     background:
         radial-gradient(ellipse at 0% 100%, rgba(225, 48, 108, .35), transparent 55%),
-        radial-gradient(ellipse at 100% 0%, rgba(234, 162, 76, .4), transparent 55%),
+        radial-gradient(ellipse at 100% 0%, rgba(111, 209, 28, .4), transparent 55%),
         linear-gradient(135deg, var(--night-850), var(--night-700));
 }
 
@@ -2123,7 +2137,7 @@ select.field__input option {
 }
 
 .theme-light .stats__value {
-    background: linear-gradient(135deg, #d98a33, #9c5513);
+    background: linear-gradient(135deg, #3a64c8, #1f46a0);
     -webkit-background-clip: text;
     background-clip: text;
 }
@@ -2488,7 +2502,7 @@ select.field__input option {
     display: grid;
     place-items: center;
     border-radius: 50%;
-    background: rgba(234, 162, 76, .12);
+    background: rgba(111, 209, 28, .12);
     color: var(--accent);
     font-size: 28px;
 }
@@ -2956,7 +2970,7 @@ select.field__input option {
     display: grid;
     place-items: center;
     border-radius: 50%;
-    background: rgba(234, 162, 76, .12);
+    background: rgba(111, 209, 28, .12);
     color: var(--accent);
     font-size: 22px;
 }
@@ -3062,7 +3076,7 @@ a.contact-card__value:hover {
         margin: 0;
         padding: 120px 32px 40px;
         background:
-            radial-gradient(ellipse at 100% 0%, rgba(234, 162, 76, .22), transparent 55%),
+            radial-gradient(ellipse at 100% 0%, rgba(111, 209, 28, .22), transparent 55%),
             var(--night-950);
         opacity: 0;
         visibility: hidden;

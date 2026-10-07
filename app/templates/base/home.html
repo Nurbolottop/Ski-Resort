@@ -150,7 +150,7 @@
 <section class="section">
     <div class="container">
         {% url 'cms:slopes' as slopes_url %}
-        {% include 'include/section_head.html' with eyebrow='Катание' title='Трассы на любой уровень' lead='Широкие ухоженные склоны для новичков, крутые участки и фрирайд для тех, кто ищет больше.' link_url=slopes_url link_text='Трассы и подъёмники' %}
+        {% include 'include/section_head.html' with eyebrow='Катание' title='Три трассы' lead='Три трассы различного уровня сложности и протяжённости — от 2,6 до 3 км.' link_url=slopes_url link_text='Трассы и подъёмники' %}
         <div class="grid grid--{% if slope_levels|length >= 4 %}4{% else %}{{ slope_levels|length }}{% endif %}">
             {% for level in slope_levels %}
                 <article class="slope slope--{{ level.value }}" data-reveal style="--d:{{ forloop.counter0 }}00ms">
@@ -182,7 +182,7 @@
 <section class="section theme-light">
     <div class="container">
         {% url 'cms:room_list' as rooms_url %}
-        {% include 'include/section_head.html' with eyebrow='Размещение' title='Жильё прямо у склона' lead='Проснуться на высоте почти 3 000 метров и встать на лыжи сразу после завтрака.' link_url=rooms_url link_text='Все варианты' %}
+        {% include 'include/section_head.html' with eyebrow='Размещение' title='Проживание на базе' lead='Коттеджи с завтраком и ски-пассами для всех гостей и вагончики для больших компаний.' link_url=rooms_url link_text='Все варианты' %}
         <div class="grid grid--3">
             {% for room in rooms %}{% include 'include/room_card.html' %}{% endfor %}
         </div>
@@ -218,8 +218,8 @@
 {% if site.latitude and site.longitude %}
 <section class="section theme-light section--alt">
     <div class="container">
-        {% include 'include/section_head.html' with eyebrow='Погода на перевале' title='Прогноз на неделю' lead='Дни, когда работают подъёмники, выделены. Данные — Open-Meteo.' %}
-        <div class="forecast" data-forecast data-lat="{{ site.latitude|stringformat:'s' }}" data-lon="{{ site.longitude|stringformat:'s' }}" data-open-days="{{ site.open_weekdays }}" data-reveal>
+        {% include 'include/section_head.html' with eyebrow='Погода на перевале' title='Прогноз на неделю' lead='Рабочие дни базы выделены. Данные — Open-Meteo.' %}
+        <div class="forecast" data-forecast data-lat="{{ site.latitude|stringformat:'s' }}" data-lon="{{ site.longitude|stringformat:'s' }}" data-open-days="{% if site.is_season_open %}{{ site.open_weekdays }}{% endif %}" data-reveal>
             <p class="empty forecast__fallback">Загружаем прогноз…</p>
         </div>
     </div>
@@ -254,7 +254,7 @@
                     <p class="price route__price">
                         {% if route.price %}
                             <span class="price__value">{{ route.price|money }}</span>
-                            <span class="price__unit">сом{% if route.price_unit %} / {{ route.price_unit }}{% endif %}</span>
+                            <span class="price__unit">сом{% if route.price_unit %} с {{ route.price_unit }}{% endif %}</span>
                         {% else %}
                             <span class="price__unit">Цена по запросу</span>
                         {% endif %}

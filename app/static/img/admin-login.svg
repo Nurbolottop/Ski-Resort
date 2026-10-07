@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1600" preserveAspectRatio="xMidYMid slice">
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#07111d"/>
-      <stop offset=".55" stop-color="#14304c"/>
-      <stop offset="1" stop-color="#2a5378"/>
+      <stop offset="0" stop-color="#050c1d"/>
+      <stop offset=".55" stop-color="#10234a"/>
+      <stop offset="1" stop-color="#1f46a0"/>
     </linearGradient>
     <radialGradient id="sun" cx=".72" cy=".3" r=".45">
-      <stop offset="0" stop-color="#f6b65a" stop-opacity=".55"/>
-      <stop offset="1" stop-color="#f6b65a" stop-opacity="0"/>
+      <stop offset="0" stop-color="#59bc08" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#59bc08" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="snow" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#ffffff"/>
@@ -24,5 +24,5 @@
   <path d="M560 570 470 712l60-26 40 38 60-30Z" fill="url(#snow)" opacity=".9"/>
   <path d="M0 1250 300 980l160 120 240-200 220 180 130-90 150 120v690H0Z" fill="#284c70"/>
   <path d="M0 1400 260 1220l200 90 260-150 230 160 250-120v400H0Z" fill="url(#snow)"/>
-  <text x="80" y="1500" fill="#0b1a2c" font-family="Georgia, serif" font-size="96" font-weight="700">Тоо-Ашуу</text>
+  <text x="80" y="1500" fill="#1f46a0" font-family="Georgia, serif" font-size="96" font-weight="700">Тоо-Ашуу</text>
 </svg>

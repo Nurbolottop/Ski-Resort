@@ -112,7 +112,8 @@ class RoomAdmin(BaseAdmin):
 
     @display(description='Цена', ordering='price_from')
     def price_display(self, obj):
-        return f'от {money(obj.price_from)} сом / {obj.price_unit}'
+        unit = f' / {obj.price_unit}' if obj.price_unit else ''
+        return f'{money(obj.price_from)} сом{unit}'
 
 
 # =============================================================================

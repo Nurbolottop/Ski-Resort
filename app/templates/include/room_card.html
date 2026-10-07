@@ -14,9 +14,8 @@
         {% if room.short_description %}<p class="card__text">{{ room.short_description|truncatechars:150 }}</p>{% endif %}
         <div class="card__footer">
             <span class="price">
-                <span class="price__from">от</span>
                 <span class="price__value">{{ room.price_from|money }}</span>
-                <span class="price__unit">сом / {{ room.price_unit }}</span>
+                <span class="price__unit">сом{% if room.price_unit %} / {{ room.price_unit }}{% endif %}</span>
             </span>
             <a class="link-more" href="{{ room.get_absolute_url }}">Подробнее <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
         </div>

@@ -24,7 +24,7 @@
                         <p class="price route__price">
                             {% if route.price %}
                                 <span class="price__value">{{ route.price|money }}</span>
-                                <span class="price__unit">сом{% if route.price_unit %} / {{ route.price_unit }}{% endif %}</span>
+                                <span class="price__unit">сом{% if route.price_unit %} с {{ route.price_unit }}{% endif %}</span>
                             {% else %}
                                 <span class="price__unit">Цена по запросу</span>
                             {% endif %}

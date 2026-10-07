@@ -37,13 +37,12 @@
         <aside class="detail__aside">
             <div class="sidebar-card" data-reveal>
                 <span class="price">
-                    <span class="price__from">от</span>
                     <span class="price__value">{{ room.price_from|money }}</span>
-                    <span class="price__unit">сом / {{ room.price_unit }}</span>
+                    <span class="price__unit">сом{% if room.price_unit %} / {{ room.price_unit }}{% endif %}</span>
                 </span>
                 <ul class="specs">
                     <li><span>Гостей</span><strong>до {{ room.max_guests }}</strong></li>
-                    {% if room.beds %}<li><span>Кровати</span><strong>{{ room.beds }}</strong></li>{% endif %}
+                    {% if room.beds %}<li><span>Размещение</span><strong>{{ room.beds }}</strong></li>{% endif %}
                     {% if room.area %}<li><span>Площадь</span><strong>{{ room.area }} м²</strong></li>{% endif %}
                 </ul>
                 <a class="btn btn--primary btn--block" href="{% url 'contacts:booking' %}?room={{ room.slug }}">Забронировать</a>

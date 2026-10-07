@@ -18,8 +18,8 @@
     overflow: hidden;
     color: #fff;
     background:
-        radial-gradient(ellipse at 85% 0%, rgba(240, 168, 72, .45), transparent 55%),
-        linear-gradient(135deg, #0b1a2c 0%, #13304d 60%, #1d4468 100%);
+        radial-gradient(ellipse at 85% 0%, rgba(89, 188, 8, .4), transparent 55%),
+        linear-gradient(135deg, #081329 0%, #10234a 55%, #1f46a0 100%);
 }
 
 .dash-hero::after {
@@ -40,7 +40,7 @@
     font-weight: 600;
     letter-spacing: .14em;
     text-transform: uppercase;
-    color: #f6c27a;
+    color: #b9ef8a;
 }
 
 .dash-hero__title {
@@ -81,12 +81,12 @@
 
 .dash-btn--primary {
     border-color: transparent;
-    background: linear-gradient(135deg, #ffd08a, #e9993b);
-    color: #2a1705;
+    background: linear-gradient(135deg, #c3f59a, #59bc08);
+    color: #0d2403;
 }
 
 .dash-btn--primary:hover {
-    background: linear-gradient(135deg, #ffdca6, #f0a64c);
+    background: linear-gradient(135deg, #d2f8b2, #6fd11c);
 }
 
 .dash-btn .material-symbols-outlined {
