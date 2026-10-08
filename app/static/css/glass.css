@@ -1488,3 +1488,22 @@ body {
 .intro__media {
     -webkit-box-reflect: unset;
 }
+
+/* Плавный переход из белого контента в тёмный блок CTA: снежный край + растворение */
+.cta::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 260px;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'%3E%3Cpath d='M0 0 H1440 V22 C 1300 44, 1180 30, 1040 40 S 760 58, 620 42 S 330 30, 200 46 S 60 40, 0 30 Z' fill='%23ffffff'/%3E%3Cpath d='M0 0 H1440 V34 C 1280 58, 1120 46, 980 54 S 700 70, 540 56 S 260 44, 120 60 S 30 52, 0 48 Z' fill='%23ffffff' fill-opacity='.55'/%3E%3C/svg%3E") top center / 100% 80px no-repeat,
+        linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, .85) 18%, rgba(255, 255, 255, .45) 42%, rgba(255, 255, 255, .12) 70%, rgba(255, 255, 255, 0) 100%);
+}
+
+.cta__inner {
+    z-index: 2;
+}
