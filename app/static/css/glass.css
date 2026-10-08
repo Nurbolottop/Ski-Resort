@@ -1202,3 +1202,289 @@ img.scenery {
         height: 40px;
     }
 }
+
+/* =============================================================================
+   БЕЛЫЙ ФОН КОНТЕНТА
+   Тёмными остаются: первый экран, шапки страниц с фото, CTA, подвал.
+   ============================================================================= */
+body {
+    background: #ffffff;
+}
+
+.aurora,
+.grain,
+.cursor-light {
+    display: none;
+}
+
+.section,
+.today,
+.ticker {
+    --bg: #ffffff;
+    --bg-alt: #ffffff;
+    --text: #0c1a2e;
+    --text-soft: #46566c;
+    --text-dim: #7a889b;
+    --surface: #ffffff;
+    --surface-2: #f3f6fb;
+    --stroke: rgba(12, 26, 46, .09);
+    --stroke-strong: rgba(12, 26, 46, .18);
+    --stroke-accent: rgba(31, 70, 160, .32);
+    --card-bg: #ffffff;
+    --accent: #1f46a0;
+    --shadow: 0 24px 50px -22px rgba(12, 30, 70, .28);
+    --glass-bg: linear-gradient(160deg, #ffffff 0%, #f6f9fd 100%);
+    --glass-border: rgba(12, 26, 46, .08);
+    --glass-shadow: 0 1px 2px rgba(12, 30, 70, .05), 0 16px 36px -18px rgba(12, 30, 70, .25);
+    --glass-shadow-hover: 0 2px 4px rgba(12, 30, 70, .06), 0 28px 56px -22px rgba(12, 30, 70, .35), 0 0 0 1px rgba(31, 70, 160, .12);
+    color: var(--text);
+    background: #ffffff;
+}
+
+.section + .section::before {
+    background: linear-gradient(90deg, transparent, rgba(12, 26, 46, .1), transparent);
+}
+
+/* Заголовки и надзаголовки на белом */
+.section .section__title,
+.section .insta__title {
+    background: linear-gradient(180deg, #0c1a2e 0%, #1c3260 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.section .section__title em {
+    background: linear-gradient(120deg, #1f46a0 0%, #3f8c05 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.section .section__eyebrow {
+    border-color: rgba(31, 70, 160, .18);
+    background: rgba(31, 70, 160, .06);
+    color: #1f46a0;
+}
+
+.section .section__eyebrow::before {
+    background: #59bc08;
+    box-shadow: 0 0 10px rgba(89, 188, 8, .6);
+}
+
+/* Цифры и цены */
+.section .stats__value,
+.section .stat__value,
+.section .price__value,
+.today .today__value {
+    background: linear-gradient(180deg, #0c1a2e 30%, #1f46a0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.today .today__item--status .open-badge {
+    color: #0c1a2e;
+}
+
+.today .today__item + .today__item {
+    border-left-color: rgba(12, 26, 46, .08);
+}
+
+/* Акценты зелёным — темнее, чтобы читались на белом */
+.section .link-more,
+.section .menu-item__price {
+    color: #2f7a04;
+}
+
+.section .feature__icon,
+.section .route__icon,
+.section .rental-item__icon,
+.section .contact-card__icon,
+.today .today__value .icon {
+    border-color: rgba(31, 70, 160, .14);
+    background: linear-gradient(180deg, #eef3fb, #ffffff);
+    box-shadow: 0 8px 18px -10px rgba(31, 70, 160, .45);
+    color: #1f46a0;
+}
+
+.today .today__value .icon,
+.today .today__value svg {
+    border: 0;
+    background: none;
+    box-shadow: none;
+    stroke: #1f46a0;
+}
+
+.section .review__quote {
+    color: #59bc08;
+}
+
+.section .status--open {
+    background: rgba(89, 188, 8, .12);
+    color: #2f7a04;
+}
+
+.section .forecast__icon svg {
+    stroke: #1f46a0;
+}
+
+.section .forecast__snow {
+    color: #1f6fb5;
+}
+
+.section .forecast__day.is-open {
+    border-color: rgba(89, 188, 8, .55);
+    box-shadow: var(--glass-shadow), 0 0 0 3px rgba(89, 188, 8, .12);
+}
+
+/* Кнопки и вкладки на белом */
+.section .btn--ghost,
+.section .btn--glass {
+    border-color: rgba(12, 26, 46, .16);
+    background: #ffffff;
+    color: #0c1a2e;
+    box-shadow: 0 8px 20px -12px rgba(12, 30, 70, .35);
+}
+
+.section .btn--ghost:hover,
+.section .btn--glass:hover {
+    border-color: #1f46a0;
+    background: #ffffff;
+    color: #1f46a0;
+}
+
+.section .tabs__item {
+    border-color: rgba(12, 26, 46, .12);
+    background: #ffffff;
+    color: #46566c;
+}
+
+.section .tabs__item:hover {
+    color: #0c1a2e;
+}
+
+.section .tabs__item.is-active {
+    color: #0b2002;
+}
+
+.section .tabs--sticky {
+    background: rgba(255, 255, 255, .85);
+}
+
+.section .pagination__item {
+    border-color: rgba(12, 26, 46, .12);
+    background: #ffffff;
+}
+
+/* Поля форм */
+.section .field__input {
+    border-color: rgba(12, 26, 46, .14);
+    background: #f7f9fc;
+    color: #0c1a2e;
+    color-scheme: light;
+    box-shadow: inset 0 1px 2px rgba(12, 30, 70, .06);
+}
+
+.section .field__input:focus {
+    border-color: #1f46a0;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(31, 70, 160, .12);
+}
+
+.section select.field__input option {
+    background: #ffffff;
+    color: #0c1a2e;
+}
+
+.section .table th {
+    background: #f6f8fc;
+}
+
+/* Бегущая лента */
+.ticker {
+    border-color: rgba(12, 26, 46, .08);
+    background: #f6f9fd;
+}
+
+.ticker__item {
+    color: #0c1a2e;
+}
+
+/* Тёмные блоки внутри белых секций */
+.section .insta,
+.section .contact-strip {
+    border-color: transparent;
+    color: #fff;
+    background:
+        radial-gradient(80% 120% at 100% 0%, rgba(89, 188, 8, .35), transparent 60%),
+        radial-gradient(80% 120% at 0% 100%, rgba(63, 120, 220, .45), transparent 60%),
+        linear-gradient(135deg, #0b1a36, #1f46a0);
+}
+
+.section .insta .insta__title {
+    background: none;
+    color: #fff;
+}
+
+.section .contact-strip .btn--glass {
+    border-color: rgba(255, 255, 255, .3);
+    background: rgba(255, 255, 255, .12);
+    color: #fff;
+}
+
+/* Снежные шапки на белом не нужны */
+.today__grid::after,
+.section .form--card::after,
+.section .sidebar-card::after {
+    display: none;
+}
+
+/* Сугробы переходят в белый */
+.hero::after,
+.page-hero::after {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath d='M0 46 C 120 22, 220 30, 330 40 S 560 18, 700 34 S 930 50, 1060 30 S 1300 20, 1440 38 L 1440 70 L 0 70 Z' fill='%23ffffff' fill-opacity='.35'/%3E%3Cpath d='M0 56 C 160 40, 300 48, 460 54 S 760 36, 900 48 S 1180 60, 1300 46 S 1400 44, 1440 52 L 1440 70 L 0 70 Z' fill='%23ffffff' fill-opacity='.6'/%3E%3Cpath d='M0 64 C 200 56, 420 62, 640 60 S 1060 54, 1240 60 S 1400 62, 1440 60 L 1440 70 L 0 70 Z' fill='%23ffffff'/%3E%3C/svg%3E") center bottom / 100% 100% no-repeat;
+}
+
+.hero__overlay {
+    background:
+        linear-gradient(180deg, rgba(4, 10, 26, .5) 0%, rgba(4, 10, 26, .1) 32%, rgba(4, 10, 26, .3) 62%, rgba(4, 10, 26, .55) 100%),
+        linear-gradient(90deg, rgba(4, 10, 26, .6) 0%, transparent 65%);
+}
+
+.page-hero__overlay {
+    background:
+        linear-gradient(180deg, rgba(4, 10, 26, .45) 0%, rgba(4, 10, 26, .1) 40%, rgba(4, 10, 26, .45) 100%),
+        linear-gradient(90deg, rgba(4, 10, 26, .55) 0%, transparent 60%);
+}
+
+/* Тёмные блоки — свой фон */
+.cta,
+.error-page {
+    background: #050c1d;
+}
+
+.footer {
+    background: #081329;
+    border-top: 0;
+}
+
+.today {
+    padding-top: 40px;
+}
+
+::-webkit-scrollbar-track {
+    background: #eef2f8;
+}
+
+::-webkit-scrollbar-thumb {
+    border-color: #eef2f8;
+}
+
+.snow-toggle {
+    border-color: rgba(255, 255, 255, .2);
+    background: linear-gradient(180deg, #1f46a0, #0b1a36);
+}
+
+.intro__media {
+    -webkit-box-reflect: unset;
+}
