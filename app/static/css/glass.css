@@ -774,7 +774,14 @@ body {
 }
 
 .page-hero__overlay {
-    background: linear-gradient(180deg, rgba(4, 10, 26, .5) 0%, rgba(4, 10, 26, .3) 50%, #040a1a 100%);
+    background:
+        linear-gradient(180deg, rgba(4, 10, 26, .45) 0%, rgba(4, 10, 26, .08) 38%, rgba(4, 10, 26, .35) 72%, #040a1a 100%),
+        linear-gradient(90deg, rgba(4, 10, 26, .55) 0%, transparent 60%);
+}
+
+.page-hero .scenery,
+.page-hero__bg img {
+    opacity: 1;
 }
 
 .page-hero .scenery,

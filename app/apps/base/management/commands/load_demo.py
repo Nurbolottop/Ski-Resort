@@ -12,6 +12,7 @@
 from datetime import datetime
 from datetime import timezone as dt_timezone
 from decimal import Decimal
+from pathlib import Path
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -378,25 +379,11 @@ class Command(BaseCommand):
              '<p>Мы используем имя, телефон и e-mail из форм на сайте только для обработки заявок '
              'и связи с вами. Данные не передаются третьим лицам.</p>'),
             ('Публичная оферта', 'offer', '<p>Текст публичной оферты будет опубликован позже.</p>'),
-            ('Авторы фото', 'photo-credits', (
-            '<p>Часть фонов и слайдов на сайте — фотографии со свободными лицензиями.</p>'
-            '<h3>Wikimedia Commons</h3><ul>'
-            '<li>«Ala-Archa in winter» — Nuraikaaah, '
-            '<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>, '
-            '<a href="https://commons.wikimedia.org/wiki/File:Ala-Archa_in_winter.jpg" target="_blank" rel="noopener">источник</a> (фото уменьшено).</li></ul>'
-            '<h3>Unsplash</h3><p>Фото по <a href="https://unsplash.com/license" target="_blank" rel="noopener">лицензии Unsplash</a>:</p><ul>'
-            '<li><a href="https://unsplash.com/photos/a-snowy-mountain-range-pcV8isAmU-Y" target="_blank" rel="noopener">Горный хребет и облака</a></li>'
-            '<li><a href="https://unsplash.com/photos/a-man-riding-skis-down-a-snow-covered-slope-JumFXziY9xs" target="_blank" rel="noopener">Лыжник в снежной пыли</a></li>'
-            '<li><a href="https://unsplash.com/photos/cable-cars-on-snow-field-during-daytime-0-aRxMlI-_k" target="_blank" rel="noopener">Подъёмник и закатные пики</a></li>'
-            '<li><a href="https://unsplash.com/photos/person-in-orange-jacket-and-black-pants-riding-ski-blades-on-snow-covered-mountain-during-daytime-DumeSMuXgao" target="_blank" rel="noopener">Лыжник на склоне</a></li>'
-            '<li><a href="https://unsplash.com/photos/a-man-riding-a-snowboard-down-a-snow-covered-slope-H_k-FiyPf9k" target="_blank" rel="noopener">Склон среди заснеженных елей</a></li>'
-            '<li><a href="https://unsplash.com/photos/a-ski-lift-going-up-a-snowy-mountain-OABxk4qY5TA" target="_blank" rel="noopener">Кресельный подъёмник</a></li>'
-            '<li><a href="https://unsplash.com/photos/a-couple-of-ski-lifts-going-up-a-mountain-JEg12w2J9SY" target="_blank" rel="noopener">Кресла подъёмника на закате</a></li></ul>'
-            '<p>Фото базы «Тоо-Ашуу» — из официального Instagram @tooashuu.kg.</p>'
-            )),
+            ('Авторы фото', 'photo-credits',
+             (Path(__file__).with_name('photo_credits.html')).read_text(encoding='utf-8')),
         ]
         for title, slug, content in pages:
-            if slug == 'about':
+            if slug in ('about', 'photo-credits'):
                 self.upsert(Page, {'slug': slug}, {'title': title, 'content': content})
             else:
                 Page.objects.get_or_create(slug=slug, defaults={'title': title, 'content': content})

@@ -6,7 +6,7 @@
 
 {% block content %}
 {% url 'cms:post_list' as blog_url %}
-{% include 'include/page_hero.html' with photo='sunset' title=post.title eyebrow=post.published_at|date:'j E Y' image=post.cover parent_title='Новости' parent_url=blog_url variant=2 %}
+{% include 'include/page_hero.html' with photo='news' title=post.title eyebrow=post.published_at|date:'j E Y' image=post.cover parent_title='Новости' parent_url=blog_url variant=2 %}
 
 <article class="section theme-light">
     <div class="container container--narrow">

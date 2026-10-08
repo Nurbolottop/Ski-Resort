@@ -215,12 +215,12 @@
         {% url 'cms:skipass' as skipass_url %}
         {% include 'include/section_head.html' with eyebrow='Сервис' title='Прокат, кафе и всё для отдыха' link_url=services_url link_text='Все услуги' %}
         <div class="grid grid--4">
-            {% include 'include/service_tile.html' with title='Прокат снаряжения' url=rental_url category=None variant=1 photo='skis' %}
-            {% include 'include/service_tile.html' with title='Меню кафе' url=menu_url category=None variant=2 photo='cafe' %}
-            {% include 'include/service_tile.html' with title='Трансфер' url=transfer_url category=None variant=3 photo='panorama' %}
+            {% include 'include/service_tile.html' with title='Прокат снаряжения' url=rental_url category=None variant=1 photo='rental' %}
+            {% include 'include/service_tile.html' with title='Меню кафе' url=menu_url category=None variant=2 photo='menu' %}
+            {% include 'include/service_tile.html' with title='Трансфер' url=transfer_url category=None variant=3 photo='transfer' %}
             {% with category=service_categories.0 %}
                 {% if category %}
-                    {% include 'include/service_tile.html' with variant=4 photo='skiers' %}
+                    {% include 'include/service_tile.html' with variant=4 photo='services' %}
                 {% else %}
                     {% include 'include/service_tile.html' with title='Ски-пассы' url=skipass_url category=None variant=4 %}
                 {% endif %}
