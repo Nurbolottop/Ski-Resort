@@ -1037,3 +1037,168 @@ img.scenery {
 @media (max-width: 640px) {
     .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 }
+
+/* =============================================================================
+   ЗИМНЯЯ АТМОСФЕРА
+   ============================================================================= */
+/* Снегопад (js/snow.js) — поверх всего, клики проходят насквозь */
+.snow-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 95;
+    pointer-events: none;
+    transition: opacity .8s ease;
+}
+
+/* Старый CSS-снег больше не нужен */
+.snowfall {
+    display: none;
+}
+
+.snow-toggle {
+    position: fixed;
+    left: 20px;
+    bottom: 24px;
+    z-index: 96;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, .25);
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .18), rgba(255, 255, 255, .05));
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 10px 26px -10px rgba(0, 0, 0, .6);
+    transition: transform .4s var(--ease), opacity .3s;
+}
+
+.snow-toggle .icon {
+    font-size: 22px;
+    animation: snow-spin 12s linear infinite;
+}
+
+.snow-toggle:hover {
+    transform: scale(1.08);
+}
+
+.snow-toggle.is-off {
+    opacity: .55;
+}
+
+.snow-toggle.is-off .icon {
+    animation: none;
+}
+
+.snow-toggle.is-off::after {
+    content: '';
+    position: absolute;
+    width: 26px;
+    height: 2px;
+    border-radius: 2px;
+    background: #fff;
+    transform: rotate(-45deg);
+}
+
+@keyframes snow-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Снежные шапки на стеклянных панелях */
+.booking-widget::after,
+.today__grid::after,
+.cta__inner::after,
+.form--card::after,
+.sidebar-card::after,
+.insta::after,
+.header__inner::after {
+    content: '';
+    position: absolute;
+    top: -9px;
+    left: 18px;
+    right: 18px;
+    height: 18px;
+    z-index: 4;
+    pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 18' preserveAspectRatio='none'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23ffffff'/%3E%3Cstop offset='1' stop-color='%23d7e6f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M0 14 C 20 6, 40 4, 62 9 S 104 3, 130 8 S 170 12, 196 6 S 238 2, 262 9 S 300 11, 326 5 S 368 4, 392 10 S 432 7, 458 4 S 500 9, 524 7 S 566 3, 600 12 L 600 18 L 0 18 Z' fill='url(%23s)'/%3E%3C/svg%3E") center bottom / 100% 100% no-repeat;
+    filter: drop-shadow(0 3px 4px rgba(0, 10, 30, .35));
+}
+
+.header__inner {
+    position: relative;
+}
+
+.header__inner::after {
+    top: -6px;
+    left: 40px;
+    right: 40px;
+    height: 12px;
+    opacity: .9;
+}
+
+.today__grid,
+.booking-widget,
+.cta__inner,
+.sidebar-card,
+.form--card {
+    overflow: visible;
+}
+
+.today__grid {
+    overflow: visible;
+}
+
+.today__grid > .today__item:first-child {
+    border-radius: 30px 0 0 30px;
+}
+
+/* Иней по краям стекла */
+.feature,
+.pass,
+.card,
+.review,
+.route,
+.stats__item,
+.rental-item,
+.contact-card,
+.faq__item,
+.table-wrap {
+    box-shadow:
+        var(--glass-shadow),
+        inset 0 0 22px rgba(220, 236, 255, .07),
+        inset 0 1px 0 rgba(255, 255, 255, .35);
+}
+
+/* Сугробы на стыке первого экрана / шапки страницы с контентом */
+.hero::after,
+.page-hero::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 70px;
+    z-index: 3;
+    pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 70' preserveAspectRatio='none'%3E%3Cpath d='M0 46 C 120 22, 220 30, 330 40 S 560 18, 700 34 S 930 50, 1060 30 S 1300 20, 1440 38 L 1440 70 L 0 70 Z' fill='%23ffffff' fill-opacity='.10'/%3E%3Cpath d='M0 56 C 160 40, 300 48, 460 54 S 760 36, 900 48 S 1180 60, 1300 46 S 1400 44, 1440 52 L 1440 70 L 0 70 Z' fill='%23ffffff' fill-opacity='.16'/%3E%3Cpath d='M0 64 C 200 56, 420 62, 640 60 S 1060 54, 1240 60 S 1400 62, 1440 60 L 1440 70 L 0 70 Z' fill='%23040a1a'/%3E%3C/svg%3E") center bottom / 100% 100% no-repeat;
+}
+
+.hero__booking {
+    z-index: 5;
+}
+
+@media (max-width: 640px) {
+    .snow-toggle {
+        left: 14px;
+        bottom: 18px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .hero::after,
+    .page-hero::after {
+        height: 40px;
+    }
+}
