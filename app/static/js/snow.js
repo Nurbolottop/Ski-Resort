@@ -27,9 +27,9 @@
 
     // Планы: дальний (мелкий, размытый, медленный) → ближний (крупный, быстрый)
     var LAYERS = [
-        { share: .55, r: [0.6, 1.4], v: [12, 26], a: [.25, .5], sway: 10 },
-        { share: .32, r: [1.4, 2.6], v: [26, 48], a: [.45, .75], sway: 18 },
-        { share: .13, r: [2.6, 4.2], v: [48, 80], a: [.65, .95], sway: 28 },
+        { share: .62, r: [0.5, 1.1], v: [10, 20], a: [.18, .38], sway: 10 },
+        { share: .3, r: [1.1, 1.9], v: [20, 36], a: [.3, .55], sway: 16 },
+        { share: .08, r: [1.9, 2.8], v: [36, 56], a: [.45, .7], sway: 24 },
     ];
 
     function rand(a, b) { return a + Math.random() * (b - a); }
@@ -56,7 +56,7 @@
         canvas.width = W * dpr; canvas.height = H * dpr;
         canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        var total = Math.round(Math.min(220, Math.max(60, W * H / 9000)));
+        var total = Math.round(Math.min(70, Math.max(24, W * H / 30000)));
         if (W < 640) total = Math.round(total * .6);
         flakes = [];
         LAYERS.forEach(function (L, i) {
