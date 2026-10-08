@@ -27,9 +27,9 @@
 
     // Планы: дальний (мелкий, размытый, медленный) → ближний (крупный, быстрый)
     var LAYERS = [
-        { share: .62, r: [0.5, 1.1], v: [10, 20], a: [.18, .38], sway: 10 },
-        { share: .3, r: [1.1, 1.9], v: [20, 36], a: [.3, .55], sway: 16 },
-        { share: .08, r: [1.9, 2.8], v: [36, 56], a: [.45, .7], sway: 24 },
+        { share: .5, r: [5, 8], v: [14, 24], a: [.55, .75], sway: 12 },
+        { share: .35, r: [8, 12], v: [22, 36], a: [.75, .9], sway: 18 },
+        { share: .15, r: [12, 17], v: [34, 50], a: [.9, 1], sway: 24 },
     ];
 
     function rand(a, b) { return a + Math.random() * (b - a); }
@@ -39,12 +39,14 @@
         return {
             layer: layer,
             x: Math.random() * W,
-            y: anywhere ? Math.random() * H : -10,
+            y: anywhere ? Math.random() * H : -24,
             r: rand(L.r[0], L.r[1]),
             v: rand(L.v[0], L.v[1]),
             a: rand(L.a[0], L.a[1]),
             phase: Math.random() * Math.PI * 2,
             freq: rand(.4, 1.1),
+            rot: Math.random() * Math.PI * 2,
+            spin: rand(-.6, .6),
             sway: L.sway * rand(.6, 1.2),
             dx: 0,
         };
@@ -56,7 +58,7 @@
         canvas.width = W * dpr; canvas.height = H * dpr;
         canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        var total = Math.round(Math.min(70, Math.max(24, W * H / 30000)));
+        var total = Math.round(Math.min(42, Math.max(16, W * H / 45000)));
         if (W < 640) total = Math.round(total * .6);
         flakes = [];
         LAYERS.forEach(function (L, i) {
@@ -64,18 +66,77 @@
         });
     }
 
-    // Мягкая снежинка: радиальный градиент
+    // Снежинка «вырезанная из бумаги»: 6 лучей с ветками-листиками, ажурный центр.
+    // Белая с голубым контуром и тенью — видна и на белом фоне, и на фото.
+    function drawFlake(g, R) {
+        // ветки: [положение на луче, длина, ширина] — от центра к кончику
+        var BR = [[.34, .34, .8], [.56, .3, .72], [.76, .2, .62]];
+        function arm(lw) {
+            g.lineWidth = lw;
+            g.beginPath();
+            g.moveTo(0, -R * .16); g.lineTo(0, -R * .84);            // ствол
+            BR.forEach(function (b) {
+                var y = -R * b[0], len = R * b[1];
+                var ex = Math.sin(.7) * len, ey = y - Math.cos(.7) * len;  // ~40° вверх
+                g.moveTo(0, y); g.quadraticCurveTo(ex * .35, y - len * .35, ex, ey);
+                g.moveTo(0, y); g.quadraticCurveTo(-ex * .35, y - len * .35, -ex, ey);
+            });
+            g.stroke();
+            // лепестки на концах веток
+            BR.forEach(function (b) {
+                var y = -R * b[0], len = R * b[1];
+                var ex = Math.sin(.7) * len, ey = y - Math.cos(.7) * len;
+                [1, -1].forEach(function (d) {
+                    g.beginPath();
+                    g.ellipse(d * ex, ey, lw * .8 * b[2], lw * 1.25 * b[2], d * .7, 0, Math.PI * 2);
+                    g.fill();
+                });
+            });
+            // вытянутый кончик луча
+            g.beginPath();
+            g.ellipse(0, -R * .88, lw * .75, R * .13, 0, 0, Math.PI * 2);
+            g.fill();
+        }
+        for (var pass = 0; pass < 2; pass++) {
+            var outline = pass === 0;
+            g.strokeStyle = g.fillStyle = outline ? 'rgba(60,110,185,.6)' : '#ffffff';
+            var base = Math.max(1.1, R * .085);
+            var lw = base + (outline ? Math.max(1.2, R * .05) : 0);
+            for (var k = 0; k < 6; k++) {
+                g.save(); g.rotate(k * Math.PI / 3); arm(lw); g.restore();
+            }
+            // центр — шестиугольник
+            g.beginPath();
+            for (var k2 = 0; k2 < 6; k2++) {
+                var a = k2 * Math.PI / 3, rr = R * .2 + (outline ? lw * .3 : 0);
+                g[k2 ? 'lineTo' : 'moveTo'](Math.cos(a) * rr, Math.sin(a) * rr);
+            }
+            g.closePath(); g.fill();
+        }
+        // «окошки» в центре
+        g.fillStyle = 'rgba(60,110,185,.45)';
+        for (var k3 = 0; k3 < 6; k3++) {
+            var a2 = k3 * Math.PI / 3 + Math.PI / 6;
+            g.beginPath();
+            g.ellipse(Math.cos(a2) * R * .11, Math.sin(a2) * R * .11, Math.max(.5, R * .03), Math.max(.8, R * .055), a2 + Math.PI / 2, 0, Math.PI * 2);
+            g.fill();
+        }
+    }
+
     var sprites = {};
     function sprite(r) {
-        var key = Math.round(r * 4);
+        var key = Math.round(r * 2);
         if (sprites[key]) return sprites[key];
-        var s = Math.ceil(r * 4), c = document.createElement('canvas');
-        c.width = c.height = s * 2;
-        var g = c.getContext('2d'), grd = g.createRadialGradient(s, s, 0, s, s, s);
-        grd.addColorStop(0, 'rgba(255,255,255,1)');
-        grd.addColorStop(.35, 'rgba(240,248,255,.85)');
-        grd.addColorStop(1, 'rgba(220,235,255,0)');
-        g.fillStyle = grd; g.fillRect(0, 0, s * 2, s * 2);
+        var pad = 4, s = Math.ceil(r + pad), c = document.createElement('canvas');
+        var scale = Math.min(window.devicePixelRatio || 1, 2);
+        c.width = c.height = s * 2 * scale;
+        var g = c.getContext('2d');
+        g.scale(scale, scale);
+        g.translate(s, s);
+        g.lineCap = 'round'; g.lineJoin = 'round';
+        g.shadowColor = 'rgba(20,50,110,.2)'; g.shadowBlur = r * .18; g.shadowOffsetY = r * .05;
+        drawFlake(g, r);
+        c.size = s * 2;
         return (sprites[key] = c);
     }
 
@@ -87,6 +148,7 @@
         if (Math.random() < .004) windTarget = rand(-28, 34);
         wind += (windTarget - wind) * .01;
 
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, W, H);
         for (var i = 0; i < flakes.length; i++) {
             var f = flakes[i];
@@ -101,12 +163,15 @@
             f.dx *= .96;
             f.x += (Math.sin(f.phase) * f.sway * .6 + wind * depth + f.dx) * dt;
             f.y += f.v * dt;
-            if (f.y > H + 10) { flakes[i] = makeFlake(f.layer, false); continue; }
-            if (f.x > W + 10) f.x = -10; else if (f.x < -10) f.x = W + 10;
-            var spr = sprite(f.r);
+            if (f.y > H + 24) { flakes[i] = makeFlake(f.layer, false); continue; }
+            if (f.x > W + 24) f.x = -24; else if (f.x < -24) f.x = W + 24;
+            f.rot += f.spin * dt;
+            var spr = sprite(f.r), half = spr.size / 2;
             ctx.globalAlpha = f.a;
-            ctx.drawImage(spr, f.x - spr.width / 2, f.y - spr.height / 2);
+            ctx.setTransform(dpr * Math.cos(f.rot), dpr * Math.sin(f.rot), -dpr * Math.sin(f.rot), dpr * Math.cos(f.rot), f.x * dpr, f.y * dpr);
+            ctx.drawImage(spr, -half, -half, spr.size, spr.size);
         }
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.globalAlpha = 1;
         requestAnimationFrame(frame);
     }
