@@ -316,13 +316,11 @@ class Command(BaseCommand):
         })
 
     def gallery(self):
-        albums = [
-            ('Сезон 2025–2026', 'season-2025-2026'),
-            ('Сезон 2024–2025', 'season-2024-2025'),
-            ('Сезон 2023–2024', 'season-2023-2024'),
-        ]
+        albums = [('Горы', 'mountains'), ('Катание', 'skiing'), ('Подъёмники', 'lifts'), ('Отдых', 'rest')]
         for i, (title, slug) in enumerate(albums):
-            GalleryAlbum.objects.get_or_create(slug=slug, defaults={'title': title, 'order': i})
+            self.upsert(GalleryAlbum, {'slug': slug}, {'title': title, 'order': i})
+        if self.update:
+            GalleryAlbum.objects.filter(slug__startswith='season-').delete()
 
     def faq(self):
         items = [
