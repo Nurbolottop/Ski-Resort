@@ -1,4 +1,4 @@
-"""Сборка фронтенда: style.css + glass.css → site.min.css, *.js → *.min.js.
+"""Сборка фронтенда: fonts.css + style.css + glass.css → site.min.css, *.js → *.min.js.
 
 Запускать после любой правки CSS/JS и коммитить результат:
     pip install rcssmin rjsmin
@@ -11,7 +11,7 @@ import rjsmin
 
 STATIC = Path(__file__).resolve().parent.parent / 'app' / 'static'
 
-CSS_BUNDLE = ['css/style.css', 'css/glass.css']
+CSS_BUNDLE = ['css/fonts.css', 'css/style.css', 'css/glass.css']
 JS_FILES = ['js/main.js', 'js/snow.js']
 
 

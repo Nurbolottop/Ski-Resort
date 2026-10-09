@@ -1077,7 +1077,12 @@ img.scenery {
 
 .snow-toggle .icon {
     font-size: 22px;
-    animation: snow-spin 12s linear infinite;
+    transition: transform 1.2s var(--ease);
+}
+
+/* Вращение только при наведении: бесконечная анимация SVG пересчитывает стили каждый кадр */
+.snow-toggle:hover .icon {
+    transform: rotate(180deg);
 }
 
 .snow-toggle:hover {

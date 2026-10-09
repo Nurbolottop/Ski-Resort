@@ -23,6 +23,9 @@
     toggle.innerHTML = '<svg viewBox="0 0 24 24" class="icon"><use href="#i-snow"></use></svg>';
 
     var W = 0, H = 0, dpr = 1, flakes = [], running = false, last = 0;
+    // На телефонах — 30 кадров/с: снег медленный, разницы не видно, а нагрузка вдвое меньше
+    var small = window.matchMedia('(max-width: 768px)').matches;
+    var frameGap = small ? 1000 / 30 - 2 : 0;
     var wind = 0, windTarget = 0, mouseX = -9999, mouseY = -9999;
 
     // Планы: дальний (мелкий, размытый, медленный) → ближний (крупный, быстрый)
@@ -142,6 +145,7 @@
 
     function frame(t) {
         if (!running) return;
+        if (frameGap && t - last < frameGap) { requestAnimationFrame(frame); return; }
         var dt = Math.min(.05, (t - last) / 1000 || 0);
         last = t;
         // порывы ветра
@@ -208,9 +212,25 @@
         document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
     }
 
+    // На телефоне снег начинается с первого касания/прокрутки (или через 5 с),
+    // чтобы первые секунды процессор был занят только страницей
     function later() {
-        if ('requestIdleCallback' in window) requestIdleCallback(init, { timeout: 2500 });
-        else setTimeout(init, 600);
+        var done = false;
+        function go() {
+            if (done) return;
+            done = true;
+            EVENTS.forEach(function (e) { window.removeEventListener(e, go, { passive: true }); });
+            init();
+        }
+        var EVENTS = ['scroll', 'pointerdown', 'touchstart', 'keydown', 'wheel'];
+        if (small) {
+            EVENTS.forEach(function (e) { window.addEventListener(e, go, { passive: true }); });
+            setTimeout(go, 5000);
+        } else if ('requestIdleCallback' in window) {
+            requestIdleCallback(go, { timeout: 2500 });
+        } else {
+            setTimeout(go, 600);
+        }
     }
 
     if (document.readyState === 'complete') later();
