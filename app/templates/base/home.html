@@ -295,6 +295,27 @@
         {% include 'include/section_head.html' with eyebrow='Гости о нас' title='Отзывы' link_url=reviews_url link_text='Все отзывы' %}
         <div class="grid grid--3">
             {% for review in reviews %}{% include 'include/review_card.html' %}{% endfor %}
+            {# Пока опубликованных отзывов меньше трёх — дополняем ряд карточками-ссылками, не выдуманными отзывами #}
+            {% if reviews|length < 2 %}
+                <article class="review review--link" data-reveal style="--d:100ms">
+                    <span class="review__quote" aria-hidden="true">“</span>
+                    <div class="review__rating">Видеоотзывы</div>
+                    <p class="review__text">Гости снимают склон, подъёмники и свежий снег — смотрите их ролики в подборке «Отзывы» в нашем Instagram.</p>
+                    <div class="review__author">
+                        <a class="link-more" href="https://www.instagram.com/stories/highlights/18020033743057175/" target="_blank" rel="noopener">Смотреть в Instagram <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
+                    </div>
+                </article>
+            {% endif %}
+            {% if reviews|length < 3 %}
+                <article class="review review--link" data-reveal style="--d:200ms">
+                    <span class="review__quote" aria-hidden="true">“</span>
+                    <div class="review__rating">Ваш отзыв</div>
+                    <p class="review__text">Были у нас? Расскажите, как прошёл день на склоне, — после проверки отзыв появится здесь, рядом с остальными.</p>
+                    <div class="review__author">
+                        <a class="link-more" href="{{ reviews_url }}#review-form">Оставить отзыв <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
+                    </div>
+                </article>
+            {% endif %}
         </div>
     </div>
 </section>

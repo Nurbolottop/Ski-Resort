@@ -1781,3 +1781,15 @@ input[type="date"]::-webkit-date-and-time-value {
         font-size: 44px;
     }
 }
+
+/* Карточки-ссылки в ряду отзывов (видеоотзывы, «оставить отзыв») */
+.review--link .review__rating {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+}
+
+.review--link .review__text {
+    color: var(--text-dim);
+}
