@@ -1548,3 +1548,70 @@ body {
         height: 100dvh;
     }
 }
+
+/* =============================================================================
+   ПРОИЗВОДИТЕЛЬНОСТЬ
+   ============================================================================= */
+/* Нативная прокрутка браузера */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Появление без blur-фильтра — только прозрачность и сдвиг (дёшево для GPU) */
+.js [data-reveal] {
+    filter: none;
+    transform: translateY(24px);
+    transition: opacity .8s var(--ease), transform .8s var(--ease), border-color .4s, box-shadow .6s var(--ease);
+    transition-delay: var(--d, 0s);
+}
+
+.js [data-reveal].is-visible {
+    transform: none;
+}
+
+/* Размытие фона только там, где под элементом фото: шапка, форма на первом экране.
+   На белых карточках оно ничего не даёт, но пересчитывается при каждой прокрутке */
+.section *,
+.today *,
+.today__grid,
+.ticker,
+.footer *,
+.cta__inner,
+.breadcrumbs,
+.section__eyebrow,
+.hero__eyebrow,
+.tile__body,
+.card__badge,
+.snow-toggle,
+.float-whatsapp,
+.lightbox__btn,
+.hero__arrow {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+
+.tile__body {
+    background: linear-gradient(180deg, rgba(10, 22, 48, .55), rgba(10, 22, 48, .35));
+}
+
+.card__badge,
+.breadcrumbs,
+.hero__eyebrow {
+    background: rgba(10, 22, 48, .45);
+}
+
+.cta__inner {
+    background: linear-gradient(145deg, rgba(10, 22, 48, .62), rgba(10, 22, 48, .4));
+}
+
+/* Без постоянных слоёв на каждой карточке */
+[data-tilt] {
+    will-change: auto;
+}
+
+/* Тяжёлое зеркальное отражение заголовка — только на больших экранах */
+@media (max-width: 1100px) {
+    .hero__title {
+        -webkit-box-reflect: unset;
+    }
+}

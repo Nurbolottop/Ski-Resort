@@ -550,6 +550,5 @@
         initGlare();
         initTilt();
         initMagnetic();
-        initParallax();
     });
 })();

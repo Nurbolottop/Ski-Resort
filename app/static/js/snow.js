@@ -53,7 +53,7 @@
     }
 
     function resize() {
-        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        dpr = 1;  // без удвоения на ретине — в разы меньше работы
         W = window.innerWidth; H = window.innerHeight;
         canvas.width = W * dpr; canvas.height = H * dpr;
         canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
@@ -128,7 +128,7 @@
         var key = Math.round(r * 2);
         if (sprites[key]) return sprites[key];
         var pad = 4, s = Math.ceil(r + pad), c = document.createElement('canvas');
-        var scale = Math.min(window.devicePixelRatio || 1, 2);
+        var scale = 1;
         c.width = c.height = s * 2 * scale;
         var g = c.getContext('2d');
         g.scale(scale, scale);
