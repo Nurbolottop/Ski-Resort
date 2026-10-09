@@ -21,8 +21,13 @@ from django.conf.urls.static import static
 from django.templatetags.static import static as static_url
 from django.views.generic import RedirectView
 
+from apps.base import seo
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('robots.txt', seo.robots_txt),
+    path('sitemap.xml', seo.sitemap_xml, name='sitemap'),
+    path('llms.txt', seo.llms_txt),
     path('favicon.ico', RedirectView.as_view(url=static_url('img/favicon.svg'), permanent=True)),
     path('', include('apps.contacts.urls')),
     path('', include('apps.base.urls')),

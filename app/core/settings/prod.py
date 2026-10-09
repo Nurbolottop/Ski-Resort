@@ -17,7 +17,7 @@ X_FRAME_OPTIONS = 'DENY'
 
 # HSTS включай только когда HTTPS точно настроен и работает,
 # иначе браузеры запомнят домен и http перестанет открываться.
-# SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_SECONDS = 31536000
 # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 # SECURE_HSTS_PRELOAD = True
 
