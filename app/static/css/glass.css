@@ -1615,3 +1615,164 @@ html {
         -webkit-box-reflect: unset;
     }
 }
+
+/* =============================================================================
+   МОБИЛЬНАЯ ВЁРСТКА: ничего не шире экрана
+   ============================================================================= */
+html,
+body {
+    max-width: 100%;
+    overflow-x: clip;
+}
+
+/* Элементы сетки и флекса могут сжиматься меньше своего содержимого */
+.footer__inner,
+.grid,
+.booking-widget,
+.form__grid,
+.today__grid,
+.contacts,
+.detail,
+.intro {
+    min-width: 0;
+}
+
+.footer__col,
+.form__field,
+.booking-widget__field,
+.contacts > *,
+.detail > *,
+.intro > * {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.footer__link,
+.footer__text,
+.contact-card__value,
+.card__title,
+.price-block__title {
+    overflow-wrap: anywhere;
+}
+
+/* Подписка в подвале */
+.subscribe {
+    max-width: 100%;
+}
+
+.subscribe .field__input {
+    flex: 1 1 0;
+    min-width: 0;
+    width: 0;
+}
+
+/* Поля ввода, особенно даты (на Android у них своя минимальная ширина) */
+.field__input,
+input[type="date"].field__input {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+}
+
+input[type="date"].field__input {
+    -webkit-appearance: none;
+    appearance: none;
+    min-height: 50px;
+    line-height: 1.2;
+}
+
+input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+}
+
+/* Шапка: логотип сжимается, кнопка меню всегда видна */
+.header__inner {
+    min-width: 0;
+    max-width: calc(100% - 24px);
+}
+
+.logo {
+    min-width: 0;
+    flex-shrink: 1;
+}
+
+.logo__text {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.logo__name,
+.logo__sub {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.burger {
+    flex-shrink: 0;
+}
+
+/* Заголовки блоков прайса переносятся */
+.price-block__head {
+    flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+    .booking-widget {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .logo__sub {
+        letter-spacing: .14em;
+        font-size: 9px;
+    }
+
+    .logo__name {
+        font-size: 21px;
+    }
+
+    .footer__links-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .price-block__title {
+        font-size: 34px;
+    }
+
+    .cta__title,
+    .page-hero__title,
+    .section__title {
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
+}
+
+@media (max-width: 360px) {
+    .container {
+        padding: 0 14px;
+    }
+
+    .header__inner {
+        padding: 0 8px 0 10px;
+        gap: 10px;
+    }
+
+    .logo__mark {
+        width: 34px;
+        height: 34px;
+    }
+
+    .logo__sub {
+        display: none;
+    }
+
+    .booking-widget {
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .hero__title {
+        font-size: 44px;
+    }
+}
