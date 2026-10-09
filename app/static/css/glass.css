@@ -1526,3 +1526,25 @@ body {
     left: 70px;
     right: 70px;
 }
+
+/* Мобильное меню на весь экран: backdrop-filter у предков делает их «рамкой»
+   для position: fixed, поэтому меню обрезалось размером шапки */
+.header,
+.header.is-scrolled {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+
+@media (max-width: 1180px) {
+    .nav-open .header__inner {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        background: rgba(8, 19, 41, .92);
+    }
+
+    .nav {
+        z-index: -1;
+        height: 100vh;
+        height: 100dvh;
+    }
+}
