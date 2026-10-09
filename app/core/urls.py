@@ -16,10 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('yandex_6f1040f41e61c38d.html', TemplateView.as_view(template_name='yandex_6f1040f41e61c38d.html')),
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('', include('apps.contacts.urls')),
