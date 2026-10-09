@@ -9,13 +9,14 @@
 
 Фото загружаются отдельно: python manage.py import_photos <папка>.
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 from datetime import timezone as dt_timezone
 from decimal import Decimal
 from pathlib import Path
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.utils import timezone
 
 from apps.base.models import FAQ, Advantage, HeroSlide, Page, SiteSettings
 from apps.cms.models import (
@@ -133,6 +134,18 @@ TRANSFER = [
      'Бус на 18 человек, водитель Владимир.'),
 ]
 
+
+# Отзывы гостей Baytur Resort & Spa (Иссык-Куль) — той же сети, с resort.baytur.kg.
+# Курорт указан в подписи, чтобы не выдавать их за отзывы о горнолыжной базе.
+BAYTUR_REVIEWS = [
+    ('Евгений Котов · Baytur Resort, Иссык-Куль',
+     'Супер, что на Иссык-Куле есть отель такого уровня! Много сделано для комфорта, отдыха и здоровья '
+     'гостей. Понравилось, что команда Байтур быстро реагирует на любые замечания и реально исправляет.', 400),
+    ('Оксана Майбородова · Baytur Resort, Иссык-Куль',
+     'В прошлом году отдыхали командой сотрудников почти 10 дней. Понравилась атмосфера, сервис очень тёплый. '
+     'Так красиво и эстетично подошли к оформлению, где каждый уголок оформлен с любовью. Пляж можно ещё '
+     'улучшить в плане навесов и шатров. В остальном рекомендую.', 401),
+]
 
 INSTRUCTOR_TEXT = (
     'Обучение катанию на лыжах или сноуборде. Объяснение правильной стойки и техники. '
@@ -322,6 +335,10 @@ class Command(BaseCommand):
                     'там в третий раз — и мы вернёмся снова. Большое спасибо за тёплый приём, мы ценим '
                     'большие усилия и тяжёлую работу в этот период. Привет из Кракова!',
         })
+        # Отзывы о курорте той же сети Baytur на Иссык-Куле (resort.baytur.kg) — подписаны явно
+        for name, text, days in BAYTUR_REVIEWS:
+            obj, _ = self.upsert(Review, {'name': name}, {'rating': 5, 'is_published': True, 'text': text})
+            Review.objects.filter(pk=obj.pk).update(created_at=timezone.now() - timedelta(days=days))
 
     def gallery(self):
         albums = [('Горы', 'mountains'), ('Катание', 'skiing'), ('Подъёмники', 'lifts'), ('Отдых', 'rest')]
