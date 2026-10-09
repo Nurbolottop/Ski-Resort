@@ -44,7 +44,6 @@
             {% if site.transfer_phone %}<a class="footer__link" href="tel:{{ site.transfer_phone_href }}"><svg class="icon"><use href="#i-car"></use></svg>{{ site.transfer_phone }}</a>{% endif %}
             {% if site.email %}<a class="footer__link" href="mailto:{{ site.email }}"><svg class="icon"><use href="#i-mail"></use></svg>{{ site.email }}</a>{% endif %}
             {% if site.address %}<span class="footer__link"><svg class="icon"><use href="#i-pin"></use></svg>{{ site.address }}</span>{% endif %}
-            <span class="footer__link"><svg class="icon"><use href="#i-clock"></use></svg>{{ site.open_days_label|capfirst }}{% if site.lift_hours %}, {{ site.lift_hours }}{% endif %}</span>
         </div>
 
         <div class="footer__col">
