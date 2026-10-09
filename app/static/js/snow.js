@@ -127,9 +127,13 @@
     }
 
     var sprites = {};
-    function sprite(r) {
-        var key = Math.round(r * 2);
-        if (sprites[key]) return sprites[key];
+    // Всего 5 заготовок разного размера, остальные размеры — масштабированием:
+    // отрисовка снежинки с тенью дорогая, на старте это была долгая задача
+    var SPRITE_R = [6, 9, 12, 15, 18];
+    function sprite(want) {
+        var r = SPRITE_R[SPRITE_R.length - 1];
+        for (var i = 0; i < SPRITE_R.length; i++) if (SPRITE_R[i] >= want) { r = SPRITE_R[i]; break; }
+        if (sprites[r]) return sprites[r];
         var pad = 4, s = Math.ceil(r + pad), c = document.createElement('canvas');
         var scale = 1;
         c.width = c.height = s * 2 * scale;
@@ -140,7 +144,8 @@
         g.shadowColor = 'rgba(20,50,110,.2)'; g.shadowBlur = r * .18; g.shadowOffsetY = r * .05;
         drawFlake(g, r);
         c.size = s * 2;
-        return (sprites[key] = c);
+        c.r = r;
+        return (sprites[r] = c);
     }
 
     function frame(t) {
@@ -170,10 +175,10 @@
             if (f.y > H + 24) { flakes[i] = makeFlake(f.layer, false); continue; }
             if (f.x > W + 24) f.x = -24; else if (f.x < -24) f.x = W + 24;
             f.rot += f.spin * dt;
-            var spr = sprite(f.r), half = spr.size / 2;
+            var spr = sprite(f.r), size = spr.size * f.r / spr.r, half = size / 2;
             ctx.globalAlpha = f.a;
             ctx.setTransform(dpr * Math.cos(f.rot), dpr * Math.sin(f.rot), -dpr * Math.sin(f.rot), dpr * Math.cos(f.rot), f.x * dpr, f.y * dpr);
-            ctx.drawImage(spr, -half, -half, spr.size, spr.size);
+            ctx.drawImage(spr, -half, -half, size, size);
         }
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.globalAlpha = 1;
