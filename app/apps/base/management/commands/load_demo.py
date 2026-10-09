@@ -134,6 +134,13 @@ TRANSFER = [
 ]
 
 
+INSTRUCTOR_TEXT = (
+    'Обучение катанию на лыжах или сноуборде. Объяснение правильной стойки и техники. '
+    'Обучение торможению и поворотам. Практика спуска под контролем инструктора. '
+    'Обучение правилам безопасности на склоне.'
+)
+
+
 class Command(BaseCommand):
     help = 'Данные «Тоо-Ашуу» из Instagram. --update — обновить существующие записи.'
 
@@ -285,7 +292,8 @@ class Command(BaseCommand):
             category.services.all().delete()
         if not category.services.exists():
             Service.objects.create(
-                category=category, name='Услуги инструктора', description='', price='2 000 сом',
+                category=category, name='Услуги инструктора', price='2 000 сом',
+                description=INSTRUCTOR_TEXT,
             )
 
     def menu(self):
