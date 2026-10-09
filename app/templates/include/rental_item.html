@@ -1,7 +1,7 @@
 {% load site_tags %}
 <article class="rental-item" data-reveal style="--d:{{ forloop.counter0 }}0ms">
     {% if item.image %}
-        <img class="rental-item__img" src="{{ item.image.url }}" alt="{{ item.name }}" loading="lazy">
+        <img class="rental-item__img" src="{{ item.image|thumb:480 }}" decoding="async" alt="{{ item.name }}" loading="lazy">
     {% else %}
         <span class="rental-item__icon"><svg class="icon"><use href="#i-{% if item.category == 'snowboard' %}board{% elif item.category == 'clothes' %}shirt{% elif item.category == 'kids' or item.category == 'other' %}sled{% else %}ski{% endif %}"></use></svg></span>
     {% endif %}

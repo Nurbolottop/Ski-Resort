@@ -1,12 +1,12 @@
-{% load static %}
+{% load site_tags %}{% load static %}
 {# Шапка внутренней страницы. Параметры: title, eyebrow, text, image, photo (имя фото из static/img/photos),
    parent_title, parent_url, variant #}
 <section class="page-hero">
     <div class="page-hero__bg">
         {% if image %}
-            <img src="{{ image.url }}" alt="">
+            <img src="{{ image|thumb:1600 }}" srcset="{{ image|srcset }}" sizes="100vw" alt="" fetchpriority="high">
         {% elif photo %}
-            <img src="{% static 'img/photos/'|add:photo|add:'.jpg' %}" alt="">
+            {% photo photo eager=True %}
         {% else %}
             {% include 'include/scenery.html' with variant=variant|default:1 uid='ph' %}
         {% endif %}
@@ -19,8 +19,8 @@
             {% if parent_url %}<span>/</span><a href="{{ parent_url }}">{{ parent_title }}</a>{% endif %}
             <span>/</span><span aria-current="page">{{ title }}</span>
         </nav>
-        {% if eyebrow %}<span class="section__eyebrow" data-reveal>{{ eyebrow }}</span>{% endif %}
-        <h1 class="page-hero__title" data-reveal style="--d:.1s">{{ title }}</h1>
-        {% if text %}<p class="page-hero__text" data-reveal style="--d:.2s">{{ text }}</p>{% endif %}
+        {% if eyebrow %}<span class="section__eyebrow">{{ eyebrow }}</span>{% endif %}
+        <h1 class="page-hero__title">{{ title }}</h1>
+        {% if text %}<p class="page-hero__text">{{ text }}</p>{% endif %}
     </div>
 </section>

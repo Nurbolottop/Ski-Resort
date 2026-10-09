@@ -3,9 +3,9 @@
 {% firstof variant forloop.counter 1 as n %}{% firstof url category.get_absolute_url as href %}{% firstof title category.name as label %}
 <a class="tile" href="{{ href }}" data-reveal style="--d:{{ n|add:'-1' }}00ms">
     {% if category.cover %}
-        <img class="tile__img" src="{{ category.cover.url }}" alt="" loading="lazy" width="600" height="800">
+        <img class="tile__img" src="{{ category.cover|thumb:960 }}" srcset="{{ category.cover|srcset }}" sizes="(max-width: 640px) 100vw, 34vw" alt="" loading="lazy" decoding="async" width="600" height="800">
     {% elif photo %}
-        <img class="tile__img" src="{% static 'img/photos/'|add:photo|add:'.jpg' %}" alt="" loading="lazy" width="600" height="800">
+        {% photo photo sizes='(max-width: 640px) 100vw, 34vw' cls='tile__img' %}
     {% else %}
         {% include 'include/scenery.html' with variant=n|cycle_variant uid=n %}
     {% endif %}

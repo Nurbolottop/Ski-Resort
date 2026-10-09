@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
+{% load site_tags %}
 
 {% block title %}Страница не найдена — {{ site.name }}{% endblock %}
 
 {% block content %}
 <section class="error-page">
-    {% load static %}<img class="scenery" src="{% static 'img/photos/notfound.jpg' %}" alt="">
+    {% photo 'notfound' cls='scenery' eager=True %}
     <div class="snowfall"></div>
     <div class="container error-page__inner">
         <div class="error-page__code">404</div>

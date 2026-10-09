@@ -16,7 +16,7 @@
                     <div class="photo-grid" data-reveal>
                         {% for item in images %}
                             <a class="photo-grid__item" href="{{ item.image.url }}" data-lightbox="room" data-caption="{{ room.name }}">
-                                <img src="{{ item.image.url }}" alt="{{ room.name }} — фото {{ forloop.counter }}" loading="lazy">
+                                <img src="{{ item.image|thumb:960 }}" srcset="{{ item.image|srcset }}" sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 34vw" decoding="async" alt="{{ room.name }} — фото {{ forloop.counter }}" loading="lazy">
                             </a>
                         {% endfor %}
                     </div>

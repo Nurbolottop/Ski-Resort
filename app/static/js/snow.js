@@ -195,15 +195,24 @@
         if (value) { stop(); canvas.style.opacity = '0'; } else { start(); }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    // Снег — украшение: запускаем после загрузки страницы, когда браузер свободен
+    function init() {
+        resize();  // размеры читаем до вставки в DOM — без принудительной компоновки
         document.body.appendChild(canvas);
         document.body.appendChild(toggle);
-        resize();
         setOff(off);
         toggle.addEventListener('click', function () { setOff(!off); });
         var rt;
         window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(resize, 200); });
         window.addEventListener('pointermove', function (e) { mouseX = e.clientX; mouseY = e.clientY; }, { passive: true });
         document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
-    });
+    }
+
+    function later() {
+        if ('requestIdleCallback' in window) requestIdleCallback(init, { timeout: 2500 });
+        else setTimeout(init, 600);
+    }
+
+    if (document.readyState === 'complete') later();
+    else window.addEventListener('load', later);
 })();

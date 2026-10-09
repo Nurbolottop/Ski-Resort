@@ -1,2 +1,2 @@
-{% load static %}{# Фон, пока нет своего фото: реальные снимки базы (улучшены нейросетью). variant: 1 — панорама долины, 2 — закат, 3 — подъёмник #}
-{% with v=variant|default:1 %}<img class="scenery" src="{% static 'img/photos/' %}{% if v == 2 %}sunset{% elif v == 3 %}lift{% else %}panorama{% endif %}.jpg" alt="" loading="lazy">{% endwith %}
+{% load site_tags %}{# Фон-заглушка: variant 1 — панорама долины, 2 — закат, 3 — подъёмник #}
+{% if variant == 2 %}{% photo 'sunset' cls='scenery' %}{% elif variant == 3 %}{% photo 'lift' cls='scenery' %}{% else %}{% photo 'panorama' cls='scenery' %}{% endif %}

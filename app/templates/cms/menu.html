@@ -23,7 +23,7 @@
                         {% for item in category.items.all %}
                             <article class="menu-item" data-reveal style="--d:{{ forloop.counter0 }}0ms">
                                 {% if item.image %}
-                                    <img class="menu-item__img" src="{{ item.image.url }}" alt="{{ item.name }}" loading="lazy" width="80" height="80">
+                                    <img class="menu-item__img" src="{{ item.image|thumb:240 }}" decoding="async" alt="{{ item.name }}" loading="lazy" width="80" height="80">
                                 {% endif %}
                                 <div class="menu-item__body">
                                     <div class="menu-item__head">
