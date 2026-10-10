@@ -69,7 +69,7 @@ WEEKDAYS_SHORT = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']
 
 class SiteSettings(models.Model):
     # Основное
-    name = models.CharField('Название', max_length=120, default='Тоо-Ашуу')
+    name = models.CharField('Название', max_length=120, default='Baytur')
     full_name = models.CharField('Полное название', max_length=255, blank=True)
     tagline = models.CharField('Слоган', max_length=255, blank=True)
     season = models.CharField('Сезон', max_length=60, blank=True, help_text='Например: Сезон 2026/2027')

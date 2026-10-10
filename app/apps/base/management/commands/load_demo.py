@@ -1,5 +1,5 @@
 """
-Данные горнолыжной базы «Тоо-Ашуу» — только из официального Instagram @tooashuu.kg:
+Данные горнолыжной базы «Baytur» — только из официального Instagram @tooashuu.kg:
 описание профиля и хайлайты «Прайс», «SKI PASS», «Прокат», «Меню», «Трансфер», «Трассы»,
 «Контакты», «Отзывы», «Мы на карте», последние посты.
 
@@ -128,9 +128,9 @@ OLD_SLOPES = [
 ]
 
 TRANSFER = [
-    ('Бишкек → Тоо-Ашуу', 'ТЦ «Дордой Плаза», Бишкек', '7:00 (или по договорённости)', '~2,5 часа', 1000,
+    ('Бишкек → Baytur', 'ТЦ «Дордой Плаза», Бишкек', '7:00 (или по договорённости)', '~2,5 часа', 1000,
      'Бус на 18 человек, водитель Владимир. Забронировать место можно по телефону 0558 616 133.'),
-    ('Тоо-Ашуу → Бишкек', 'Горнолыжная база «Тоо-Ашуу»', '16:20', '~2,5 часа', 1000,
+    ('Baytur → Бишкек', 'Горнолыжная база «Baytur»', '16:20', '~2,5 часа', 1000,
      'Бус на 18 человек, водитель Владимир.'),
 ]
 
@@ -154,7 +154,7 @@ INSTRUCTOR_TEXT = (
 
 
 class Command(BaseCommand):
-    help = 'Данные «Тоо-Ашуу» из Instagram. --update — обновить существующие записи.'
+    help = 'Данные «Baytur» из Instagram. --update — обновить существующие записи.'
 
     def add_arguments(self, parser):
         parser.add_argument('--update', action='store_true', help='Перезаписать данные по Instagram')
@@ -176,7 +176,7 @@ class Command(BaseCommand):
         self.faq()
         self.posts()
         self.pages()
-        self.stdout.write(self.style.SUCCESS('Данные «Тоо-Ашуу» загружены.'))
+        self.stdout.write(self.style.SUCCESS('Данные «Baytur» загружены.'))
 
     def upsert(self, model, lookup, values):
         """get_or_create, а с --update — update_or_create."""
@@ -190,8 +190,8 @@ class Command(BaseCommand):
         site = SiteSettings.load()
         if site.whatsapp and not self.update:
             return
-        site.name = 'Тоо-Ашуу'
-        site.full_name = 'Горнолыжная база «Тоо-Ашуу»'
+        site.name = 'Baytur'
+        site.full_name = 'Горнолыжная база Baytur'
         site.tagline = 'Горнолыжная база на высоте 3 000 метров — в 120 км от Бишкека по трассе Бишкек — Ош.'
         site.season = ''
         site.open_weekdays = '5,6'  # «ГРАФИК РАБОТЫ: суббота и воскресенье»
@@ -211,7 +211,7 @@ class Command(BaseCommand):
             'Жалобы и предложения: pr@baytur.kg'
         )
         site.instagram = 'https://www.instagram.com/tooashuu.kg/'
-        # Точка «Горнолыжная база Тоо Ашуу» с карты из хайлайта «Мы на карте» — для погоды
+        # Точка «Горнолыжная база Baytur» с карты из хайлайта «Мы на карте» — для погоды
         site.latitude = site.latitude or Decimal('42.333000')
         site.longitude = site.longitude or Decimal('73.817000')
         site.altitude_base = None
@@ -330,7 +330,7 @@ class Command(BaseCommand):
     def reviews(self):
         self.upsert(Review, {'name': 'Ядвига и Кшиштоф Бербека, Краков'}, {
             'rating': 5, 'is_published': True,
-            'text': 'Большое спасибо менеджеру и всей команде, работающей в Тоо-Ашуу. Мы провели Новый год '
+            'text': 'Большое спасибо менеджеру и всей команде, работающей в Baytur. Мы провели Новый год '
                     'там в третий раз — и мы вернёмся снова. Большое спасибо за тёплый приём, мы ценим '
                     'большие усилия и тяжёлую работу в этот период. Привет из Кракова!',
         })
@@ -378,7 +378,7 @@ class Command(BaseCommand):
             'published_at': datetime(2026, 3, 18, 6, 44, tzinfo=dt_timezone.utc),
         })
         Post.objects.get_or_create(slug='new-website', defaults={
-            'title': 'У базы «Тоо-Ашуу» новый сайт',
+            'title': 'У базы «Baytur» новый сайт',
             'excerpt': 'Цены, меню, прокат, трансфер и погода на перевале — теперь в одном месте.',
             'content': '<p>На сайте собрано всё, что нужно перед поездкой: цены на ски-пассы, прокат '
                        'и проживание, меню кафе, расписание трансфера и прогноз погоды на перевале.</p>'
@@ -387,7 +387,7 @@ class Command(BaseCommand):
 
     def pages(self):
         about = (
-            '<p>«Тоо-Ашуу» — горнолыжная база на перевале Тоо-Ашуу, в 120 км от черты Бишкека: '
+            '<p>«Baytur» — горнолыжная база на перевале Тоо-Ашуу, в 120 км от черты Бишкека: '
             'около 2,5 часов езды по трассе Бишкек — Ош. База находится на высоте 3 000 метров над уровнем моря.</p>'
             '<p>База оборудована тремя трассами различного уровня сложности и протяжённости. '
             'Работает канатная дорога.</p>'

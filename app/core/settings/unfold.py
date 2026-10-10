@@ -12,8 +12,8 @@ def _item(title, icon, url_name, badge=None):
 
 
 UNFOLD = {
-    'SITE_TITLE': 'Тоо-Ашуу',
-    'SITE_HEADER': 'Тоо-Ашуу',
+    'SITE_TITLE': 'Baytur',
+    'SITE_HEADER': 'Baytur',
     'SITE_SUBHEADER': 'Управление сайтом',
     'SITE_URL': '/',
     'SITE_SYMBOL': 'landscape',
@@ -30,7 +30,7 @@ UNFOLD = {
         'image': lambda request: static('img/photos/panorama.jpg'),
     },
     'COLORS': {
-        # Фирменный синий «Тоо-Ашуу» (#1f46a0) — основной цвет админки
+        # Фирменный синий «Baytur» (#1f46a0) — основной цвет админки
         'primary': {
             '50': 'oklch(97% .014 254.604)',
             '100': 'oklch(93.2% .032 255.585)',

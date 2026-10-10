@@ -227,7 +227,7 @@ class MenuItem(OrderedModel):
 # =============================================================================
 
 class TransferRoute(OrderedModel):
-    name = models.CharField('Маршрут', max_length=120, help_text='Например: Бишкек → Тоо-Ашуу')
+    name = models.CharField('Маршрут', max_length=120, help_text='Например: Бишкек → Baytur')
     departure_point = models.CharField('Место отправления', max_length=255, blank=True)
     schedule = models.CharField('Расписание', max_length=255, blank=True, help_text='Например: сб и вс в 7:00')
     duration = models.CharField('В пути', max_length=60, blank=True, help_text='Например: ~2,5 часа')
