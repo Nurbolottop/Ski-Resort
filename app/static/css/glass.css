@@ -1793,3 +1793,9 @@ input[type="date"]::-webkit-date-and-time-value {
 .review--link .review__text {
     color: var(--text-dim);
 }
+
+/* Вкладки категорий меню стоят на месте и не едут за прокруткой */
+.tabs--sticky {
+    position: relative;
+    top: auto;
+}
