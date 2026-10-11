@@ -138,6 +138,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'ru')
 TIME_ZONE = os.getenv('TIME_ZONE', 'Asia/Bishkek')
 USE_I18N = True
+# Свой перевод строк админки django-unfold (у пакета нет русского)
+LOCALE_PATHS = [BASE_DIR / 'locale']
 USE_TZ = True
 
 # =============================================================================

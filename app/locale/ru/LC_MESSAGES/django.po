@@ -1,0 +1,576 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ski-baytur\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: unfold/templates/admin/login.html
+msgid ""
+"\n"
+"                    You are authenticated as %(username)s, but are not authorized to\n"
+"                    access this page. Would you like to login to a different account?\n"
+"                "
+msgstr ""
+"\n"
+"                    Вы вошли как %(username)s, но у вас нет доступа к этой странице. Войти под другой учётной записью?\n"
+"                "
+
+#: unfold/contrib/hijack/templates/hijack/notification.html
+msgid ""
+"\n"
+"                You are currently working on behalf of <em>%(user)s</em>.\n"
+"            "
+msgstr ""
+"\n"
+"                Вы работаете от имени <em>%(user)s</em>.\n"
+"            "
+
+#: unfold/contrib/hijack/templates/hijack/contrib/admin/button.html
+msgid ""
+"\n"
+"                impersonate %(username)s\n"
+"            "
+msgstr ""
+"\n"
+"                войти как %(username)s\n"
+"            "
+
+#: unfold/contrib/inlines/admin.py
+msgid "%(class_name)s %(instance)s"
+msgstr "%(class_name)s %(instance)s"
+
+#: unfold/contrib/forms/templates/unfold/forms/array.html
+msgid "Add new item"
+msgstr "Добавить элемент"
+
+#: unfold/templates/unfold_crispy/layout/table_inline_formset.html
+msgid "Add row"
+msgstr "Добавить строку"
+
+#: unfold/templates/admin/auth/user/add_form.html
+msgid "After you've created a user, you’ll be able to edit more user options."
+msgstr ""
+"После создания пользователя можно будет настроить остальные параметры."
+
+#: unfold/templates/unfold/helpers/app_list_all.html
+msgid "All applications"
+msgstr "Все разделы"
+
+#: unfold/templates/unfold/helpers/change_list_filter_actions.html
+msgid "Apply Filters"
+msgstr "Применить фильтры"
+
+#: unfold/templates/unfold/helpers/shortcuts.html
+msgid "Available shortcuts"
+msgstr "Горячие клавиши"
+
+#: unfold/contrib/import_export/templates/admin/import_export/import_confirm.html
+msgid ""
+"Below is a preview of data to be imported. If you are satisfied with the "
+"results, click 'Confirm import'"
+msgstr ""
+"Ниже — предпросмотр импортируемых данных. Если всё верно, нажмите "
+"«Подтвердить импорт»"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Bold"
+msgstr "Жирный"
+
+#: unfold/templates/unfold/helpers/dialog.html
+msgid "Cancel"
+msgstr "Отмена"
+
+#: unfold/contrib/simple_history/templates/simple_history/submit_line.html
+msgid "Change History"
+msgstr "Изменить историю"
+
+#: unfold/contrib/simple_history/templates/simple_history/object_history_list.html
+msgid "Change reason"
+msgstr "Причина изменения"
+
+#: unfold/contrib/simple_history/templates/simple_history/object_history_list.html
+msgid "Changed by"
+msgstr "Кем изменено"
+
+#: unfold/templates/unfold/helpers/shortcuts.html
+msgid "Changelist shortcuts"
+msgstr "Клавиши в списке"
+
+#: unfold/contrib/simple_history/templates/simple_history/object_history_list.html
+msgid "Changes"
+msgstr "Изменения"
+
+#: unfold/contrib/simple_history/templates/simple_history/object_history.html
+msgid ""
+"Choose a date from the list below to revert to a previous version of this "
+"object"
+msgstr "Выберите дату, чтобы вернуть предыдущую версию объекта"
+
+#: unfold/templates/unfold/widgets/clearable_file_input.html
+msgid "Choose file to upload"
+msgstr "Выберите файл"
+
+#: unfold/templates/unfold/helpers/edit_inline/inline_delete_undo.html
+msgid "Click to cancel"
+msgstr "Нажмите, чтобы отменить"
+
+#: unfold/templates/unfold/helpers/field_readonly_value_file.html
+msgid "Click to download"
+msgstr "Нажмите, чтобы скачать"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Code"
+msgstr "Код"
+
+#: unfold/contrib/constance/templates/admin/constance/includes/results_list.html
+msgid "Collapse"
+msgstr "Свернуть"
+
+#: unfold/templates/unfold/helpers/shortcuts.html
+msgid "Command tool shortcuts"
+msgstr "Клавиши командной панели"
+
+#: unfold/contrib/simple_history/templates/simple_history/object_history_list.html
+msgid "Comment"
+msgstr "Комментарий"
+
+#: unfold/contrib/import_export/templates/admin/import_export/import_confirm.html
+msgid "Confirm import"
+msgstr "Подтвердить импорт"
+
+#: unfold/templates/unfold/helpers/shortcuts.html
+msgid "Create new record"
+msgstr "Создать запись"
+
+#: unfold/contrib/constance/templates/admin/constance/includes/results_list.html
+msgid "Current file"
+msgstr "Текущий файл"
+
+#: unfold/templates/unfold/helpers/theme_switch.html
+msgid "Dark"
+msgstr "Тёмная"
+
+#: unfold/mixins/dataset_model_admin.py
+msgid "Dataset not found. No action performed."
+msgstr "Набор данных не найден. Ничего не сделано."
+
+#: unfold/widgets.py
+msgid "Date"
+msgstr "Дата"
+
+#: unfold/contrib/filters/forms.py
+msgid "Date from"
+msgstr "Дата с"
+
+#: unfold/contrib/filters/forms.py
+msgid "Date to"
+msgstr "Дата по"
+
+#: unfold/contrib/constance/templates/admin/constance/includes/results_list.html
+msgid "Default"
+msgstr "По умолчанию"
+
+#: unfold/contrib/guardian/templates/unfold/guardian/group_form.html
+msgid "Edit"
+msgstr "Изменить"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Enter an URL"
+msgstr "Введите ссылку"
+
+#: unfold/contrib/import_export/templates/admin/import_export/change_form.html
+msgid "Export"
+msgstr "Экспорт"
+
+#: unfold/templates/unfold/helpers/boolean.html
+msgid "False"
+msgstr "Нет"
+
+#: unfold/contrib/simple_history/templates/simple_history/object_history_list.html
+msgid "Field"
+msgstr "Поле"
+
+#: unfold/mixins/formfield_model_admin.py
+msgid ""
+"Field <strong class=\"font-semibold\">{field_name}</strong> is not an "
+"autocomplete field. Please add it to the `autocomplete_fields` list."
+msgstr ""
+"Поле <strong class=\"font-semibold\">{field_name}</strong> не поддерживает "
+"автодополнение. Добавьте его в список `autocomplete_fields`."
+
+#: unfold/templates/unfold/helpers/change_list_filter_button.html
+msgid "Filters"
+msgstr "Фильтры"
+
+#: unfold/contrib/filters/forms.py
+msgid "From"
+msgstr "С"
+
+#: unfold/templates/unfold/helpers/tab_items.html
+msgid "General"
+msgstr "Основное"
+
+#: unfold/templates/unfold/helpers/shortcuts.html
+msgid "Global shortcuts"
+msgstr "Общие клавиши"
+
+#: unfold/templates/unfold/helpers/header_back_button.html
+msgid "Go back"
+msgstr "Назад"
+
+#: unfold/contrib/guardian/templates/unfold/guardian/group_form.html
+msgid "Group"
+msgstr "Группа"
+
+#: unfold/contrib/guardian/templates/unfold/guardian/group_form.html
+msgid "Group permissions"
+msgstr "Права группы"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Heading"
+msgstr "Заголовок"
+
+#: unfold/templates/unfold/helpers/field_readonly_value_file.html
+msgid "Image preview"
+msgstr "Просмотр изображения"
+
+#: unfold/contrib/import_export/templates/admin/import_export/change_list_import_item.html
+msgid "Import"
+msgstr "Импорт"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Indent decrease"
+msgstr "Уменьшить отступ"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Indent increase"
+msgstr "Увеличить отступ"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Italic"
+msgstr "Курсив"
+
+#: unfold/templates/unfold/helpers/theme_switch.html
+msgid "Light"
+msgstr "Светлая"
+
+#: unfold/contrib/import_export/templates/admin/import_export/import_errors.html
+msgid "Line number"
+msgstr "Номер строки"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Link"
+msgstr "Ссылка"
+
+#: unfold/contrib/guardian/templates/unfold/guardian/group_form.html
+msgid "Manage group"
+msgstr "Управление группой"
+
+#: unfold/contrib/guardian/templates/unfold/guardian/user_form.html
+msgid "Manage user"
+msgstr "Управление пользователем"
+
+#: unfold/contrib/constance/templates/admin/constance/includes/results_list.html
+msgid "Name"
+msgstr "Название"
+
+#: unfold/templates/unfold/helpers/command_help.html
+msgid "Navigate"
+msgstr "Перейти"
+
+#: unfold/contrib/import_export/templates/admin/import_export/import_preview.html
+msgid "New"
+msgstr "Новая"
+
+#: unfold/contrib/simple_history/templates/simple_history/object_history_list.html
+msgid "New value"
+msgstr "Новое значение"
+
+#: unfold/templates/unfold/helpers/pagination_infinite.html
+msgid "Next"
+msgstr "Далее"
+
+#: unfold/templates/unfold/components/table.html
+msgid "No data"
+msgstr "Нет данных"
+
+#: unfold/templates/unfold/helpers/empty_results.html
+msgid "No results found"
+msgstr "Ничего не найдено"
+
+#: unfold/contrib/import_export/templates/admin/import_export/import_validation.html
+msgid "Non field specific"
+msgstr "Без привязки к полю"
+
+#: unfold/contrib/filters/templates/unfold/filters/filters_numeric_slider.html
+msgid "Not enough data."
+msgstr "Недостаточно данных."
+
+#: unfold/templates/unfold/helpers/command_results.html
+msgid "Nothing matched your search"
+msgstr "Ничего не найдено"
+
+#: unfold/contrib/simple_history/templates/simple_history/object_history_list.html
+msgid "Object"
+msgstr "Объект"
+
+#: unfold/contrib/guardian/templates/admin/guardian/model/change_form.html
+msgid "Object permissions"
+msgstr "Права на объект"
+
+#: unfold/contrib/simple_history/templates/simple_history/object_history_list.html
+msgid "Old value"
+msgstr "Старое значение"
+
+#: unfold/templates/unfold/helpers/shortcuts.html
+msgid "Open command tool"
+msgstr "Открыть командную панель"
+
+#: unfold/templates/unfold/helpers/shortcuts.html
+msgid "Open selection"
+msgstr "Открыть выбранное"
+
+#: unfold/templates/unfold/helpers/shortcuts.html
+msgid "Open selection in new tab"
+msgstr "Открыть выбранное в новой вкладке"
+
+#: unfold/templates/unfold/helpers/shortcuts.html
+msgid "Open shortcuts list"
+msgstr "Список горячих клавиш"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Ordered list"
+msgstr "Нумерованный список"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Paragraph"
+msgstr "Абзац"
+
+#: unfold/contrib/import_export/templates/admin/import_export/import_validation.html
+msgid ""
+"Please correct these errors in your data where possible, then reupload it "
+"using the form above."
+msgstr ""
+"Исправьте эти ошибки в данных и загрузите файл ещё раз через форму выше."
+
+#: unfold/contrib/simple_history/templates/simple_history/object_history_form.html
+msgid "Press the 'Change History' button below to edit the history."
+msgstr "Нажмите «Изменить историю», чтобы отредактировать историю."
+
+#: unfold/contrib/simple_history/templates/simple_history/object_history_form.html
+msgid ""
+"Press the 'Revert' button below to revert to this version of the object."
+msgstr "Нажмите «Вернуть», чтобы восстановить эту версию объекта."
+
+#: unfold/templates/unfold/helpers/pagination_infinite.html
+msgid "Previous"
+msgstr "Назад"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Quote"
+msgstr "Цитата"
+
+#: unfold/templates/unfold/helpers/command_history.html
+msgid "Recent searches"
+msgstr "Недавние запросы"
+
+#: unfold/templates/unfold/helpers/display_header.html
+msgid "Record picture"
+msgstr "Изображение записи"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Redo"
+msgstr "Повторить"
+
+#: unfold/templates/unfold/helpers/empty_results.html
+msgid "Reset filters"
+msgstr "Сбросить фильтры"
+
+#: unfold/contrib/constance/templates/admin/constance/includes/results_list.html
+msgid "Reset to default"
+msgstr "Сбросить"
+
+#: unfold/templates/unfold/helpers/unauthenticated_header.html
+msgid "Return to site"
+msgstr "Вернуться на сайт"
+
+#: unfold/contrib/simple_history/templates/simple_history/submit_line.html
+msgid "Revert"
+msgstr "Вернуть"
+
+#: unfold/contrib/import_export/templates/admin/import_export/import_validation.html
+msgid "Row"
+msgstr "Строка"
+
+#: unfold/templates/admin/actions.html
+msgid "Run"
+msgstr "Выполнить"
+
+#: unfold/templates/unfold/helpers/search.html
+msgid "Search apps and models..."
+msgstr "Поиск по разделам…"
+
+#: unfold/templates/unfold/helpers/command_help.html
+msgid "Select"
+msgstr "Выбрать"
+
+#: unfold/admin.py
+msgid "Select action"
+msgstr "Выберите действие"
+
+#: unfold/forms.py
+msgid "Select action to run"
+msgstr "Выберите действие"
+
+#: unfold/widgets.py
+msgid "Select currency"
+msgstr "Выберите валюту"
+
+#: unfold/contrib/import_export/forms.py
+msgid "Select format"
+msgstr "Выберите формат"
+
+#: unfold/admin.py
+msgid "Select record"
+msgstr "Выберите запись"
+
+#: unfold/mixins/formfield_model_admin.py
+msgid "Select value"
+msgstr "Выберите значение"
+
+#: unfold/contrib/import_export/templates/admin/import_export/import_preview.html
+msgid "Skipped"
+msgstr "Пропущено"
+
+#: unfold/contrib/import_export/templates/admin/import_export/import_validation.html
+msgid "Some rows failed to validate"
+msgstr "Некоторые строки не прошли проверку"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Strike"
+msgstr "Зачёркнутый"
+
+#: unfold/templates/unfold/helpers/dialog.html
+msgid "Submit"
+msgstr "Отправить"
+
+#: unfold/templates/unfold/helpers/theme_switch.html
+msgid "System"
+msgstr "Как в системе"
+
+#: unfold/contrib/import_export/templates/admin/import_export/export.html
+msgid "This exporter will export the following fields"
+msgstr "Будут выгружены поля"
+
+#: unfold/contrib/import_export/templates/admin/import_export/resource_fields_list.html
+msgid "This exporter will export the following fields: "
+msgstr "Будут выгружены поля: "
+
+#: unfold/contrib/import_export/templates/admin/import_export/resource_fields_list.html
+msgid "This importer will import the following fields: "
+msgstr "Будут загружены поля: "
+
+#: unfold/templates/unfold/helpers/edit_inline/inline_delete_undo.html
+msgid "This item will be deleted."
+msgstr "Этот элемент будет удалён."
+
+#: unfold/contrib/simple_history/templates/simple_history/object_history.html
+msgid "This object doesn't have a change history."
+msgstr "У этого объекта нет истории изменений."
+
+#: unfold/templates/unfold/helpers/empty_results.html
+msgid ""
+"This page yielded into no results. Create a new item or reset your filters."
+msgstr "Здесь пока пусто. Добавьте запись или сбросьте фильтры."
+
+#: unfold/contrib/filters/forms.py
+msgid "To"
+msgstr "По"
+
+#: unfold/templates/unfold/helpers/shortcuts.html
+msgid "Toggle dark/light mode"
+msgstr "Тёмная/светлая тема"
+
+#: unfold/templates/unfold/helpers/shortcuts.html
+msgid "Toggle filter"
+msgstr "Показать/скрыть фильтры"
+
+#: unfold/templates/unfold/widgets/password_toggle.html
+msgid "Toggle password visibility"
+msgstr "Показать/скрыть пароль"
+
+#: unfold/templates/unfold/helpers/shortcuts.html
+msgid "Toggle sidebar"
+msgstr "Показать/скрыть боковую панель"
+
+#: unfold/templates/unfold/helpers/boolean.html
+msgid "True"
+msgstr "Да"
+
+#: unfold/templates/admin/search_form.html
+msgid "Type to search"
+msgstr "Поиск"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Underlined"
+msgstr "Подчёркнутый"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Undo"
+msgstr "Отменить"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Unlink"
+msgstr "Убрать ссылку"
+
+#: unfold/contrib/forms/templates/unfold/forms/helpers/toolbar.html
+msgid "Unordered list"
+msgstr "Маркированный список"
+
+#: unfold/contrib/import_export/templates/admin/import_export/import_preview.html
+msgid "Update"
+msgstr "Обновить"
+
+#: unfold/contrib/guardian/templates/unfold/guardian/user_form.html
+msgid "User permissions"
+msgstr "Права пользователя"
+
+#: unfold/contrib/filters/forms.py
+msgid "Value"
+msgstr "Значение"
+
+#: unfold/contrib/import_export/templates/admin/import_export/import_errors.html
+msgid "View traceback"
+msgstr "Подробности ошибки"
+
+#: unfold/templatetags/unfold.py
+msgid "Welcome"
+msgstr "Добро пожаловать"
+
+#: unfold/templates/admin/login.html
+msgid "Welcome back to"
+msgstr "С возвращением в"
+
+#: unfold/mixins/nested_inlines_model_admin.py
+msgid "You can not create nested object without parent"
+msgstr "Нельзя создать вложенный объект без родительского"
+
+#: unfold/templates/registration/logged_out.html
+msgid "You have been successfully logged out from the administration"
+msgstr "Вы вышли из панели управления"
+
+#: unfold/contrib/hijack/templates/hijack/notification.html
+msgid "hide warning"
+msgstr "скрыть предупреждение"
+
+#: unfold/contrib/hijack/templates/hijack/contrib/admin/button.html
+msgid "impersonate"
+msgstr "войти как"
+
+#: unfold/contrib/hijack/templates/hijack/notification.html
+msgid "stop impersonating"
+msgstr "вернуться в свой аккаунт"
