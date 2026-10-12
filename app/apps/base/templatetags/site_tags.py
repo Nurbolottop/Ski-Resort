@@ -123,3 +123,15 @@ def photo(name, sizes='100vw', cls='', eager=False):
         attrs.insert(0, f'class="{cls}"')
     attrs.append('fetchpriority="high"' if eager else 'loading="lazy" decoding="async"')
     return mark_safe('<img ' + ' '.join(attrs) + '>')
+
+
+@register.filter
+def dedupe_parts(parts):
+    """Шапка админки: «Настройки сайта › Настройки сайта» → один раз (повтор подряд убираем)."""
+    result = []
+    for part in parts or []:
+        title = str(part.get('title', '') if isinstance(part, dict) else getattr(part, 'title', '')).strip().lower()
+        if result and title and title == result[-1][0]:
+            continue
+        result.append((title, part))
+    return [p for _, p in result]
