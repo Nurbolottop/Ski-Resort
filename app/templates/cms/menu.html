@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load site_tags %}
 
-{% block seo %}{% include 'include/seo.html' with title='Меню кафе на Тоо-Ашуу' description='Меню кафе горнолыжной базы Baytur на перевале Тоо-Ашуу: горячие блюда, выпечка и напитки.' photo='menu' %}{% endblock %}
+{% block seo %}{% include 'include/seo.html' with title='Меню кафе на Тоо-Ашуу' description='Меню кафе горнолыжной базы Baytur на Тоо-Ашуу: завтраки, супы, стейки, пицца, салаты, горячие напитки и банкетное меню. Цены на все блюда в сомах.' photo='menu' %}{% endblock %}
 {% block extra_head %}{% load seo_tags %}{% jsonld 'menu' %}{% endblock %}
 
 {% block content %}

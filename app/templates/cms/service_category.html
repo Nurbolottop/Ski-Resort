@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load site_tags %}
 
-{% block seo %}{% include 'include/seo.html' with title=category.seo_title|default:category.name description=category.seo_description|default:category.name image=category.cover photo='services' %}{% endblock %}
+{% block seo %}{% load seo_tags %}{% seo_meta category as m %}{% include 'include/seo.html' with title=category.seo_title|default:m.title description=category.seo_description|default:m.description image=category.cover photo='services' %}{% endblock %}
 
 {% block content %}
 {% url 'cms:service_list' as services_url %}

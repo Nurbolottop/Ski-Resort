@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block seo %}{% include 'include/seo.html' with title=offer.seo_title|default:offer.title description=offer.seo_description|default:offer.short_description|truncatechars:160 image=offer.image photo='offers' %}{% endblock %}
+{% block seo %}{% load seo_tags %}{% seo_meta offer as m %}{% include 'include/seo.html' with title=offer.seo_title|default:m.title description=offer.seo_description|default:m.description image=offer.image photo='offers' %}{% endblock %}
 {% block extra_head %}{% load seo_tags %}{% jsonld 'offer' offer %}{% endblock %}
 
 {% block content %}

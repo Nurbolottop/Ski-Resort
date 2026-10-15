@@ -8,9 +8,9 @@ from django.urls import reverse
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 
-from apps.base.models import FAQ, SiteSettings
-from apps.base.seo import STATIC_PAGES
-from apps.cms.models import MenuCategory, RentalItem, Room, SkiPass, TransferRoute
+from apps.base.models import FAQ, Page, SiteSettings
+from apps.base.seo import NOINDEX_PAGES, STATIC_PAGES
+from apps.cms.models import MenuCategory, Offer, Post, RentalItem, Room, ServiceCategory, SkiPass, TransferRoute
 
 register = template.Library()
 
@@ -267,3 +267,56 @@ def jsonld(context, kind, obj=None):
     else:
         return ''
     return _script({'@context': 'https://schema.org', **data})
+
+
+PLACE = 'горнолыжной базы Baytur на перевале Тоо-Ашуу'
+
+
+def _clip(text, limit=175):
+    """Обрезает по границе слова, не длиннее limit символов."""
+    text = re.sub(r'\s+', ' ', text).strip()
+    if len(text) <= limit:
+        return text
+    cut = text[:limit - 1].rsplit(' ', 1)[0].rstrip(',.;:—- ')
+    return cut + '…'
+
+
+def _price(value):
+    return f'{value:,}'.replace(',', ' ')
+
+
+@register.simple_tag
+def seo_meta(obj):
+    """Заголовок и описание по умолчанию для страниц-деталей (если SEO-поля в админке пустые)."""
+    if isinstance(obj, Room):
+        unit = f'/{obj.price_unit}' if obj.price_unit else ''
+        title = f'{obj.name} на Тоо-Ашуу — от {_price(obj.price_from)} сом{unit}'
+        # Первое предложение краткого описания обычно повторяет название («Коттедж на 2 человек») — пропускаем
+        sentences = [x.strip() for x in re.split(r'(?<=\.)\s+', _text(obj.short_description)) if x.strip()]
+        details = ' '.join(sentences[1:]) if len(sentences) > 1 else ''
+        desc = f'{obj.name} на горнолыжной базе Baytur, перевал Тоо-Ашуу: до {obj.max_guests} гостей.'
+        if details:
+            desc += f' {details}'
+        desc += f' Цена от {_price(obj.price_from)} сом{unit}.'
+        for tail in (' Фото и онлайн-бронирование.', ' Онлайн-бронирование.'):
+            if len(desc + tail) <= 175:
+                desc += tail
+                break
+        return {'title': title, 'description': _clip(desc)}
+    if isinstance(obj, ServiceCategory):
+        services = list(obj.services.filter(is_active=True))
+        text = ' '.join(_text(s.description) for s in services if s.description)
+        prices = ', '.join(f'{s.name.lower()} — {s.price}' for s in services if s.price)
+        desc = f'{obj.name} {PLACE}. {text}' + (f' Цена: {prices}.' if prices else '')
+        return {'title': f'{obj.name} на Тоо-Ашуу', 'description': _clip(desc)}
+    if isinstance(obj, Post):
+        title = obj.title if len(obj.title) >= 30 else f'{obj.title} — новости базы Тоо-Ашуу'
+        desc = f'{_text(obj.excerpt).rstrip(".")}. Новости {PLACE}.'
+        return {'title': title, 'description': _clip(desc)}
+    if isinstance(obj, Offer):
+        desc = f'{_text(obj.short_description).rstrip(".")}. Акция {PLACE}.'
+        return {'title': f'{obj.title} — акция на Тоо-Ашуу', 'description': _clip(desc)}
+    if isinstance(obj, Page):
+        return {'title': obj.title, 'noindex': obj.slug in NOINDEX_PAGES,
+                'description': _clip(f'{obj.title} — сайт {PLACE}.')}
+    return {}

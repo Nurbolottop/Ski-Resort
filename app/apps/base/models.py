@@ -188,6 +188,10 @@ class SiteSettings(models.Model):
 
 class HeroSlide(OrderedModel):
     image = image_field('home/slides/', size=(2400, 1350), blank=True)
+    image_alt = models.CharField(
+        'Подпись к фото (alt)', max_length=255, blank=True,
+        help_text='Что на фото — для поисковиков и незрячих. Пусто — используется подзаголовок',
+    )
     eyebrow = models.CharField('Надзаголовок', max_length=120, blank=True)
     title = models.CharField('Заголовок', max_length=120)
     text = models.CharField('Подзаголовок', max_length=255, blank=True)

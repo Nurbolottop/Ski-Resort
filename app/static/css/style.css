@@ -709,6 +709,17 @@ select.field__input option {
     letter-spacing: -.01em;
 }
 
+/* H1 первого слайда — обёртка без собственного блока, выглядит как остальные слайды */
+.hero__h1 {
+    display: contents;
+    font-weight: inherit;
+    line-height: inherit;
+}
+
+.hero__h1 .hero__title {
+    display: block;
+}
+
 .hero__title em {
     font-style: italic;
     color: var(--accent-light);

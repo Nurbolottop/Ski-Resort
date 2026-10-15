@@ -4,7 +4,7 @@
 <section class="page-hero">
     <div class="page-hero__bg">
         {% if image %}
-            <img src="{{ image|thumb:1600 }}" srcset="{{ image|srcset }}" sizes="100vw" alt="" fetchpriority="high">
+            <img src="{{ image|thumb:1600 }}" srcset="{{ image|srcset }}" sizes="100vw" alt="{{ title }}" fetchpriority="high">
         {% elif photo %}
             {% photo photo eager=True %}
         {% else %}

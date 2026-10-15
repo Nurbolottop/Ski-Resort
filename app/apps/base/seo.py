@@ -1,83 +1,167 @@
 """robots.txt, sitemap.xml и llms.txt — для поисковиков и ИИ-агентов."""
+import os
 import re
+from datetime import datetime
+from datetime import timezone as dt_timezone
+from xml.sax.saxutils import escape
 
+from django.db.models import Max
 from django.http import HttpResponse
+from django.template import TemplateDoesNotExist
+from django.template.loader import get_template
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.html import strip_tags
 from django.views.decorators.cache import cache_page
 
-from apps.base.models import FAQ, Page, SiteSettings
-from apps.cms.models import (Lift, MenuCategory, MenuItem, Offer, Post, RentalItem, Room, Service,
+from apps.base.models import FAQ, HeroSlide, Page, SiteSettings
+from apps.base.templatetags.site_tags import PHOTO_ALTS
+from apps.cms.models import (GalleryImage, Lift, MenuCategory, MenuItem, Offer, Post, RentalItem, Room, Service,
                              ServiceCategory, SkiPass, Slope, TransferRoute)
 
-STATIC_PAGES = [
-    ('base:home', 'Главная'),
-    ('base:about', 'О базе'),
-    ('cms:slopes', 'Трассы и подъёмники'),
-    ('cms:skipass', 'Ски-пассы'),
-    ('cms:prices', 'Цены'),
-    ('cms:rental', 'Прокат снаряжения'),
-    ('cms:room_list', 'Проживание'),
-    ('cms:service_list', 'Услуги'),
-    ('cms:menu', 'Меню кафе'),
-    ('cms:transfer', 'Трансфер'),
-    ('cms:offer_list', 'Акции'),
-    ('cms:gallery', 'Галерея'),
-    ('cms:reviews', 'Отзывы'),
-    ('cms:post_list', 'Новости'),
-    ('contacts:contacts', 'Контакты'),
-    ('contacts:booking', 'Бронирование'),
+# Служебные страницы: не индексируются и не попадают в sitemap
+NOINDEX_PAGES = {'privacy', 'offer', 'photo-credits'}
+
+# (имя URL, название, шаблон, фото в шапке, приоритет)
+SECTIONS = [
+    ('base:home', 'Главная', 'base/home.html', 'panorama', '1.0'),
+    ('base:about', 'О базе', 'base/about.html', 'about', '0.8'),
+    ('cms:slopes', 'Трассы и подъёмники', 'cms/slopes.html', 'slopes', '0.9'),
+    ('cms:skipass', 'Ски-пассы', 'cms/skipass.html', 'skipass', '0.9'),
+    ('cms:prices', 'Цены', 'cms/prices.html', 'prices', '0.9'),
+    ('cms:rental', 'Прокат снаряжения', 'cms/rental.html', 'rental', '0.8'),
+    ('cms:room_list', 'Проживание', 'cms/room_list.html', 'rooms', '0.9'),
+    ('cms:service_list', 'Услуги', 'cms/service_list.html', 'services', '0.7'),
+    ('cms:menu', 'Меню кафе', 'cms/menu.html', 'menu', '0.6'),
+    ('cms:transfer', 'Трансфер', 'cms/transfer.html', 'transfer', '0.8'),
+    ('cms:offer_list', 'Акции', 'cms/offer_list.html', 'offers', '0.6'),
+    ('cms:gallery', 'Галерея', 'cms/gallery.html', 'gallery', '0.6'),
+    ('cms:reviews', 'Отзывы', 'cms/reviews.html', 'reviews', '0.6'),
+    ('cms:post_list', 'Новости', 'cms/post_list.html', 'news', '0.6'),
+    ('contacts:contacts', 'Контакты', 'contacts/contacts.html', 'contacts', '0.8'),
+    ('contacts:booking', 'Бронирование', 'contacts/booking.html', 'chalet', '0.7'),
 ]
+STATIC_PAGES = [(name, title) for name, title, *_ in SECTIONS]
+
+# Ключ IndexNow: файл /<ключ>.txt подтверждает, что сайт наш
+INDEXNOW_KEY = '57dd948e21d0a599b52306b8aa3c4f15'
+
+
+def indexnow_key(request):
+    return HttpResponse(INDEXNOW_KEY, content_type='text/plain; charset=utf-8')
+
+
+def _template_date(name):
+    """Дата последнего изменения шаблона — для lastmod страниц без своей даты в БД."""
+    try:
+        path = get_template(name).origin.name
+        return datetime.fromtimestamp(os.path.getmtime(path), tz=dt_timezone.utc)
+    except (TemplateDoesNotExist, OSError):
+        return None
+
+
+def _latest(*dates):
+    dates = [d for d in dates if d]
+    return max(dates) if dates else None
 
 
 def _dynamic_pages():
     """(url, название, дата изменения) всех опубликованных объектов."""
+    room_date = _template_date('cms/room_detail.html')
+    service_date = _template_date('cms/service_category.html')
     items = []
     for obj in Room.objects.filter(is_active=True):
-        items.append((obj.get_absolute_url(), obj.name, None))
+        items.append((obj.get_absolute_url(), obj.name, room_date))
     for obj in ServiceCategory.objects.filter(is_active=True):
-        items.append((obj.get_absolute_url(), obj.name, None))
+        items.append((obj.get_absolute_url(), obj.name, service_date))
     for obj in Offer.objects.current():
         items.append((obj.get_absolute_url(), obj.title, obj.updated_at))
     for obj in Post.objects.published():
         items.append((obj.get_absolute_url(), obj.title, obj.updated_at))
-    for obj in Page.objects.filter(is_published=True).exclude(slug='about'):
+    for obj in Page.objects.filter(is_published=True).exclude(slug='about').exclude(slug__in=NOINDEX_PAGES):
         items.append((obj.get_absolute_url(), obj.title, obj.updated_at))
     return items
 
 
-# ИИ-ассистенты и поисковые боты, которым явно разрешено читать сайт
-AI_BOTS = [
-    'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'Claude-User',
-    'PerplexityBot', 'Perplexity-User', 'Google-Extended', 'Applebot-Extended', 'YandexAdditional',
-    'Bingbot', 'DuckAssistBot', 'meta-externalagent',
+def _photo(request, name):
+    return request.build_absolute_uri(static(f'img/photos/{name}.jpg')), PHOTO_ALTS.get(name, '')
+
+
+def _media(request, image):
+    return request.build_absolute_uri(image.url)
+
+
+def _page_images(request, name, photo):
+    """Картинки страницы для sitemap: (url, подпись)."""
+    images = []
+    if name == 'base:home':
+        images += [(_media(request, s.image), s.image_alt or s.text or s.title)
+                   for s in HeroSlide.objects.filter(is_active=True) if s.image]
+    elif name == 'cms:gallery':
+        images += [(_media(request, i.image), i.caption or f'{i.album.title if i.album else "Горнолыжная база"} — Тоо-Ашуу')
+                   for i in GalleryImage.objects.filter(is_active=True).select_related('album')[:100] if i.image]
+    elif name == 'cms:room_list':
+        images += [(_media(request, r.cover), r.name) for r in Room.objects.filter(is_active=True) if r.cover]
+    elif name == 'cms:slopes':
+        images.append(_photo(request, 'lift'))
+    images.append(_photo(request, photo))
+    return images
+
+
+def _image_xml(images):
+    return ''.join(f'<image:image><image:loc>{escape(u)}</image:loc>'
+                   f'<image:title>{escape(t)}</image:title></image:image>' for u, t in images)
+
+
+# Поисковые и ИИ-боты: явно разрешаем читать сайт, чтобы ассистенты знали о базе
+BOTS = [
+    'Googlebot', 'Google-Extended', 'Yandex', 'Bingbot', 'Applebot-Extended',
+    'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'PerplexityBot', 'Perplexity-User',
+    'DuckAssistBot', 'meta-externalagent',
 ]
+DISALLOW = ['/admin/', '/subscribe/']
+CLEAN_PARAM = 'Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&fbclid&gclid&yclid /'
 
 
 def robots_txt(request):
     sitemap = request.build_absolute_uri(reverse('sitemap'))
     lines = []
-    for bot in ['*'] + AI_BOTS:
-        lines += [f'User-agent: {bot}', 'Allow: /', 'Disallow: /admin/', 'Disallow: /subscribe/', '']
-    lines += [
-        'Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&fbclid&gclid&yclid',
-        '',
-        f'Sitemap: {sitemap}',
-        '',
-    ]
+    for bot in ['*'] + BOTS:
+        lines += [f'User-agent: {bot}', 'Allow: /'] + [f'Disallow: {d}' for d in DISALLOW]
+        if bot in ('*', 'Yandex'):
+            lines.append(CLEAN_PARAM)
+        lines.append('')
+    lines += [f'Sitemap: {sitemap}', '']
     return HttpResponse('\n'.join(lines), content_type='text/plain; charset=utf-8')
 
 
 @cache_page(60 * 60)
 def sitemap_xml(request):
     base = request.build_absolute_uri('/')[:-1]
-    urls = [(reverse(name), None) for name, _ in STATIC_PAGES]
-    urls += [(url, updated) for url, _, updated in _dynamic_pages()]
+    site_date = SiteSettings.load().conditions_updated_at
+    post_date = Post.objects.published().aggregate(d=Max('updated_at'))['d']
     out = ['<?xml version="1.0" encoding="UTF-8"?>',
-           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
-    for url, updated in urls:
-        lastmod = f'<lastmod>{updated:%Y-%m-%d}</lastmod>' if updated else ''
-        out.append(f'  <url><loc>{base}{url}</loc>{lastmod}</url>')
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
+           'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">']
+    for name, _, template, photo, priority in SECTIONS:
+        updated = _latest(_template_date(template), site_date if name in ('base:home', 'contacts:contacts') else None,
+                          post_date if name in ('base:home', 'cms:post_list') else None)
+        out.append(f'  <url><loc>{base}{reverse(name)}</loc><lastmod>{updated:%Y-%m-%d}</lastmod>'
+                   f'<priority>{priority}</priority>{_image_xml(_page_images(request, name, photo))}</url>')
+    for url, title, updated in _dynamic_pages():
+        images = []
+        if url.startswith('/rooms/'):
+            room = Room.objects.filter(slug=url.strip('/').split('/')[-1]).first()
+            if room:
+                if room.cover:
+                    images.append((_media(request, room.cover), room.name))
+                images += [(_media(request, i.image), f'{room.name} — фото {n}')
+                           for n, i in enumerate(room.images.all(), 1) if i.image]
+                if not images:
+                    images.append(_photo(request, 'chalet'))
+        updated = updated or _template_date('base.html')
+        out.append(f'  <url><loc>{base}{url}</loc><lastmod>{updated:%Y-%m-%d}</lastmod>'
+                   f'<priority>0.7</priority>{_image_xml(images)}</url>')
     out.append('</urlset>')
     return HttpResponse('\n'.join(out), content_type='application/xml; charset=utf-8')
 

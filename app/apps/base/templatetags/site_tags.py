@@ -3,6 +3,7 @@ import os
 from django import template
 from django.conf import settings
 from django.templatetags.static import static
+from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from PIL import Image, ImageOps
 
@@ -54,6 +55,31 @@ def instagram_handle(url):
 # -----------------------------------------------------------------------------
 THUMB_WIDTHS = (480, 800, 1200, 1600)
 PHOTO_WIDTHS = (640, 1024, 1600)
+# Подписи к фото из static/img/photos — описывают, что на снимке
+PHOTO_ALTS = {
+    'about': 'Заснеженная горная долина и вершины в солнечный день',
+    'panorama': 'Заснеженная горная долина и вершины в солнечный день',
+    'cafe': 'Бургер, наггетсы и горячий напиток — обед в горнолыжном кафе',
+    'chalet': 'Гостиная деревянного коттеджа с камином',
+    'contacts': 'Заснеженные горы под ясным небом',
+    'gallery': 'Зимний лес в горах после снегопада',
+    'lift': 'Кресельный подъёмник над горнолыжной трассой среди елей',
+    'skipass': 'Кресельный подъёмник над горнолыжной трассой среди елей',
+    'menu': 'Чашка какао с маршмеллоу',
+    'news': 'Солнце над заснеженным горным ущельем',
+    'notfound': 'Звёздное небо над горной вершиной',
+    'offers': 'Лыжники с лыжами на плечах идут по заснеженному склону',
+    'prices': 'Кресельный подъёмник на фоне заката в горах',
+    'sunset': 'Кресельный подъёмник на фоне заката в горах',
+    'rental': 'Горные лыжи в стойке пункта проката',
+    'reviews': 'Лыжники на вершине горнолыжного склона',
+    'rooms': 'Деревянный коттедж в зимнем лесу вечером',
+    'services': 'Лыжники спускаются по широкому горнолыжному склону',
+    'skiers': 'Лыжник в повороте на снежном склоне',
+    'skis': 'Лыжник поднимается по склону среди заснеженных елей',
+    'slopes': 'Подготовленная горнолыжная трасса в высокогорье',
+    'transfer': 'Заснеженная горная дорога среди елей',
+}
 
 
 def _thumb_path(name, width):
@@ -110,15 +136,21 @@ def srcset(image, widths=''):
 
 
 @register.simple_tag
-def photo(name, sizes='100vw', cls='', eager=False):
-    """Фото из static/img/photos/w/: <img> с srcset из готовых WebP 640/1024/1600."""
+def photo(name, sizes='100vw', cls='', eager=False, alt=None, decorative=False):
+    """Фото из static/img/photos/w/: <img> с srcset из готовых WebP 640/1024/1600.
+
+    alt по умолчанию — из PHOTO_ALTS; decorative=True — чисто фоновая картинка (alt="").
+    """
     urls = [(static(f'img/photos/w/{name}-{w}.webp'), w) for w in PHOTO_WIDTHS]
+    text = '' if decorative else (alt or PHOTO_ALTS.get(name, ''))
     attrs = [
         f'src="{urls[-1][0]}"',
         'srcset="' + ', '.join(f'{u} {w}w' for u, w in urls) + '"',
         f'sizes="{sizes}"',
-        'alt=""',
+        f'alt="{escape(text)}"',
     ]
+    if decorative:
+        attrs.append('aria-hidden="true"')
     if cls:
         attrs.insert(0, f'class="{cls}"')
     attrs.append('fetchpriority="high"' if eager else 'loading="lazy" decoding="async"')

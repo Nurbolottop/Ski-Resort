@@ -4,7 +4,7 @@
 
 {% block body_class %}page-home{% endblock %}
 
-{% block extra_head %}
+{% block extra_head %}{% load seo_tags %}{% jsonld 'faq' %}
     {% with first=slides.0 %}{% if first.image %}
         <link rel="preload" as="image" imagesrcset="{{ first.image|srcset }}" imagesizes="100vw" fetchpriority="high">
     {% endif %}{% endwith %}
@@ -19,7 +19,7 @@
             <div class="hero__slide{% if forloop.first %} is-active{% endif %}" data-slide>
                 <div class="hero__media">
                     {% if slide.image %}
-                        <img class="hero__img" src="{{ slide.image|thumb:1600 }}" srcset="{{ slide.image|srcset }}" sizes="100vw" alt="" width="2400" height="1350"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy" decoding="async"{% endif %}>
+                        <img class="hero__img" src="{{ slide.image|thumb:1600 }}" srcset="{{ slide.image|srcset }}" sizes="100vw" alt="{{ slide.image_alt|default:slide.text|default:slide.title }}" width="2400" height="1350"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy" decoding="async"{% endif %}>
                     {% else %}
                         {% include 'include/scenery.html' with variant=forloop.counter|cycle_variant uid='hero' %}
                     {% endif %}
@@ -27,8 +27,10 @@
                 <div class="hero__overlay"></div>
                 <div class="hero__content">
                     <div class="container">
+                        {# Один H1 на странице — у первого слайда: надзаголовок с ключевыми словами + заголовок #}
+                        {% if forloop.first %}<h1 class="hero__h1">{% endif %}
                         {% if slide.eyebrow %}<span class="hero__eyebrow">{{ slide.eyebrow }}</span>{% endif %}
-                        <h1 class="hero__title">{{ slide.title }}</h1>
+                        {% if forloop.first %}<span class="hero__title">{{ slide.title }}</span></h1>{% else %}<p class="hero__title">{{ slide.title }}</p>{% endif %}
                         {% if slide.text %}<p class="hero__text">{{ slide.text }}</p>{% endif %}
                     </div>
                 </div>
@@ -331,6 +333,16 @@
         <div class="grid grid--3">
             {% for post in posts %}{% include 'include/post_card.html' %}{% endfor %}
         </div>
+    </div>
+</section>
+{% endif %}
+
+{# ================= FAQ ================= #}
+{% if faqs %}
+<section class="section theme-light">
+    <div class="container container--narrow">
+        {% include 'include/section_head.html' with eyebrow='FAQ' title='Частые вопросы' center=True %}
+        {% include 'include/faq.html' %}
     </div>
 </section>
 {% endif %}

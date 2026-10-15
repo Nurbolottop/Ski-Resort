@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load site_tags %}
 
-{% block seo %}{% include 'include/seo.html' with title='Фото базы на Тоо-Ашуу' description='Фотографии горнолыжной базы Baytur на перевале Тоо-Ашуу: склоны, подъёмники, номера и зимние пейзажи.' photo='gallery' %}{% endblock %}
+{% block seo %}{% include 'include/seo.html' with title='Фото базы на Тоо-Ашуу' description='Фотографии горнолыжной базы Baytur на перевале Тоо-Ашуу: склоны, подъёмник, коттеджи и зимние пейзажи гор по сезонам. Смотрите, как выглядит отдых у нас.' photo='gallery' %}{% endblock %}
 
 {% block content %}
 {% include 'include/page_hero.html' with photo='gallery' title='Галерея' eyebrow='Фото' text='Склоны, снег и атмосфера базы — по сезонам.' variant=3 %}
@@ -21,7 +21,7 @@
             <div class="gallery" id="gallery">
                 {% for item in images %}
                     <a class="gallery__item" href="{{ item.image.url }}" data-lightbox="gallery" data-caption="{{ item.caption }}" data-album="{{ item.album.slug|default:'none' }}">
-                        <img src="{{ item.image|thumb:960 }}" srcset="{{ item.image|srcset:'480,960' }}" sizes="(max-width: 640px) 50vw, (max-width: 1100px) 34vw, 25vw" decoding="async" alt="{{ item.caption|default:site.name }}" loading="lazy">
+                        <img src="{{ item.image|thumb:960 }}" srcset="{{ item.image|srcset:'480,960' }}" sizes="(max-width: 640px) 50vw, (max-width: 1100px) 34vw, 25vw" decoding="async" alt="{% if item.caption %}{{ item.caption }}{% else %}{{ item.album.title|default:'Горнолыжная база' }} — Тоо-Ашуу, фото {{ forloop.counter }}{% endif %}" loading="lazy">
                     </a>
                 {% endfor %}
             </div>

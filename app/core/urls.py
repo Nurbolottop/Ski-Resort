@@ -28,6 +28,7 @@ urlpatterns = [
     path('robots.txt', seo.robots_txt),
     path('sitemap.xml', seo.sitemap_xml, name='sitemap'),
     path('llms.txt', seo.llms_txt),
+    path(f'{seo.INDEXNOW_KEY}.txt', seo.indexnow_key),
     path('favicon.ico', RedirectView.as_view(url=static_url('img/favicon.svg'), permanent=True)),
     path('', include('apps.contacts.urls')),
     path('', include('apps.base.urls')),

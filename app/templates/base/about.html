@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load site_tags %}
 
-{% block seo %}{% include 'include/seo.html' with title=page.seo_title|default:'О горнолыжной базе на перевале Тоо-Ашуу' description=page.seo_description|default:'Горнолыжная база Baytur на перевале Тоо-Ашуу на высоте 3000 м, в 120 км от Бишкека: трассы, подъёмники, проживание и кафе.' image=page.image photo='about' %}{% endblock %}
+{% block seo %}{% include 'include/seo.html' with title=page.seo_title|default:'О горнолыжной базе на перевале Тоо-Ашуу' description=page.seo_description|default:'Горнолыжная база Baytur на перевале Тоо-Ашуу на высоте 3000 м, в 120 км от Бишкека: три трассы, кресельный подъёмник, коттеджи с завтраком, кафе и прокат.' image=page.image photo='about' %}{% endblock %}
 {% block extra_head %}{% load seo_tags %}{% jsonld 'faq' %}{% endblock %}
 
 {% block content %}

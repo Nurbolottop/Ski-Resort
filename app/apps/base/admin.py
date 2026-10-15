@@ -112,7 +112,7 @@ class SiteSettingsAdmin(BaseAdmin):
 class HeroSlideAdmin(BaseAdmin):
     list_display = ('slide', 'order', 'is_active')
     list_editable = ('order', 'is_active')
-    fields = ('image', 'eyebrow', 'title', 'text', 'order', 'is_active')
+    fields = ('image', 'image_alt', 'eyebrow', 'title', 'text', 'order', 'is_active')
 
     @display(description='Слайд', header=True)
     def slide(self, obj):

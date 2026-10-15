@@ -2,7 +2,10 @@
     <title>{{ title }}{% if not full_title %} | {{ site.name }}{% endif %}</title>
     <meta name="description" content="{{ description|striptags }}">
     {% if noindex %}<meta name="robots" content="noindex, follow">
-    {% else %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+    {% else %}<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+    <link rel="alternate" hreflang="ru" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+    <link rel="alternate" hreflang="x-default" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
     {% endif %}<meta property="og:type" content="{{ og_type|default:'website' }}">
     <meta property="og:locale" content="ru_RU">
     <meta property="og:site_name" content="{{ site.full_name|default:site.name }}">
@@ -16,5 +19,5 @@
     <meta name="geo.placename" content="Перевал Тоо-Ашуу, Кыргызстан">
     {% if site.latitude and site.longitude %}<meta name="geo.position" content="{{ site.latitude|stringformat:'f' }};{{ site.longitude|stringformat:'f' }}">
     <meta name="ICBM" content="{{ site.latitude|stringformat:'f' }}, {{ site.longitude|stringformat:'f' }}">
-    {% endif %}<link rel="alternate" type="text/plain" href="/llms.txt" title="Информация о базе для ИИ-ассистентов">
+    {% endif %}<link rel="alternate" type="text/markdown" href="/llms.txt" title="Краткая информация о базе для ИИ-ассистентов">
     {% jsonld_site title %}

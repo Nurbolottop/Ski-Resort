@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block seo %}{% include 'include/seo.html' with title=post.seo_title|default:post.title description=post.seo_description|default:post.excerpt|truncatechars:160 image=post.cover photo='news' og_type='article' %}{% endblock %}
+{% block seo %}{% load seo_tags %}{% seo_meta post as m %}{% include 'include/seo.html' with title=post.seo_title|default:m.title description=post.seo_description|default:m.description image=post.cover photo='news' og_type='article' %}{% endblock %}
 {% block extra_head %}{% load seo_tags %}{% jsonld 'post' post %}{% endblock %}
 
 {% block content %}

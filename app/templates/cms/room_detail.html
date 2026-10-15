@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load site_tags %}
 
-{% block seo %}{% include 'include/seo.html' with title=room.seo_title|default:room.name description=room.seo_description|default:room.short_description|truncatechars:160 image=room.cover photo='chalet' %}{% endblock %}
+{% block seo %}{% load seo_tags %}{% seo_meta room as m %}{% include 'include/seo.html' with title=room.seo_title|default:m.title description=room.seo_description|default:m.description image=room.cover photo='chalet' %}{% endblock %}
 {% block extra_head %}{% load seo_tags %}{% jsonld 'room' room %}{% endblock %}
 
 {% block content %}

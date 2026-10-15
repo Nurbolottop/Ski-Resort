@@ -21,6 +21,7 @@ def homepage(request):
         'about_page': Page.objects.filter(slug='about', is_published=True).first(),
         'total_km': total_slopes_km(),
         'lifts_count': Lift.objects.filter(is_active=True).count(),
+        'faqs': FAQ.objects.filter(is_active=True),
     })
 
 

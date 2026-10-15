@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load site_tags %}
 
-{% block seo %}{% include 'include/seo.html' with title='Цены на отдых на Тоо-Ашуу' description='Прайс горнолыжной базы Baytur на перевале Тоо-Ашуу: ски-пассы, прокат снаряжения, проживание и трансфер из Бишкека.' photo='prices' %}{% endblock %}
+{% block seo %}{% include 'include/seo.html' with title='Цены на отдых на Тоо-Ашуу' description='Все цены горнолыжной базы Baytur на перевале Тоо-Ашуу в одном месте: ски-пассы, прокат лыж и сноубордов, коттеджи с завтраком и трансфер из Бишкека.' photo='prices' %}{% endblock %}
 {% block extra_head %}{% load seo_tags %}{% jsonld 'prices' %}{% endblock %}
 
 {% block content %}
