@@ -158,8 +158,9 @@ def jsonld_site(context, title=''):
 
 
 def _catalog(request, name, offers):
-    return {'@type': 'OfferCatalog', 'name': name, 'provider': {'@id': _resort_id(request)},
-            'itemListElement': offers}
+    seller = {'@id': _resort_id(request)}
+    return {'@type': 'OfferCatalog', 'name': name,
+            'itemListElement': [{**o, 'offeredBy': seller} for o in offers]}
 
 
 def _skipass_catalog(request):

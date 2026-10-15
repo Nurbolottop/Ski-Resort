@@ -9,7 +9,7 @@
     <div class="container">
         {% if offers %}
             <div class="grid grid--3">
-                {% for offer in offers %}{% include 'include/offer_card.html' %}{% endfor %}
+                {% for offer in offers %}{% include 'include/offer_card.html' with level=2 %}{% endfor %}
             </div>
         {% else %}
             <p class="empty">Сейчас активных акций нет. Подпишитесь на рассылку внизу страницы — сообщим о новых.</p>

@@ -9,7 +9,7 @@
         <span class="card__badge">до {{ room.max_guests }} гостей</span>
     </a>
     <div class="card__body">
-        <h3 class="card__title"><a href="{{ room.get_absolute_url }}">{{ room.name }}</a></h3>
+        <h{{ level|default:3 }} class="card__title"><a href="{{ room.get_absolute_url }}">{{ room.name }}</a></h{{ level|default:3 }}>
         <p class="card__meta">{{ room.beds }}{% if room.beds and room.area %} · {% endif %}{% if room.area %}{{ room.area }} м²{% endif %}</p>
         {% if room.short_description %}<p class="card__text">{{ room.short_description|truncatechars:150 }}</p>{% endif %}
         <div class="card__footer">

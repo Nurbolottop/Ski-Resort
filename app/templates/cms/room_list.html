@@ -10,7 +10,7 @@
     <div class="container">
         {% if rooms %}
             <div class="grid grid--3">
-                {% for room in rooms %}{% include 'include/room_card.html' %}{% endfor %}
+                {% for room in rooms %}{% include 'include/room_card.html' with level=2 %}{% endfor %}
             </div>
         {% else %}
             <p class="empty">Варианты проживания скоро появятся.</p>

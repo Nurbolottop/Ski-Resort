@@ -28,7 +28,7 @@ def fetch(url):
 class Page(HTMLParser):
     def __init__(self):
         super().__init__()
-        self.title, self.meta, self.h1, self.imgs, self.ld = '', {}, 0, [], []
+        self.title, self.meta, self.h1, self.imgs, self.ld, self.headings = '', {}, 0, [], [], []
         self._in_title = self._in_ld = False
         self._buf = ''
 
@@ -38,8 +38,10 @@ class Page(HTMLParser):
             self._in_title = True
         elif tag == 'meta' and a.get('name'):
             self.meta[a['name']] = a.get('content', '')
-        elif tag == 'h1':
-            self.h1 += 1
+        elif tag in ('h1', 'h2', 'h3', 'h4', 'h5', 'h6'):
+            self.headings.append(int(tag[1]))
+            if tag == 'h1':
+                self.h1 += 1
         elif tag == 'img':
             self.imgs.append(a)
         elif tag == 'script' and a.get('type') == 'application/ld+json':
@@ -94,6 +96,11 @@ def main():
             errors.append(f'{path}: description {len(desc)} симв.')
         if p.h1 != 1:
             errors.append(f'{path}: H1 = {p.h1}')
+        skips = [(a, b) for a, b in zip(p.headings, p.headings[1:]) if b > a + 1]
+        if skips:
+            errors.append(f'{path}: пропуск уровня заголовков {skips[:3]}')
+        if re.search(r'\{#|#\}|\{%|%\}', html):
+            errors.append(f'{path}: на странице виден код шаблона')
         robots = p.meta.get('robots', '')
         if 'max-image-preview:large' not in robots:
             errors.append(f'{path}: нет meta robots max-image-preview:large')

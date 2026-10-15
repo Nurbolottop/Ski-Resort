@@ -10,7 +10,7 @@
     </a>
     <div class="card__body">
         {% if offer.valid_to %}<p class="card__meta">Действует до {{ offer.valid_to|date:'j E' }}</p>{% endif %}
-        <h3 class="card__title"><a href="{{ offer.get_absolute_url }}">{{ offer.title }}</a></h3>
+        <h{{ level|default:3 }} class="card__title"><a href="{{ offer.get_absolute_url }}">{{ offer.title }}</a></h{{ level|default:3 }}>
         {% if offer.short_description %}<p class="card__text">{{ offer.short_description|truncatechars:150 }}</p>{% endif %}
         <div class="card__footer">
             <a class="link-more" href="{{ offer.get_absolute_url }}">Подробнее <svg class="icon"><use href="#i-arrow-right"></use></svg></a>

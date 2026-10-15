@@ -136,6 +136,12 @@ def srcset(image, widths=''):
 
 
 @register.simple_tag
+def photo_srcset(name):
+    """srcset фото из static/img/photos/w/ — для <link rel="preload">."""
+    return ', '.join(f"{static(f'img/photos/w/{name}-{w}.webp')} {w}w" for w in PHOTO_WIDTHS)
+
+
+@register.simple_tag
 def photo(name, sizes='100vw', cls='', eager=False, alt=None, decorative=False):
     """Фото из static/img/photos/w/: <img> с srcset из готовых WebP 640/1024/1600.
 

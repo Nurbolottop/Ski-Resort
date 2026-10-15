@@ -9,7 +9,7 @@
     </a>
     <div class="card__body">
         <time class="card__meta" datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:'j E Y' }}</time>
-        <h3 class="card__title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+        <h{{ level|default:3 }} class="card__title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h{{ level|default:3 }}>
         {% if post.excerpt %}<p class="card__text">{{ post.excerpt|truncatechars:150 }}</p>{% endif %}
     </div>
 </article>

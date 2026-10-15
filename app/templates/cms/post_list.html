@@ -9,7 +9,7 @@
     <div class="container">
         {% if posts %}
             <div class="grid grid--3">
-                {% for post in posts %}{% include 'include/post_card.html' %}{% endfor %}
+                {% for post in posts %}{% include 'include/post_card.html' with level=2 %}{% endfor %}
             </div>
             {% include 'include/pagination.html' %}
         {% else %}

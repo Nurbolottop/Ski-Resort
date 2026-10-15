@@ -18,7 +18,7 @@
         </div>
 
         <div class="footer__col">
-            <h4 class="footer__title">Разделы</h4>
+            <h2 class="footer__title">Разделы</h2>
             <div class="footer__links-grid">
                 <a class="footer__link" href="{% url 'base:about' %}">О базе</a>
                 <a class="footer__link" href="{% url 'cms:slopes' %}">Трассы</a>
@@ -38,7 +38,7 @@
         </div>
 
         <div class="footer__col">
-            <h4 class="footer__title">Контакты</h4>
+            <h2 class="footer__title">Контакты</h2>
             {% if site.whatsapp %}<a class="footer__link" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp"></use></svg>{{ site.whatsapp }}</a>{% endif %}
             {% if site.phone %}<a class="footer__link" href="tel:{{ site.phone_href }}"><svg class="icon"><use href="#i-phone"></use></svg>{{ site.phone }}</a>{% endif %}
             {% if site.transfer_phone %}<a class="footer__link" href="tel:{{ site.transfer_phone_href }}"><svg class="icon"><use href="#i-car"></use></svg>{{ site.transfer_phone }}</a>{% endif %}
@@ -47,7 +47,7 @@
         </div>
 
         <div class="footer__col">
-            <h4 class="footer__title">Акции и новости</h4>
+            <h2 class="footer__title">Акции и новости</h2>
             <p class="footer__text">Подпишитесь — пришлём открытие сезона, свежий снег и спецпредложения.</p>
             <form class="subscribe" action="{% url 'contacts:subscribe' %}" method="post">
                 {% csrf_token %}

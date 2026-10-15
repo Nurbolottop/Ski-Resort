@@ -1,7 +1,7 @@
 {% load site_tags %}
 <div class="pass{% if pass.is_featured %} pass--featured{% endif %}" data-reveal style="--d:{{ forloop.counter0|default:0 }}00ms">
     {% if pass.is_featured %}<span class="pass__tag">Популярный</span>{% endif %}
-    <h3 class="pass__name">{{ pass.name }}</h3>
+    <h{{ level|default:3 }} class="pass__name">{{ pass.name }}</h{{ level|default:3 }}>
     <p class="price">
         <span class="price__value">{{ pass.price|money }}</span>
         <span class="price__unit">сом{% if pass.price_unit %} / {{ pass.price_unit }}{% endif %}</span>

@@ -10,7 +10,7 @@
     <div class="container">
         {% if ski_passes %}
             <div class="grid grid--3">
-                {% for pass in ski_passes %}{% include 'include/skipass_card.html' %}{% endfor %}
+                {% for pass in ski_passes %}{% include 'include/skipass_card.html' with level=2 %}{% endfor %}
             </div>
         {% else %}
             <p class="empty">Тарифы на новый сезон скоро появятся.</p>

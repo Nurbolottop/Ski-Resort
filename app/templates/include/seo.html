@@ -1,4 +1,4 @@
-{% load static seo_tags %}{# SEO-теги страницы. Параметры: title, description, full_title, image, photo, og_type, noindex #}
+{% load static seo_tags site_tags %}{# SEO-теги страницы. Параметры: title, description, full_title, image, photo, og_type, noindex #}
     <title>{{ title }}{% if not full_title %} | {{ site.name }}{% endif %}</title>
     <meta name="description" content="{{ description|striptags }}">
     {% if noindex %}<meta name="robots" content="noindex, follow">
@@ -20,4 +20,5 @@
     {% if site.latitude and site.longitude %}<meta name="geo.position" content="{{ site.latitude|stringformat:'f' }};{{ site.longitude|stringformat:'f' }}">
     <meta name="ICBM" content="{{ site.latitude|stringformat:'f' }}, {{ site.longitude|stringformat:'f' }}">
     {% endif %}<link rel="alternate" type="text/markdown" href="/llms.txt" title="Краткая информация о базе для ИИ-ассистентов">
+    {% if not full_title %}{# Фото в шапке внутренней страницы — LCP: грузим сразу, параллельно со стилями #}{% if image %}<link rel="preload" as="image" imagesrcset="{{ image|srcset }}" imagesizes="100vw" fetchpriority="high">{% elif photo %}<link rel="preload" as="image" imagesrcset="{% photo_srcset photo %}" imagesizes="100vw" fetchpriority="high">{% endif %}{% endif %}
     {% jsonld_site title %}

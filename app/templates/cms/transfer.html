@@ -14,7 +14,7 @@
                 {% for route in routes %}
                     <article class="route" data-reveal style="--d:{{ forloop.counter0 }}00ms">
                         <span class="route__icon"><svg class="icon"><use href="#i-car"></use></svg></span>
-                        <h3 class="route__name">{{ route.name }}</h3>
+                        <h2 class="route__name">{{ route.name }}</h2>
                         <ul class="specs">
                             {% if route.departure_point %}<li><span>Отправление</span><strong>{{ route.departure_point }}</strong></li>{% endif %}
                             {% if route.schedule %}<li><span>Расписание</span><strong>{{ route.schedule }}</strong></li>{% endif %}
