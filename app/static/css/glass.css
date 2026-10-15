@@ -1799,3 +1799,8 @@ input[type="date"]::-webkit-date-and-time-value {
     position: relative;
     top: auto;
 }
+
+/* Примечания на белом фоне — контраст не ниже 4.5:1 (WCAG AA) */
+.note {
+    color: #5d6b7e;
+}
