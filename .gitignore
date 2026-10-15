@@ -172,3 +172,11 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/django
+preview.html
+
+# Результат collectstatic и мусор macOS
+app/staticfiles/
+.DS_Store
+
+# Скомпилированный перевод админки — нужен на сервере (там нет gettext)
+!app/locale/**/*.mo

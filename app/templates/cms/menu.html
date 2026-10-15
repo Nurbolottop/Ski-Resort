@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load site_tags %}
+
+{% block seo %}{% include 'include/seo.html' with title='Меню кафе на Тоо-Ашуу' description='Меню кафе горнолыжной базы Baytur на перевале Тоо-Ашуу: горячие блюда, выпечка и напитки.' photo='menu' %}{% endblock %}
+{% block extra_head %}{% load seo_tags %}{% jsonld 'menu' %}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with photo='menu' title='Меню' eyebrow='Кафе' text='Завтраки, супы, вторые блюда, пицца, салаты и барное меню.' variant=2 %}
+
+<section class="section theme-light">
+    <div class="container">
+        {% if categories %}
+            <nav class="tabs tabs--sticky" data-scrollspy>
+                {% for category in categories %}
+                    <a class="tabs__item{% if forloop.first %} is-active{% endif %}" href="#menu-{{ category.pk }}">{{ category.name }}</a>
+                {% endfor %}
+            </nav>
+
+            {% for category in categories %}
+                <div class="menu-section" id="menu-{{ category.pk }}">
+                    <h2 class="menu-section__title" data-reveal>{{ category.name }}</h2>
+                    <div class="menu-list">
+                        {% for item in category.items.all %}
+                            <article class="menu-item" data-reveal style="--d:{{ forloop.counter0 }}0ms">
+                                {% if item.image %}
+                                    <img class="menu-item__img" src="{{ item.image|thumb:240 }}" decoding="async" alt="{{ item.name }}" loading="lazy" width="80" height="80">
+                                {% endif %}
+                                <div class="menu-item__body">
+                                    <div class="menu-item__head">
+                                        <h3 class="menu-item__name">{{ item.name }}{% if item.is_hit %}<span class="menu-item__hit">Хит</span>{% endif %}</h3>
+                                        <span class="menu-item__dots"></span>
+                                        <span class="menu-item__price">{{ item.price|money }} сом</span>
+                                    </div>
+                                    {% if item.description or item.weight %}
+                                        <p class="menu-item__desc">{{ item.description }}{% if item.description and item.weight %} · {% endif %}{{ item.weight }}</p>
+                                    {% endif %}
+                                </div>
+                            </article>
+                        {% empty %}
+                            <p class="empty">Позиции скоро появятся.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+            <p class="note" style="margin-top: 50px">Цены в сомах. Меню может меняться в зависимости от сезона.</p>
+        {% else %}
+            <p class="empty">Меню скоро появится.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

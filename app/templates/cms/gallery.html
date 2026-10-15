@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load site_tags %}
+
+{% block seo %}{% include 'include/seo.html' with title='Фото базы на Тоо-Ашуу' description='Фотографии горнолыжной базы Baytur на перевале Тоо-Ашуу: склоны, подъёмники, номера и зимние пейзажи.' photo='gallery' %}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with photo='gallery' title='Галерея' eyebrow='Фото' text='Склоны, снег и атмосфера базы — по сезонам.' variant=3 %}
+
+<section class="section theme-light">
+    <div class="container">
+        {% if images %}
+            {% if albums %}
+                <div class="tabs tabs--center" data-filter-group="#gallery">
+                    <button class="tabs__item is-active" type="button" data-filter="all">Все фото</button>
+                    {% for album in albums %}
+                        <button class="tabs__item" type="button" data-filter="{{ album.slug }}">{{ album.title }}</button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="gallery" id="gallery">
+                {% for item in images %}
+                    <a class="gallery__item" href="{{ item.image.url }}" data-lightbox="gallery" data-caption="{{ item.caption }}" data-album="{{ item.album.slug|default:'none' }}">
+                        <img src="{{ item.image|thumb:960 }}" srcset="{{ item.image|srcset:'480,960' }}" sizes="(max-width: 640px) 50vw, (max-width: 1100px) 34vw, 25vw" decoding="async" alt="{{ item.caption|default:site.name }}" loading="lazy">
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">Фотографии скоро появятся.{% if site.instagram %} А пока — свежие фото в <a class="link-more" href="{{ site.instagram }}" target="_blank" rel="noopener">Instagram</a>.{% endif %}</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

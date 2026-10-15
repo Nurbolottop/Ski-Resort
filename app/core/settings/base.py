@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from pathlib import Path
 import os
+import time
 
 load_dotenv()
 
@@ -32,6 +33,11 @@ CSRF_COOKIE_SECURE = True
 # =============================================================================
 
 INSTALLED_APPS = [
+    # Тема админки — должна стоять до django.contrib.admin
+    'unfold',
+    'unfold.contrib.forms',
+    'unfold.contrib.filters',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,8 +46,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Third-party
-    'ckeditor',
-    'ckeditor_uploader',
     'django_resized',
 
     # Local apps
@@ -86,6 +90,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.base.context_processors.site',
             ],
         },
     },
@@ -133,6 +138,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'ru')
 TIME_ZONE = os.getenv('TIME_ZONE', 'Asia/Bishkek')
 USE_I18N = True
+# Свой перевод строк админки django-unfold (у пакета нет русского)
+LOCALE_PATHS = [BASE_DIR / 'locale']
 USE_TZ = True
 
 # =============================================================================
@@ -155,18 +162,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Версия статики: меняется при каждом запуске, чтобы браузеры не держали старые CSS/JS
+# (nginx отдаёт /static/ с долгим кэшем)
+ASSET_VERSION = str(int(time.time()))
+
+# После входа через /admin/login/ без ?next — в админку, а не на /accounts/profile/
+LOGIN_REDIRECT_URL = '/admin/'
+LOGIN_URL = '/admin/login/'
+
 
 # =============================================================================
-# CKEDITOR (РЕДАКТОР CKEDITOR)
+# ADMIN (АДМИНКА UNFOLD) — настройки вынесены в core/settings/unfold.py
 # =============================================================================
 
-CKEDITOR_UPLOAD_PATH = 'uploads/'
-CKEDITOR_IMAGE_BACKEND = "pillow"
-
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',
-        'height': 300,
-        'width': '100%',
-    },
-}
+from core.settings.unfold import UNFOLD  # noqa: E402,F401

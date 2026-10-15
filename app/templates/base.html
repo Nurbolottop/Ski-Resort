@@ -1,0 +1,42 @@
+{% load static %}<!DOCTYPE html>
+<html lang="ru" class="no-js">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block seo %}{% include 'include/seo.html' with title=site.full_name|default:site.name description=site.tagline full_title=True %}{% endblock %}
+    <meta name="theme-color" content="#081329">
+    <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+
+    {# Шрифты свои (static/fonts): заранее грузим кириллицу для первого экрана #}
+    <link rel="preload" href="{% static 'fonts/cormorant-garamond-normal-cyrillic-2.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{% static 'fonts/manrope-normal-cyrillic-4.woff2' %}" as="font" type="font/woff2" crossorigin>
+    {# Собирается из fonts.css + style.css + glass.css: python scripts/build_assets.py #}
+    <link rel="stylesheet" href="{% static 'css/site.min.css' %}?v={{ asset_version }}">
+    <script src="{% static 'js/main.min.js' %}?v={{ asset_version }}" defer></script>
+    <script src="{% static 'js/snow.min.js' %}?v={{ asset_version }}" defer></script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}page-inner{% endblock %}">
+    {% include 'include/icons.html' %}
+    <div class="aurora" aria-hidden="true">
+        <span class="aurora__blob aurora__blob--1"></span>
+        <span class="aurora__blob aurora__blob--2"></span>
+        <span class="aurora__blob aurora__blob--3"></span>
+    </div>
+    <div class="grain" aria-hidden="true"></div>
+    {% include 'include/header.html' %}
+    {% include 'include/messages.html' %}
+
+    <main class="main">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% include 'include/footer.html' %}
+
+    {% if site.whatsapp %}
+        <a class="float-whatsapp" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
+            <svg class="icon"><use href="#i-whatsapp"></use></svg>
+        </a>
+    {% endif %}
+</body>
+</html>

@@ -1,8 +1,7 @@
 asgiref==3.8.1
 Django==5.2
-django-ckeditor==6.7.3
-django-js-asset==3.1.2
 django-resized==1.0.3
+django-unfold==0.108.0
 pillow==11.2.1
 psycopg2-binary==2.9.10
 python-dotenv==1.1.0

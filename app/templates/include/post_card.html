@@ -1,0 +1,15 @@
+{% load site_tags %}
+<article class="card" data-reveal style="--d:{{ forloop.counter0|default:0 }}00ms">
+    <a class="card__media" href="{{ post.get_absolute_url }}" tabindex="-1">
+        {% if post.cover %}
+            <img src="{{ post.cover|thumb:960 }}" srcset="{{ post.cover|srcset }}" sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 34vw" decoding="async" alt="{{ post.title }}" loading="lazy" width="800" height="600">
+        {% else %}
+            {% include 'include/scenery.html' with variant=forloop.counter|default:1|cycle_variant uid=post.pk %}
+        {% endif %}
+    </a>
+    <div class="card__body">
+        <time class="card__meta" datetime="{{ post.published_at|date:'c' }}">{{ post.published_at|date:'j E Y' }}</time>
+        <h3 class="card__title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+        {% if post.excerpt %}<p class="card__text">{{ post.excerpt|truncatechars:150 }}</p>{% endif %}
+    </div>
+</article>

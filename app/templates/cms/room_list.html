@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block seo %}{% include 'include/seo.html' with title='Проживание на Тоо-Ашуу — номера и домики' description='Номера и домики горнолыжной базы Baytur на перевале Тоо-Ашуу рядом со склонами: фото, вместимость, цены и бронирование.' photo='rooms' %}{% endblock %}
+{% block extra_head %}{% load seo_tags %}{% jsonld 'rooms' %}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with photo='rooms' title='Проживание' eyebrow='Размещение' text='Коттеджи и вагончики. В стоимость коттеджей входят завтрак и ски-пассы для всех гостей.' variant=3 %}
+
+<section class="section theme-light">
+    <div class="container">
+        {% if rooms %}
+            <div class="grid grid--3">
+                {% for room in rooms %}{% include 'include/room_card.html' %}{% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">Варианты проживания скоро появятся.</p>
+        {% endif %}
+    </div>
+</section>
+
+{% include 'include/cta.html' %}
+{% endblock %}

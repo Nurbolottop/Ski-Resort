@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load site_tags %}
+
+{% block seo %}{% include 'include/seo.html' with title=page.seo_title|default:'О горнолыжной базе на перевале Тоо-Ашуу' description=page.seo_description|default:'Горнолыжная база Baytur на перевале Тоо-Ашуу на высоте 3000 м, в 120 км от Бишкека: трассы, подъёмники, проживание и кафе.' image=page.image photo='about' %}{% endblock %}
+{% block extra_head %}{% load seo_tags %}{% jsonld 'faq' %}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with photo='about' title=page.title|default:'О базе' eyebrow=site.full_name|default:site.name text=site.tagline image=page.image variant=3 %}
+
+<section class="section theme-light">
+    <div class="container">
+        <ul class="stats">
+            {% if site.altitude_base and site.altitude_top %}
+                <li class="stats__item" data-reveal><span class="stats__value">{{ site.altitude_base|money }}–{{ site.altitude_top|money }}</span><span class="stats__label">метров над уровнем моря</span></li>
+            {% endif %}
+            <li class="stats__item" data-reveal style="--d:.1s"><span class="stats__value" data-count="{{ total_km|stringformat:'s' }}">{{ total_km }}</span><span class="stats__label">км трасс</span></li>
+            <li class="stats__item" data-reveal style="--d:.2s"><span class="stats__value" data-count="{{ lifts_count }}">{{ lifts_count }}</span><span class="stats__label">{{ lifts_count|ru_plural:"подъёмник,подъёмника,подъёмников" }}</span></li>
+            {% if site.distance_km %}
+                <li class="stats__item" data-reveal style="--d:.3s"><span class="stats__value" data-count="{{ site.distance_km }}">{{ site.distance_km }}</span><span class="stats__label">км от Бишкека</span></li>
+            {% else %}
+                <li class="stats__item" data-reveal style="--d:.3s"><span class="stats__value" data-count="{{ rooms_count }}">{{ rooms_count }}</span><span class="stats__label">вариантов жилья</span></li>
+            {% endif %}
+        </ul>
+
+        {% if page.content %}
+            <div class="container--narrow" style="margin: 80px auto 0" data-reveal>
+                <div class="prose">{{ page.content|safe }}</div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+{% if advantages %}
+<section class="section">
+    <div class="container">
+        {% include 'include/section_head.html' with eyebrow='Почему мы' title='Преимущества базы' center=True %}
+        <div class="features">
+            {% for item in advantages %}
+                <div class="feature" data-reveal style="--d:{{ forloop.counter0 }}00ms">
+                    <span class="feature__icon"><svg class="icon"><use href="#i-{{ item.icon|default:'mountain' }}"></use></svg></span>
+                    <h3 class="feature__title">{{ item.title }}</h3>
+                    <p class="feature__text">{{ item.text }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if faqs %}
+<section class="section theme-light section--alt">
+    <div class="container container--narrow">
+        {% include 'include/section_head.html' with eyebrow='FAQ' title='Частые вопросы' center=True %}
+        {% include 'include/faq.html' %}
+    </div>
+</section>
+{% endif %}
+
+{% include 'include/cta.html' %}
+{% endblock %}

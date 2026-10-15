@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block seo %}{% include 'include/seo.html' with title='Новости базы на Тоо-Ашуу' description='Новости горнолыжной базы Baytur на перевале Тоо-Ашуу: открытие сезона, снег, события и советы лыжникам.' photo='news' %}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with photo='news' title='Новости' eyebrow='Жизнь на склоне' text='Открытие сезона, свежий снег, события и полезные советы.' variant=2 %}
+
+<section class="section theme-light">
+    <div class="container">
+        {% if posts %}
+            <div class="grid grid--3">
+                {% for post in posts %}{% include 'include/post_card.html' %}{% endfor %}
+            </div>
+            {% include 'include/pagination.html' %}
+        {% else %}
+            <p class="empty">Публикаций пока нет.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

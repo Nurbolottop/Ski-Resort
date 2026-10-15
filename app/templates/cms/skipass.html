@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block seo %}{% include 'include/seo.html' with title='Ски-пассы на Тоо-Ашуу — цены' description='Цены на ски-пассы горнолыжной базы Baytur на перевале Тоо-Ашуу: актуальный прайс сезона и условия покупки.' photo='skipass' %}{% endblock %}
+{% block extra_head %}{% load seo_tags %}{% jsonld 'skipass' %}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with photo='skipass' title='Ски-пассы' eyebrow='Ski pass' text='Прейскурант цен на SKI PASS и услуги инструктора.' variant=2 %}
+
+<section class="section theme-light">
+    <div class="container">
+        {% if ski_passes %}
+            <div class="grid grid--3">
+                {% for pass in ski_passes %}{% include 'include/skipass_card.html' %}{% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">Тарифы на новый сезон скоро появятся.</p>
+        {% endif %}
+        <div class="actions" data-reveal>
+            <a class="btn btn--ghost" href="{% url 'cms:prices' %}">Полный прайс: прокат, проживание, трансфер</a>
+        </div>
+    </div>
+</section>
+
+{% include 'include/cta.html' %}
+{% endblock %}

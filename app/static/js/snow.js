@@ -1,0 +1,243 @@
+/* =============================================================================
+   Baytur — снегопад на canvas: три плана глубины, ветер, реакция на курсор.
+   Пауза в фоновой вкладке, выключатель с запоминанием, без снега при reduced motion.
+   ============================================================================= */
+(function () {
+    'use strict';
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    var KEY = 'snow-off';
+    var off = false;
+    try { off = localStorage.getItem(KEY) === '1'; } catch (e) { /* приватный режим */ }
+
+    var canvas = document.createElement('canvas');
+    canvas.className = 'snow-canvas';
+    canvas.setAttribute('aria-hidden', 'true');
+    var ctx = canvas.getContext('2d');
+
+    var toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'snow-toggle';
+    toggle.setAttribute('aria-label', 'Снегопад');
+    toggle.innerHTML = '<svg viewBox="0 0 24 24" class="icon"><use href="#i-snow"></use></svg>';
+
+    var W = 0, H = 0, dpr = 1, flakes = [], running = false, last = 0;
+    // На телефонах — 30 кадров/с: снег медленный, разницы не видно, а нагрузка вдвое меньше
+    var small = window.matchMedia('(max-width: 768px)').matches;
+    var frameGap = small ? 1000 / 30 - 2 : 0;
+    var wind = 0, windTarget = 0, mouseX = -9999, mouseY = -9999;
+
+    // Планы: дальний (мелкий, размытый, медленный) → ближний (крупный, быстрый)
+    var LAYERS = [
+        { share: .5, r: [5, 8], v: [14, 24], a: [.25, .38], sway: 12 },
+        { share: .35, r: [8, 12], v: [22, 36], a: [.35, .48], sway: 18 },
+        { share: .15, r: [12, 17], v: [34, 50], a: [.45, .58], sway: 24 },
+    ];
+
+    function rand(a, b) { return a + Math.random() * (b - a); }
+
+    function makeFlake(layer, anywhere) {
+        var L = LAYERS[layer];
+        return {
+            layer: layer,
+            x: Math.random() * W,
+            y: anywhere ? Math.random() * H : -24,
+            r: rand(L.r[0], L.r[1]),
+            v: rand(L.v[0], L.v[1]),
+            a: rand(L.a[0], L.a[1]),
+            phase: Math.random() * Math.PI * 2,
+            freq: rand(.4, 1.1),
+            rot: Math.random() * Math.PI * 2,
+            spin: rand(-.6, .6),
+            sway: L.sway * rand(.6, 1.2),
+            dx: 0,
+        };
+    }
+
+    function resize() {
+        dpr = 1;  // без удвоения на ретине — в разы меньше работы
+        W = window.innerWidth; H = window.innerHeight;
+        canvas.width = W * dpr; canvas.height = H * dpr;
+        canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        var total = Math.round(Math.min(42, Math.max(16, W * H / 45000)));
+        if (W < 640) total = Math.round(total * .6);
+        flakes = [];
+        LAYERS.forEach(function (L, i) {
+            for (var k = 0; k < Math.round(total * L.share); k++) flakes.push(makeFlake(i, true));
+        });
+    }
+
+    // Снежинка «вырезанная из бумаги»: 6 лучей с ветками-листиками, ажурный центр.
+    // Белая с голубым контуром и тенью — видна и на белом фоне, и на фото.
+    function drawFlake(g, R) {
+        // ветки: [положение на луче, длина, ширина] — от центра к кончику
+        var BR = [[.34, .34, .8], [.56, .3, .72], [.76, .2, .62]];
+        function arm(lw) {
+            g.lineWidth = lw;
+            g.beginPath();
+            g.moveTo(0, -R * .16); g.lineTo(0, -R * .84);            // ствол
+            BR.forEach(function (b) {
+                var y = -R * b[0], len = R * b[1];
+                var ex = Math.sin(.7) * len, ey = y - Math.cos(.7) * len;  // ~40° вверх
+                g.moveTo(0, y); g.quadraticCurveTo(ex * .35, y - len * .35, ex, ey);
+                g.moveTo(0, y); g.quadraticCurveTo(-ex * .35, y - len * .35, -ex, ey);
+            });
+            g.stroke();
+            // лепестки на концах веток
+            BR.forEach(function (b) {
+                var y = -R * b[0], len = R * b[1];
+                var ex = Math.sin(.7) * len, ey = y - Math.cos(.7) * len;
+                [1, -1].forEach(function (d) {
+                    g.beginPath();
+                    g.ellipse(d * ex, ey, lw * .8 * b[2], lw * 1.25 * b[2], d * .7, 0, Math.PI * 2);
+                    g.fill();
+                });
+            });
+            // вытянутый кончик луча
+            g.beginPath();
+            g.ellipse(0, -R * .88, lw * .75, R * .13, 0, 0, Math.PI * 2);
+            g.fill();
+        }
+        for (var pass = 0; pass < 2; pass++) {
+            var outline = pass === 0;
+            g.strokeStyle = g.fillStyle = outline ? 'rgba(60,110,185,.6)' : '#ffffff';
+            var base = Math.max(1.1, R * .085);
+            var lw = base + (outline ? Math.max(1.2, R * .05) : 0);
+            for (var k = 0; k < 6; k++) {
+                g.save(); g.rotate(k * Math.PI / 3); arm(lw); g.restore();
+            }
+            // центр — шестиугольник
+            g.beginPath();
+            for (var k2 = 0; k2 < 6; k2++) {
+                var a = k2 * Math.PI / 3, rr = R * .2 + (outline ? lw * .3 : 0);
+                g[k2 ? 'lineTo' : 'moveTo'](Math.cos(a) * rr, Math.sin(a) * rr);
+            }
+            g.closePath(); g.fill();
+        }
+        // «окошки» в центре
+        g.fillStyle = 'rgba(60,110,185,.45)';
+        for (var k3 = 0; k3 < 6; k3++) {
+            var a2 = k3 * Math.PI / 3 + Math.PI / 6;
+            g.beginPath();
+            g.ellipse(Math.cos(a2) * R * .11, Math.sin(a2) * R * .11, Math.max(.5, R * .03), Math.max(.8, R * .055), a2 + Math.PI / 2, 0, Math.PI * 2);
+            g.fill();
+        }
+    }
+
+    var sprites = {};
+    // Всего 5 заготовок разного размера, остальные размеры — масштабированием:
+    // отрисовка снежинки с тенью дорогая, на старте это была долгая задача
+    var SPRITE_R = [6, 9, 12, 15, 18];
+    function sprite(want) {
+        var r = SPRITE_R[SPRITE_R.length - 1];
+        for (var i = 0; i < SPRITE_R.length; i++) if (SPRITE_R[i] >= want) { r = SPRITE_R[i]; break; }
+        if (sprites[r]) return sprites[r];
+        var pad = 4, s = Math.ceil(r + pad), c = document.createElement('canvas');
+        var scale = 1;
+        c.width = c.height = s * 2 * scale;
+        var g = c.getContext('2d');
+        g.scale(scale, scale);
+        g.translate(s, s);
+        g.lineCap = 'round'; g.lineJoin = 'round';
+        g.shadowColor = 'rgba(20,50,110,.2)'; g.shadowBlur = r * .18; g.shadowOffsetY = r * .05;
+        drawFlake(g, r);
+        c.size = s * 2;
+        c.r = r;
+        return (sprites[r] = c);
+    }
+
+    function frame(t) {
+        if (!running) return;
+        if (frameGap && t - last < frameGap) { requestAnimationFrame(frame); return; }
+        var dt = Math.min(.05, (t - last) / 1000 || 0);
+        last = t;
+        // порывы ветра
+        if (Math.random() < .004) windTarget = rand(-28, 34);
+        wind += (windTarget - wind) * .01;
+
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, W, H);
+        for (var i = 0; i < flakes.length; i++) {
+            var f = flakes[i];
+            var depth = .5 + f.layer * .35;
+            f.phase += f.freq * dt;
+            // отталкивание от курсора (только ближние планы)
+            var mx = f.x - mouseX, my = f.y - mouseY, d2 = mx * mx + my * my;
+            if (f.layer > 0 && d2 < 14000) {
+                var force = (1 - d2 / 14000) * 60 * f.layer;
+                f.dx += (mx / Math.sqrt(d2 + 1)) * force * dt;
+            }
+            f.dx *= .96;
+            f.x += (Math.sin(f.phase) * f.sway * .6 + wind * depth + f.dx) * dt;
+            f.y += f.v * dt;
+            if (f.y > H + 24) { flakes[i] = makeFlake(f.layer, false); continue; }
+            if (f.x > W + 24) f.x = -24; else if (f.x < -24) f.x = W + 24;
+            f.rot += f.spin * dt;
+            var spr = sprite(f.r), size = spr.size * f.r / spr.r, half = size / 2;
+            ctx.globalAlpha = f.a;
+            ctx.setTransform(dpr * Math.cos(f.rot), dpr * Math.sin(f.rot), -dpr * Math.sin(f.rot), dpr * Math.cos(f.rot), f.x * dpr, f.y * dpr);
+            ctx.drawImage(spr, -half, -half, size, size);
+        }
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(frame);
+    }
+
+    function start() {
+        if (running || off || document.hidden) return;
+        running = true; canvas.style.opacity = '1';
+        last = performance.now();
+        requestAnimationFrame(frame);
+    }
+
+    function stop() {
+        running = false;
+    }
+
+    function setOff(value) {
+        off = value;
+        try { localStorage.setItem(KEY, value ? '1' : '0'); } catch (e) { /* ignore */ }
+        toggle.classList.toggle('is-off', value);
+        toggle.title = value ? 'Включить снегопад' : 'Выключить снегопад';
+        if (value) { stop(); canvas.style.opacity = '0'; } else { start(); }
+    }
+
+    // Снег — украшение: запускаем после загрузки страницы, когда браузер свободен
+    function init() {
+        resize();  // размеры читаем до вставки в DOM — без принудительной компоновки
+        document.body.appendChild(canvas);
+        document.body.appendChild(toggle);
+        setOff(off);
+        toggle.addEventListener('click', function () { setOff(!off); });
+        var rt;
+        window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(resize, 200); });
+        window.addEventListener('pointermove', function (e) { mouseX = e.clientX; mouseY = e.clientY; }, { passive: true });
+        document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
+    }
+
+    // На телефоне снег начинается с первого касания/прокрутки (или через 5 с),
+    // чтобы первые секунды процессор был занят только страницей
+    function later() {
+        var done = false;
+        function go() {
+            if (done) return;
+            done = true;
+            EVENTS.forEach(function (e) { window.removeEventListener(e, go, { passive: true }); });
+            init();
+        }
+        var EVENTS = ['scroll', 'pointerdown', 'touchstart', 'keydown', 'wheel'];
+        if (small) {
+            EVENTS.forEach(function (e) { window.addEventListener(e, go, { passive: true }); });
+            setTimeout(go, 5000);
+        } else if ('requestIdleCallback' in window) {
+            requestIdleCallback(go, { timeout: 2500 });
+        } else {
+            setTimeout(go, 600);
+        }
+    }
+
+    if (document.readyState === 'complete') later();
+    else window.addEventListener('load', later);
+})();

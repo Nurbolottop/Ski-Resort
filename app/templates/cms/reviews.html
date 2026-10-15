@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block seo %}{% include 'include/seo.html' with title='Отзывы о базе на Тоо-Ашуу' description='Отзывы гостей о горнолыжной базе Baytur на перевале Тоо-Ашуу: трассы, проживание, кафе и сервис.' photo='reviews' %}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with photo='reviews' title='Отзывы' eyebrow='Гости о нас' text='Что говорят гости о базе. Будем рады и вашему отзыву.' variant=1 %}
+
+<section class="section theme-light">
+    <div class="container">
+        {% if page_obj %}
+            <div class="grid grid--3">
+                {% for review in page_obj %}{% include 'include/review_card.html' %}{% endfor %}
+            </div>
+            {% include 'include/pagination.html' %}
+        {% else %}
+            <p class="empty">Пока отзывов нет — станьте первым!</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="section" id="review-form">
+    <div class="container container--narrow">
+        {% include 'include/section_head.html' with eyebrow='Ваше мнение' title='Оставить отзыв' lead='Отзыв появится на сайте после проверки администратором.' %}
+        <form class="form form--card" method="post" action="#review-form" data-reveal>
+            {% csrf_token %}
+            {% include 'include/form.html' with wide='text' %}
+            <button class="btn btn--primary" type="submit">Отправить отзыв</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

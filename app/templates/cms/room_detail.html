@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load site_tags %}
+
+{% block seo %}{% include 'include/seo.html' with title=room.seo_title|default:room.name description=room.seo_description|default:room.short_description|truncatechars:160 image=room.cover photo='chalet' %}{% endblock %}
+{% block extra_head %}{% load seo_tags %}{% jsonld 'room' room %}{% endblock %}
+
+{% block content %}
+{% url 'cms:room_list' as rooms_url %}
+{% include 'include/page_hero.html' with photo='chalet' title=room.name eyebrow='Проживание' image=room.cover parent_title='Проживание' parent_url=rooms_url variant=3 %}
+
+<section class="section theme-light">
+    <div class="container detail">
+        <div>
+            {% with images=room.images.all %}
+                {% if images %}
+                    <div class="photo-grid" data-reveal>
+                        {% for item in images %}
+                            <a class="photo-grid__item" href="{{ item.image.url }}" data-lightbox="room" data-caption="{{ room.name }}">
+                                <img src="{{ item.image|thumb:960 }}" srcset="{{ item.image|srcset }}" sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 34vw" decoding="async" alt="{{ room.name }} — фото {{ forloop.counter }}" loading="lazy">
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            {% if room.short_description %}<p class="lead" data-reveal>{{ room.short_description }}</p>{% endif %}
+            {% if room.description %}<div class="prose" data-reveal>{{ room.description|safe }}</div>{% endif %}
+
+            {% if room.amenities_list %}
+                <h2 class="detail__subtitle" data-reveal>Удобства</h2>
+                <ul class="checklist" data-reveal>
+                    {% for item in room.amenities_list %}<li><svg class="icon"><use href="#i-check"></use></svg>{{ item }}</li>{% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <aside class="detail__aside">
+            <div class="sidebar-card" data-reveal>
+                <span class="price">
+                    <span class="price__value">{{ room.price_from|money }}</span>
+                    <span class="price__unit">сом{% if room.price_unit %} / {{ room.price_unit }}{% endif %}</span>
+                </span>
+                <ul class="specs">
+                    <li><span>Гостей</span><strong>до {{ room.max_guests }}</strong></li>
+                    {% if room.beds %}<li><span>Размещение</span><strong>{{ room.beds }}</strong></li>{% endif %}
+                    {% if room.area %}<li><span>Площадь</span><strong>{{ room.area }} м²</strong></li>{% endif %}
+                </ul>
+                <a class="btn btn--primary btn--block" href="{% url 'contacts:booking' %}?room={{ room.slug }}">Забронировать</a>
+                {% if site.whatsapp %}
+                    <a class="sidebar-card__phone" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp"></use></svg>{{ site.whatsapp }}</a>
+                {% endif %}
+            </div>
+        </aside>
+    </div>
+</section>
+
+{% if other_rooms %}
+<section class="section">
+    <div class="container">
+        {% include 'include/section_head.html' with eyebrow='Размещение' title='Другие варианты' link_url=rooms_url link_text='Всё проживание' %}
+        <div class="grid grid--3">
+            {% for room in other_rooms %}{% include 'include/room_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

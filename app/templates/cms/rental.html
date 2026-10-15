@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block seo %}{% include 'include/seo.html' with title='Прокат лыж и сноубордов на Тоо-Ашуу' description='Прокат горных лыж, сноубордов, ботинок и экипировки на базе Baytur, перевал Тоо-Ашуу. Цены и условия проката.' photo='rental' %}{% endblock %}
+{% block extra_head %}{% load seo_tags %}{% jsonld 'rental' %}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with photo='rental' title='Прокат' eyebrow='Снаряжение' text='Прейскурант цен на прокат снаряжения: лыжи, сноуборды, ботинки, очки и перчатки.' variant=3 %}
+
+<section class="section theme-light">
+    <div class="container">
+        {% if groups %}
+            {% for group in groups %}
+                <div class="rental-group">
+                    <h2 class="rental-group__title" data-reveal>{{ group.label }}</h2>
+                    <div class="grid grid--2">
+                        {% for item in group.items %}{% include 'include/rental_item.html' %}{% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty">Прайс проката скоро появится.</p>
+        {% endif %}
+
+        <div class="contact-strip" data-reveal>
+            <div>
+                <span class="contact-strip__label">Вопросы по прокату</span>
+                <p class="contact-strip__text">Пишите в WhatsApp отдела бронирования</p>
+            </div>
+            <div class="actions">
+                {% if site.whatsapp %}<a class="btn btn--whatsapp" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp"></use></svg>WhatsApp</a>{% endif %}
+                <a class="btn btn--glass" href="{% url 'cms:service_list' %}">Инструкторы и услуги</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

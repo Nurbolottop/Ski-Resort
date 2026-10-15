@@ -1,0 +1,2 @@
+{% load site_tags %}{# Фон-заглушка: variant 1 — панорама долины, 2 — закат, 3 — подъёмник #}
+{% if variant == 2 %}{% photo 'sunset' cls='scenery' %}{% elif variant == 3 %}{% photo 'lift' cls='scenery' %}{% else %}{% photo 'panorama' cls='scenery' %}{% endif %}

@@ -1,0 +1,20 @@
+{% load static seo_tags %}{# SEO-теги страницы. Параметры: title, description, full_title, image, photo, og_type, noindex #}
+    <title>{{ title }}{% if not full_title %} | {{ site.name }}{% endif %}</title>
+    <meta name="description" content="{{ description|striptags }}">
+    {% if noindex %}<meta name="robots" content="noindex, follow">
+    {% else %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+    {% endif %}<meta property="og:type" content="{{ og_type|default:'website' }}">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:site_name" content="{{ site.full_name|default:site.name }}">
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:description" content="{{ description|striptags }}">
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% if image %}{{ image.url }}{% else %}{% with p=photo|default:'panorama' %}{% static 'img/photos/'|add:p|add:'.jpg' %}{% endwith %}{% endif %}">
+    <meta property="og:image:alt" content="{{ title }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="geo.region" content="KG-C">
+    <meta name="geo.placename" content="Перевал Тоо-Ашуу, Кыргызстан">
+    {% if site.latitude and site.longitude %}<meta name="geo.position" content="{{ site.latitude|stringformat:'f' }};{{ site.longitude|stringformat:'f' }}">
+    <meta name="ICBM" content="{{ site.latitude|stringformat:'f' }}, {{ site.longitude|stringformat:'f' }}">
+    {% endif %}<link rel="alternate" type="text/plain" href="/llms.txt" title="Информация о базе для ИИ-ассистентов">
+    {% jsonld_site title %}

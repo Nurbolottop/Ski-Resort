@@ -1,0 +1,356 @@
+{% extends 'base.html' %}
+{% block seo %}{% include 'include/seo.html' with title='Горнолыжная база Тоо-Ашуу (Baytur) — 120 км от Бишкека' description='Горнолыжная база Baytur на перевале Тоо-Ашуу, 3000 м: трассы, ски-пассы, прокат лыж и сноубордов, проживание и трансфер из Бишкека.' full_title=True photo='panorama' %}{% endblock %}
+{% load static site_tags %}
+
+{% block body_class %}page-home{% endblock %}
+
+{% block extra_head %}
+    {% with first=slides.0 %}{% if first.image %}
+        <link rel="preload" as="image" imagesrcset="{{ first.image|srcset }}" imagesizes="100vw" fetchpriority="high">
+    {% endif %}{% endwith %}
+{% endblock %}
+
+{% block content %}
+
+{# ================= HERO ================= #}
+<section class="hero" data-slider>
+    <div class="hero__slides">
+        {% for slide in slides %}
+            <div class="hero__slide{% if forloop.first %} is-active{% endif %}" data-slide>
+                <div class="hero__media">
+                    {% if slide.image %}
+                        <img class="hero__img" src="{{ slide.image|thumb:1600 }}" srcset="{{ slide.image|srcset }}" sizes="100vw" alt="" width="2400" height="1350"{% if forloop.first %} fetchpriority="high"{% else %} loading="lazy" decoding="async"{% endif %}>
+                    {% else %}
+                        {% include 'include/scenery.html' with variant=forloop.counter|cycle_variant uid='hero' %}
+                    {% endif %}
+                </div>
+                <div class="hero__overlay"></div>
+                <div class="hero__content">
+                    <div class="container">
+                        {% if slide.eyebrow %}<span class="hero__eyebrow">{{ slide.eyebrow }}</span>{% endif %}
+                        <h1 class="hero__title">{{ slide.title }}</h1>
+                        {% if slide.text %}<p class="hero__text">{{ slide.text }}</p>{% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="hero__slide is-active" data-slide>
+                <div class="hero__media">{% include 'include/scenery.html' with variant=1 uid='hero' %}</div>
+                <div class="hero__overlay"></div>
+                <div class="hero__content">
+                    <div class="container">
+                        <span class="hero__eyebrow">{{ site.season|default:'Горнолыжная база' }}</span>
+                        <h1 class="hero__title">{{ site.name }}</h1>
+                        {% if site.tagline %}<p class="hero__text">{{ site.tagline }}</p>{% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="snowfall"></div>
+
+    {% if slides|length > 1 %}
+        <div class="hero__controls">
+            <div class="container">
+                <div class="hero__dots">
+                    {% for slide in slides %}
+                        <button class="hero__dot{% if forloop.first %} is-active{% endif %}" type="button" data-slide-to="{{ forloop.counter0 }}" aria-label="Слайд {{ forloop.counter }}"></button>
+                    {% endfor %}
+                </div>
+                <div class="hero__arrows">
+                    <button class="hero__arrow" type="button" data-slider-prev aria-label="Предыдущий слайд"><svg class="icon"><use href="#i-arrow-left"></use></svg></button>
+                    <button class="hero__arrow" type="button" data-slider-next aria-label="Следующий слайд"><svg class="icon"><use href="#i-arrow-right"></use></svg></button>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="container hero__booking">
+        <form class="booking-widget" action="{% url 'contacts:booking' %}" method="get">
+            <div class="booking-widget__field">
+                <label for="bw_check_in">Заезд</label>
+                <input type="date" id="bw_check_in" name="check_in" class="field__input" required>
+            </div>
+            <div class="booking-widget__field">
+                <label for="bw_check_out">Выезд</label>
+                <input type="date" id="bw_check_out" name="check_out" class="field__input" required>
+            </div>
+            <div class="booking-widget__field">
+                <label for="bw_adults">Взрослых</label>
+                <input type="number" id="bw_adults" name="adults" class="field__input" min="1" max="20" value="2" required>
+            </div>
+            <div class="booking-widget__field">
+                <label for="bw_children">Детей</label>
+                <input type="number" id="bw_children" name="children" class="field__input" min="0" max="10" value="0">
+            </div>
+            <button class="btn btn--primary booking-widget__submit" type="submit">Найти жильё</button>
+        </form>
+    </div>
+</section>
+
+{# ================= СЕГОДНЯ НА СКЛОНЕ ================= #}
+<section class="today">
+    <div class="container">
+        {% include 'include/today.html' %}
+    </div>
+</section>
+
+{# ================= БЕГУЩАЯ ЛЕНТА ================= #}
+<div class="ticker" aria-hidden="true">
+    <div class="ticker__track">
+        {% for i in '01' %}
+            <span class="ticker__item">3 000 метров над уровнем моря</span>
+            <span class="ticker__item">Три трассы до 3 км</span>
+            <span class="ticker__item">Канатная дорога</span>
+            <span class="ticker__item">Коттеджи с завтраком</span>
+            <span class="ticker__item">120 км от Бишкека</span>
+            <span class="ticker__item">Трансфер из Бишкека</span>
+            <span class="ticker__item">Прокат и инструкторы</span>
+        {% endfor %}
+    </div>
+</div>
+
+{# ================= О БАЗЕ ================= #}
+<section class="section theme-light">
+    <div class="container intro">
+        <div>
+            <span class="section__eyebrow" data-reveal>О базе</span>
+            <h2 class="section__title" data-reveal style="--d:.1s">Снег <em>выше облаков</em> — в паре часов от Бишкека</h2>
+            <div class="intro__text" data-reveal style="--d:.2s">
+                {% if about_page and about_page.content %}
+                    <div class="prose">{{ about_page.content|safe|truncatewords_html:70 }}</div>
+                {% else %}
+                    <p>{{ site.tagline }}</p>
+                {% endif %}
+            </div>
+            <div class="intro__stats" data-reveal style="--d:.3s">
+                {% if site.altitude_top %}
+                    <div><span class="stat__value"><span data-count="{{ site.altitude_top }}">{{ site.altitude_top|money }}</span> <small>м</small></span><span class="stat__label">высота над уровнем моря</span></div>
+                {% endif %}
+                <div><span class="stat__value"><span data-count="{{ total_km|stringformat:'s' }}">{{ total_km }}</span> <small>км</small></span><span class="stat__label">трасс и спусков</span></div>
+                {% if site.distance_km %}
+                    <div><span class="stat__value"><span data-count="{{ site.distance_km }}">{{ site.distance_km }}</span> <small>км</small></span><span class="stat__label">от Бишкека</span></div>
+                {% else %}
+                    <div><span class="stat__value"><span data-count="{{ lifts_count }}">{{ lifts_count }}</span></span><span class="stat__label">подъёмника</span></div>
+                {% endif %}
+            </div>
+            <a class="btn btn--ghost" href="{% url 'base:about' %}" data-reveal style="--d:.4s">Подробнее о базе <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
+        </div>
+        <div class="intro__media" data-reveal style="--d:.2s">
+            {% if site.about_image %}
+                <img src="{{ site.about_image|thumb:960 }}" srcset="{{ site.about_image|srcset }}" sizes="(max-width: 900px) 100vw, 50vw" alt="{{ site.name }}" loading="lazy" decoding="async">
+            {% else %}
+                {% include 'include/scenery.html' with variant=3 uid='intro' %}
+            {% endif %}
+            {% if site.snow_depth %}
+                <div class="intro__badge"><strong>{{ site.snow_depth }} см</strong><span>снега на склоне сегодня</span></div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+{# ================= ПРЕИМУЩЕСТВА ================= #}
+{% if advantages %}
+<section class="section theme-light section--alt">
+    <div class="container">
+        {% include 'include/section_head.html' with eyebrow='Почему мы' title='Всё для идеального дня в горах' center=True %}
+        <div class="features">
+            {% for item in advantages %}
+                <div class="feature" data-reveal style="--d:{{ forloop.counter0 }}00ms">
+                    <span class="feature__icon"><svg class="icon"><use href="#i-{{ item.icon|default:'mountain' }}"></use></svg></span>
+                    <h3 class="feature__title">{{ item.title }}</h3>
+                    <p class="feature__text">{{ item.text }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ================= ТРАССЫ ================= #}
+{% if slope_levels %}
+<section class="section">
+    <div class="container">
+        {% url 'cms:slopes' as slopes_url %}
+        {% include 'include/section_head.html' with eyebrow='Катание' title='Три трассы' lead='Три трассы различного уровня сложности и протяжённости — от 2,6 до 3 км.' link_url=slopes_url link_text='Трассы и подъёмники' %}
+        <div class="grid grid--{% if slope_levels|length >= 4 %}4{% else %}{{ slope_levels|length }}{% endif %}">
+            {% for level in slope_levels %}
+                <article class="slope slope--{{ level.value }}" data-reveal style="--d:{{ forloop.counter0 }}00ms">
+                    <span class="slope__level"></span>
+                    <h3 class="slope__title">{{ level.label }}</h3>
+                    <p class="slope__meta">{{ level.count }} {{ level.count|ru_plural:"трасса,трассы,трасс" }}{% if level.length_km %} · {{ level.length_km }} км{% endif %}</p>
+                </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ================= СКИ-ПАССЫ ================= #}
+{% if ski_passes %}
+<section class="section section--alt">
+    <div class="container">
+        {% url 'cms:prices' as prices_url %}
+        {% include 'include/section_head.html' with eyebrow='Ski pass' title='Цены на подъёмники' link_url=prices_url link_text='Весь прайс' %}
+        <div class="grid grid--3">
+            {% for pass in ski_passes %}{% include 'include/skipass_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ================= ПРОЖИВАНИЕ ================= #}
+{% if rooms %}
+<section class="section theme-light">
+    <div class="container">
+        {% url 'cms:room_list' as rooms_url %}
+        {% include 'include/section_head.html' with eyebrow='Размещение' title='Проживание на базе' lead='Коттеджи с завтраком и ски-пассами для всех гостей и вагончики для больших компаний.' link_url=rooms_url link_text='Все варианты' %}
+        <div class="grid grid--3">
+            {% for room in rooms %}{% include 'include/room_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ================= СЕРВИС ================= #}
+<section class="section">
+    <div class="container">
+        {% url 'cms:service_list' as services_url %}
+        {% url 'cms:rental' as rental_url %}
+        {% url 'cms:menu' as menu_url %}
+        {% url 'cms:transfer' as transfer_url %}
+        {% url 'cms:skipass' as skipass_url %}
+        {% include 'include/section_head.html' with eyebrow='Сервис' title='Прокат, кафе и всё для отдыха' link_url=services_url link_text='Все услуги' %}
+        <div class="grid grid--4">
+            {% include 'include/service_tile.html' with title='Прокат снаряжения' url=rental_url category=None variant=1 photo='rental' %}
+            {% include 'include/service_tile.html' with title='Меню кафе' url=menu_url category=None variant=2 photo='menu' %}
+            {% include 'include/service_tile.html' with title='Трансфер' url=transfer_url category=None variant=3 photo='transfer' %}
+            {% with category=service_categories.0 %}
+                {% if category %}
+                    {% include 'include/service_tile.html' with variant=4 photo='services' %}
+                {% else %}
+                    {% include 'include/service_tile.html' with title='Ски-пассы' url=skipass_url category=None variant=4 %}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</section>
+
+{# ================= ПРОГНОЗ ================= #}
+{% if site.latitude and site.longitude %}
+<section class="section theme-light section--alt">
+    <div class="container">
+        {% include 'include/section_head.html' with eyebrow='Погода на перевале' title='Прогноз на неделю' lead='Рабочие дни базы выделены. Данные — Open-Meteo.' %}
+        <div class="forecast" data-forecast data-lat="{{ site.latitude|stringformat:'s' }}" data-lon="{{ site.longitude|stringformat:'s' }}" data-open-days="{% if site.is_season_open %}{{ site.open_weekdays }}{% endif %}" data-reveal>
+            <p class="empty forecast__fallback">Загружаем прогноз…</p>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ================= АКЦИИ ================= #}
+{% if offers %}
+<section class="section">
+    <div class="container">
+        {% url 'cms:offer_list' as offers_url %}
+        {% include 'include/section_head.html' with eyebrow='Выгодно' title='Спецпредложения' link_url=offers_url link_text='Все акции' %}
+        <div class="grid grid--3">
+            {% for offer in offers %}{% include 'include/offer_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ================= ТРАНСФЕР ================= #}
+{% if transfer_routes %}
+<section class="section section--alt">
+    <div class="container">
+        {% url 'cms:transfer' as transfer_url %}
+        {% include 'include/section_head.html' with eyebrow='Как добраться' title='Трансфер до базы' link_url=transfer_url link_text='Расписание и детали' %}
+        <div class="grid grid--{% if transfer_routes|length == 2 %}2{% else %}3{% endif %}">
+            {% for route in transfer_routes %}
+                <a class="route route--link" href="{{ transfer_url }}" data-reveal style="--d:{{ forloop.counter0 }}00ms">
+                    <span class="route__icon"><svg class="icon"><use href="#i-car"></use></svg></span>
+                    <h3 class="route__name">{{ route.name }}</h3>
+                    {% if route.schedule %}<p class="route__text">{{ route.schedule }}{% if route.duration %} · {{ route.duration }}{% endif %}</p>{% endif %}
+                    <p class="price route__price">
+                        {% if route.price %}
+                            <span class="price__value">{{ route.price|money }}</span>
+                            <span class="price__unit">сом{% if route.price_unit %} с {{ route.price_unit }}{% endif %}</span>
+                        {% else %}
+                            <span class="price__unit">Цена по запросу</span>
+                        {% endif %}
+                    </p>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ================= ОТЗЫВЫ ================= #}
+{% if reviews %}
+<section class="section theme-light">
+    <div class="container">
+        {% url 'cms:reviews' as reviews_url %}
+        {% include 'include/section_head.html' with eyebrow='Гости о нас' title='Отзывы' link_url=reviews_url link_text='Все отзывы' %}
+        <div class="grid grid--3">
+            {% for review in reviews %}{% include 'include/review_card.html' %}{% endfor %}
+            {# Пока опубликованных отзывов меньше трёх — дополняем ряд карточками-ссылками, не выдуманными отзывами #}
+            {% if reviews|length < 2 %}
+                <article class="review review--link" data-reveal style="--d:100ms">
+                    <span class="review__quote" aria-hidden="true">“</span>
+                    <div class="review__rating">Видеоотзывы</div>
+                    <p class="review__text">Гости снимают склон, подъёмники и свежий снег — смотрите их ролики в подборке «Отзывы» в нашем Instagram.</p>
+                    <div class="review__author">
+                        <a class="link-more" href="https://www.instagram.com/stories/highlights/18020033743057175/" target="_blank" rel="noopener">Смотреть в Instagram <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
+                    </div>
+                </article>
+            {% endif %}
+            {% if reviews|length < 3 %}
+                <article class="review review--link" data-reveal style="--d:200ms">
+                    <span class="review__quote" aria-hidden="true">“</span>
+                    <div class="review__rating">Ваш отзыв</div>
+                    <p class="review__text">Были у нас? Расскажите, как прошёл день на склоне, — после проверки отзыв появится здесь, рядом с остальными.</p>
+                    <div class="review__author">
+                        <a class="link-more" href="{{ reviews_url }}#review-form">Оставить отзыв <svg class="icon"><use href="#i-arrow-right"></use></svg></a>
+                    </div>
+                </article>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ================= НОВОСТИ ================= #}
+{% if posts %}
+<section class="section theme-light section--alt">
+    <div class="container">
+        {% url 'cms:post_list' as blog_url %}
+        {% include 'include/section_head.html' with eyebrow='Новости' title='Жизнь на склоне' link_url=blog_url link_text='Все новости' %}
+        <div class="grid grid--3">
+            {% for post in posts %}{% include 'include/post_card.html' %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# ================= INSTAGRAM ================= #}
+{% if site.instagram %}
+<section class="section section--tight">
+    <div class="container">
+        <a class="insta" href="{{ site.instagram }}" target="_blank" rel="noopener" data-reveal>
+            <div>
+                <span class="insta__handle"><svg class="icon"><use href="#i-instagram"></use></svg>{{ site.instagram|instagram_handle }}</span>
+                <h2 class="insta__title">Свежий снег, видео со склона и новости — каждый день</h2>
+                <p class="insta__text">Подписывайтесь, чтобы первыми узнавать об открытии трасс и погоде на перевале.</p>
+            </div>
+            <span class="btn btn--primary btn--lg">Подписаться</span>
+        </a>
+    </div>
+</section>
+{% endif %}
+
+{% include 'include/cta.html' %}
+
+{% endblock %}

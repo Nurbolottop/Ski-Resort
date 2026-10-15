@@ -1,0 +1,10 @@
+{% if faqs %}
+<div class="faq">
+    {% for item in faqs %}
+        <details class="faq__item" data-reveal style="--d:{{ forloop.counter0 }}0ms">
+            <summary class="faq__question">{{ item.question }}<svg class="icon"><use href="#i-plus"></use></svg></summary>
+            <div class="faq__answer prose">{{ item.answer|safe }}</div>
+        </details>
+    {% endfor %}
+</div>
+{% endif %}

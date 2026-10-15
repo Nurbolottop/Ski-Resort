@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block seo %}{% include 'include/seo.html' with title='Акции и скидки на Тоо-Ашуу' description='Сезонные акции и скидки горнолыжной базы Baytur на перевале Тоо-Ашуу для семей и компаний.' photo='offers' %}{% endblock %}
+
+{% block content %}
+{% include 'include/page_hero.html' with photo='offers' title='Акции' eyebrow='Выгодно' text='Сезонные предложения, скидки для семей и компаний.' variant=2 %}
+
+<section class="section theme-light">
+    <div class="container">
+        {% if offers %}
+            <div class="grid grid--3">
+                {% for offer in offers %}{% include 'include/offer_card.html' %}{% endfor %}
+            </div>
+        {% else %}
+            <p class="empty">Сейчас активных акций нет. Подпишитесь на рассылку внизу страницы — сообщим о новых.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

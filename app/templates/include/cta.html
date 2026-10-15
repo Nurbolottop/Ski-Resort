@@ -1,0 +1,18 @@
+<section class="cta">
+    {% include 'include/scenery.html' with variant=2 uid='cta' %}
+    <div class="snowfall"></div>
+    <div class="container cta__inner">
+        <span class="section__eyebrow" data-reveal>{{ site.season|default:'Новый сезон' }}</span>
+        <h2 class="cta__title" data-reveal style="--d:.1s">Встретимся <em>на склоне</em></h2>
+        <p class="cta__text" data-reveal style="--d:.2s">
+            {% if site.is_season_open %}Работаем {{ site.open_days_label }}.{% else %}Сезон закрыт — до скорой встречи в новом сезоне!{% endif %}
+            Бронирование проживания и трансфера — через сайт или WhatsApp.
+        </p>
+        <div class="actions" data-reveal style="--d:.3s">
+            <a class="btn btn--primary btn--lg" href="{% url 'contacts:booking' %}">Забронировать</a>
+            {% if site.whatsapp %}
+                <a class="btn btn--glass btn--lg" href="https://wa.me/{{ site.whatsapp_number }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-whatsapp"></use></svg>WhatsApp</a>
+            {% endif %}
+        </div>
+    </div>
+</section>

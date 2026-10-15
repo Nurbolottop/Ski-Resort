@@ -16,14 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.templatetags.static import static as static_url
+from django.views.generic import RedirectView
+
+from apps.base import seo
 
 urlpatterns = [
-    path('yandex_6f1040f41e61c38d.html', TemplateView.as_view(template_name='yandex_6f1040f41e61c38d.html')),
     path('admin/', admin.site.urls),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('robots.txt', seo.robots_txt),
+    path('sitemap.xml', seo.sitemap_xml, name='sitemap'),
+    path('llms.txt', seo.llms_txt),
+    path('favicon.ico', RedirectView.as_view(url=static_url('img/favicon.svg'), permanent=True)),
     path('', include('apps.contacts.urls')),
     path('', include('apps.base.urls')),
     path('', include('apps.cms.urls')),
