@@ -433,6 +433,24 @@
     }
 
     /* ---------------------------------------------------------------------
+       Карта: iframe грузится, только когда до него почти долистали
+       --------------------------------------------------------------------- */
+    function initMaps() {
+        var maps = $$('iframe[data-map]');
+        if (!maps.length) return;
+        function load(frame) { frame.src = frame.getAttribute('data-src'); }
+        if (!('IntersectionObserver' in window)) { maps.forEach(load); return; }
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                load(entry.target);
+                observer.unobserve(entry.target);
+            });
+        }, { rootMargin: '300px 0px' });
+        maps.forEach(function (frame) { observer.observe(frame); });
+    }
+
+    /* ---------------------------------------------------------------------
        Плавная прокрутка (Lenis)
        --------------------------------------------------------------------- */
     function initSmoothScroll() {
@@ -547,6 +565,7 @@
         initForms();
         initMessages();
         initWeather();
+        initMaps();
         initGlare();
         initTilt();
         initMagnetic();

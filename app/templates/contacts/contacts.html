@@ -92,7 +92,9 @@
 
 {% if site.map_src %}
 <section class="map">
-    <iframe src="{{ site.map_src }}" title="Карта" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    {# Карта грузится, когда до неё долистали (data-map) — не мешает первому экрану #}
+    <iframe data-map data-src="{{ site.map_src }}" title="Карта" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    <noscript><iframe src="{{ site.map_src }}" title="Карта" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></noscript>
 </section>
 {% endif %}
 {% endblock %}
