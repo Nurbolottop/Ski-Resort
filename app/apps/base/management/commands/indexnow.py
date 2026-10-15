@@ -35,3 +35,5 @@ class Command(BaseCommand):
                     self.stdout.write(f'{endpoint}: {r.status}, отправлено {len(urls)} URL')
             except urllib.error.HTTPError as e:
                 self.stdout.write(f'{endpoint}: HTTP {e.code} {e.read().decode()[:200]}')
+            except OSError as e:
+                self.stdout.write(f'{endpoint}: нет ответа ({e}), повторите позже')
