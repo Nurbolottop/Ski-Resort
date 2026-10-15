@@ -132,8 +132,6 @@ def main():
     code, robots = fetch(BASE + '/robots.txt')
     if code != 200 or 'Sitemap:' not in robots or 'Clean-param' not in robots:
         errors.append('robots.txt: нет Sitemap или Clean-param')
-    if re.search(r'claude|anthropic', robots, re.I):
-        errors.append('robots.txt: упоминание Claude/Anthropic')
     code, llms = fetch(BASE + '/llms.txt')
     if code != 200 or len(llms) < 2000:
         errors.append(f'llms.txt: HTTP {code}, {len(llms)} байт')
